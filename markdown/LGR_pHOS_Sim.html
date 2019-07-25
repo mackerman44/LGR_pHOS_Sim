@@ -1561,6 +1561,8 @@ div.tocify {
 </div>
 <div id="simulation-description" class="section level2">
 <h2>Simulation Description</h2>
+<p>The <span class="math inline">\(\hat{pHOS}\)</span> to a given location <span class="math inline">\(j\)</span> can simply be estimated as the ratio of all hatchery fish returning to a location, divided by total (i.e., hatchery and wild) fish returning. And in the case of hatchery fish, we need to account for broodstock removal and harves (if any).</p>
+<p><span class="math display">\[\hat{pHOS} = \frac{\hat{N}_{j,H} - (Broodstock + Harvest)}{\hat{N}_{j,W} + (\hat{N}_{j,H} - (Broodstock + Harvest))}\]</span> Typically, in STADEM and DABOM we estimate weekly escapement past LGR (STADEM) and weekly movement probabilities (DABOM). However, for the purposes of this simulation, perhaps we can assume similar run timings between hatchery and wild fish and among branches. And thus, wild and hatchery abundance to a given location <span class="math inline">\(j\)</span> could be simply estimated as <span class="math display">\[\hat{N}_{j,H} = X_H\psi_{j,H}\]</span> <span class="math display">\[\hat{N}_{j,W} = X_W\psi_{j,W}\]</span> where <span class="math inline">\(X\)</span> is the escapement past LGR and <span class="math inline">\(\psi\)</span> is the movement probability for hatchery (<span class="math inline">\(H\)</span>) and wild (<span class="math inline">\(W\)</span>) fish, respectively.</p>
 </div>
 <div id="literature-cited" class="section level2">
 <h2>Literature Cited</h2>

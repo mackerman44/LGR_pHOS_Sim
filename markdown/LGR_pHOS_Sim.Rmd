@@ -49,7 +49,13 @@ A statistical evaluation of bias/reliability of pHOS estimates that could be ach
 
 ## Simulation Description
 
+The $\hat{pHOS}$ to a given location $j$ can simply be estimated as the ratio of all hatchery fish returning to a location, divided by total (i.e., hatchery and wild) fish returning. And in the case of hatchery fish, we need to account for broodstock removal and harves (if any).
 
+$$\hat{pHOS} = \frac{\hat{N}_{j,H} - (Broodstock + Harvest)}{\hat{N}_{j,W} + (\hat{N}_{j,H} - (Broodstock + Harvest))}$$
+Typically, in STADEM and DABOM we estimate weekly escapement past LGR (STADEM) and weekly movement probabilities (DABOM). However, for the purposes of this simulation, perhaps we can assume similar run timings between hatchery and wild fish and among branches. And thus, wild and hatchery abundance to a given location $j$ could be simply estimated as
+$$\hat{N}_{j,H} = X_H\psi_{j,H}$$
+$$\hat{N}_{j,W} = X_W\psi_{j,W}$$
+where $X$ is the escapement past LGR and $\psi$ is the movement probability for hatchery ($H$) and wild ($W$) fish, respectively.
 
 ## Literature Cited
 
