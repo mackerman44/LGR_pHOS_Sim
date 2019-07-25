@@ -14,22 +14,45 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list = ls())
 ```
 
-## R Markdown
+## Objective
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+First, we want to know what is the coefficient of variation (CV) for current estimates of the proportion of hatchery origin spawners (pHOS) for Chinook salmon and steelhead populations in the Snake River Basin (SRB) given current levels of PIT tagging. Current tagging would include previously tagged fish that arrive at Lower Granite Dam (LGR) with a PIT tag (natural and hatchery origin), and additionally, natural origin fish that are systematically sampled and PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., Camacho *et al.* 2017) and at instream PIT tag detection systems (IPTDS; e.g., Orme and Kinzer 2018) throughout the SRB.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Second, we aim to know how many additional tags (or a tagging rate) would be required in adult hatchery fish captured at LGR to estimate pHOS with a CV < 15% at desired or criitcal populations/locations.
 
-```{r cars}
-summary(cars)
-```
+## Task Description
 
-## Including Plots
+The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural-origin Chinook salmon and steelhead into watersheds and populations. However, DABOM could easily be used to generate estimates of hatchery escapement to various watersheds as well, which can be useful for estimating hatchery abundance in natural areas and the proportion of hatchery origin fish on the spawning grounds (i.e., pHOS). Doing so may require a random sample of hatchery fish be PIT tagged at Lower Granite Dam. We propose to determine the tagging rate or number of tags required to achieve unbiased estimates of hatchery escapement and pHOS with appropriate levels of precisions.
 
-You can also embed plots, for example:
+## Assumptions From Scope of Work
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+* What are the appropriate transition probabilities for hatchery fish along model branches? Need to consider harvest of hatchery fish. Presumably transition probabilities are lower for hatchery fish (relative to natural origin fish) due to harvest.
+* Do hatchery fish mimic movement of wild fish? Probably not, due to the location of origin hatcheries and releases.
+* Do some branches contain 0 hatchery fish?
+* Should branches further upstream of LGR automatically include lower transition probabilities due to fishing on the mainstem?
+* Do we need to accomodate time-varying movement probabilities in the simulation?
+* Appropriate detection probabilities for each detection node in the simulation model.
+* We must assume a fraction of hatchery fish will be harvested prior to reaching tributary habitats.
+* How many total hatchery fish escape past LGR? We can run STADEM to determine range of values over the last several years.
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Alternatively, to determine the appropriate level of tagging, we may examine the last several years of DABOM results and focus on the number of tags observed within a few different tributaries and the level of precision of the accompanying escapement estimates, accounting for detection probability. We could then build a relationship to predict the precision based on the number of tags detected and the detection probability. After making some assumptions about the transition probability of hatchery fish to a particular tributary, we can use the estimate of detection probability to predict the precision of the escapement estimate under a variety of tagging rates.
+
+## Deliverable/Outcome
+
+A statistical evaluation of bias/reliability of pHOS estimates that could be achieved for Snake River spring/summer Chinook salmon and steelhead given varying rates of HOR PIT tagging at LGR.
+
+## Additional Considerations and Assumptions
+
+* Is 15% CV for pHOS an appropriate, or even achievable, goal?
+
+## Potential Useful Data Sources
+
+## Simulation Description
+
+
+
+## Literature Cited
+
+Camacho, C.A., K.K. Wright, J. Powell, W.C. Schrader, T. Copeland, M.W. Ackerman, M. Dobos, M.P. Corsi, and M.R. Campbell. 2017. Wild adult steelehad and Chinook salmon abundance and composition at Lower Granite Dam, spawn years 2009-2016. Cumulative Report 2009 through 2016. Idaho Department of Fish and Game Report 17-06.
+
+Orme, R. and R. Kinzer. 2018. Integrated In-stream PIT Tag Detection System Operations and Maintenance; PIT Tag Based Adult Escapement Estimates for Spawn Years 2016 and 2017. Nez Perce Tribe Department of Fisheries Resource Management. Prepared for: Quantititative Consultants, Inc.
