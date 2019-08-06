@@ -1,0 +1,217 @@
+---
+title: "LGR pHOS Precision"
+author: "Kevin See"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    fig_height: 7
+    fig_width: 7
+    smooth_scroll: yes
+    theme: journal
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+csl: /Users/kevin/Dropbox/Bibliography/StyleFiles/ecology.csl
+bibliography:
+- /Users/kevin/Dropbox/Bibliography/Research.bib
+- /Users/kevin/Dropbox/Bibliography/SoftwareCitations.bib
+---
+
+```{r knitrOptions, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+```{r setup}
+# load necessary packages
+library(tidyverse)
+```
+
+# Goal
+
+Our goal is to determine what level of tagging at Lower Granite will allow a reasonable estimate of the proportion of hatchery fish on the spawning grounds (*pHOS*). We will define reasonable as an estimate with a coefficient of variation (CV) of 15% or less. 
+
+# Mathematical Reasoning
+
+The estimate of *pHOS* for any branch *i* can be written as
+
+$$
+\hat{pHOS_i} = \frac{\mu_{x,i}}{\mu_{x,i} + \mu_{y,i}}
+$$
+
+where $\mu_{x,i}$ and $\mu_{y,i}$ are the estimates of hatchery and wild fish who have escaped to spawn in branch $i$. Ignoring the subscript $i$, let $\sigma^2_x$ and $\sigma^2_y$ represent the variance of those estimates. Then we can re-write our equation for *pHOS* as a function of hatchery and wild estimates, assuming they are independent of one another (and assuming multivariate normality):
+
+$$
+\begin{aligned}
+\hat{pHOS} &= \frac{x}{x + y} = 
+  g \left(
+    \begin{array}{c}
+      x \\ 
+      y
+    \end{array}
+    \right) \\
+\\
+g \left(
+  \begin{array}{c}
+    x \\ 
+    y
+  \end{array}
+  \right) &\sim N \left( 
+  \begin{array}{c} 
+    \mu_x \\ 
+    \mu_y 
+    \end{array}, 
+    \left( 
+    \begin{array}{cc}
+      \sigma^2_x & 0 \\
+      0 & \sigma^2_y
+    \end{array}
+      \right)  \right) \\
+\\
+  &\equiv N( \boldsymbol{\mu}, \Sigma)
+\end{aligned}
+$$
+
+Then, via the delta method (or Taylor approximation) [@Doob1935], we can derive the variance of our estimates of *pHOS*:
+
+$$
+\begin{aligned}
+Var(g) &= \left( \frac{ \partial g}{\partial x}, \frac{ \partial g}{\partial y} \right) \Sigma \left( \begin{array}{c} \frac{ \partial g}{\partial x} \\ \frac{ \partial g}{\partial y} \end{array} \right) \\
+\\
+&= \left( \frac{y}{(x+y)^2}, \frac{x}{(x+y)^2} \right) 
+  \left( 
+    \begin{array}{cc}
+      \sigma^2_x & 0 \\
+      0 & \sigma^2_y
+    \end{array}
+  \right) 
+  \left( 
+    \begin{array}{c}
+    \frac{y}{(x+y)^2} \\
+    \frac{x}{(x+y)^2}
+    \end{array}
+  \right)
+\\
+&= \left( \frac{y \sigma^2_x}{(x+y)^2}, \frac{x \sigma^2_y}{(x+y)^2} \right) 
+    \left( 
+    \begin{array}{c}
+    \frac{y}{(x+y)^2} \\
+    \frac{x}{(x+y)^2}
+    \end{array}
+  \right)
+\\
+&= \frac{y^2 \sigma^2_x + x^2 \sigma^2_y}{(x+y)^4},
+\end{aligned}
+$$
+
+so the standard error of *pHOS* is
+
+$$
+SE(g) = \frac{y \sigma_x + x \sigma_y}{(x+y)^2},
+$$
+
+which implies that the CV of *pHOS* can be derived as
+
+$$
+\begin{aligned}
+CV(g) &= \frac{SE(g)}{g} \\
+\\
+&= \frac{y \sigma_x + x \sigma_y}{(x+y)^2} * \frac{(x+y)}{x} \\
+\\
+&= \frac{y \sigma_x + x \sigma_y}{x(x+y)}\\
+\\
+&= \frac{x \sigma_y}{x(x+y)} + \frac{y \sigma_x}{x(x+y)} \\
+\\
+&= \frac{\sigma_y}{(x + y)} + \frac{y}{(x+y)} * \frac{\sigma_x}{x} \\
+\\
+&= \frac{y}{(x+y)} \left( \frac{\sigma_y}{y} + \frac{\sigma_x}{x} \right),
+\end{aligned}
+$$
+
+
+which is a combination of the proportion of wild fish, the CV of estimate of wild fish and the CV of the estimate of hatchery fish. 
+
+# Figures and Results
+
+Now we can predict the CV of *pHOS* for a variety of situations by varying the percent of wild fish in a stream, and the precision (or CV) of our estimates of wild and hatchery fish. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of wild proportions from 5 to 95%. Within each combination of those two variables, we assumed a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS*. These results can be seen in the figure below.
+
+```{r tradeoff_fig}
+# proportion of wild fish in the stream
+propWild = seq(0.05, 0.95, 0.05)
+# CV of the estimate of wild fish
+cvW = c(0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5)
+# CV of the estimate of hatchery fish
+cvH = seq(0, 1.5, 0.05)
+
+crossing(propWild, cvW, cvH) %>%
+  mutate(pHOS = 1 - propWild,
+         CV = propWild * (cvW + cvH)) %>%
+  mutate_at(vars(propWild, cvW),
+            list(as.factor)) %>%
+  ggplot(aes(x = cvH,
+             y = CV,
+             group = propWild,
+             color = as.numeric(as.character(propWild)))) +
+  scale_color_viridis_c(direction = -1,
+                        end = 0.9,
+                        option = 'C') +
+  geom_line() +
+  # geom_point() +
+  geom_hline(yintercept = 0.15,
+             linetype = 2,
+             color = 'black') +
+  # geom_vline(xintercept = 0.15,
+  #            linetype = 2,
+  #            color = 'black') +
+  theme_bw() +
+  theme(legend.position = 'bottom') +
+  facet_wrap(~ cvW,
+             ncol = 3) +
+  # facet_grid(propWild ~ cvW) +
+  labs(x = 'CV of Hatchery Escp.',
+       y = 'CV of pHOS',
+       color = '% Wild')
+```
+
+The general patterns show that as the proportion of wild fish in the stream descreases, the precision of *pHOS* improves for a given precision level of wild and hatchery escapement estimates. Also, as the precision of the wild estimates improves (i.e. smaller CV), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. 
+
+Another way to look at it would be to examine the maximum CV of hatchery estimates that would provide a reasonable estimate of *pHOS* for a given proportion of wild fish and precision of wild escapement. One way to visualize these results in in the plot below.
+
+```{r}
+cvThres = 0.15
+crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
+         # CV of the estimate of wild fish
+         cvW = seq(0, 1, 0.01),
+         # CV of the estimate of hatchery fish
+         cvH = seq(0, 1.5, 0.03)) %>%
+  mutate(pHOS = 1 - propWild,
+         CV = propWild * (cvW + cvH)) %>%
+  group_by(propWild, cvW) %>%
+  summarise(nTot = n(),
+            nPrec = sum(CV <= cvThres),
+            maxHcv = max(cvH[CV <= cvThres])) %>%
+  ungroup() %>%
+  ggplot(aes(x = cvW,
+             y = propWild)) +
+  geom_tile(aes(fill = maxHcv)) +
+  geom_contour(aes(z = maxHcv),
+               color = 'black',
+               bins = 10) +
+  theme_minimal() +
+  geom_text(x = 0.75,
+            y = 0.75,
+            hjust = 'inward',
+            vjust = 'inward',
+            label = paste0('CV > ', cvThres, '%')) +
+  scale_fill_viridis_c(na.value = 'gray90',
+                       begin = 0.2) +
+  labs(x = 'CV of Wild Escp.',
+       y = '% Wild',
+       fill = 'Max CV\nHatch Est.')
+
+```
+
+From this plot, it is clear that as long as the proportion of wild fish in a stream is below a certain threshold (around 10%), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained. 
+
+
+# References
