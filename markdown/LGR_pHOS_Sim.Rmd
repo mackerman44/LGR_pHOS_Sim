@@ -1,28 +1,220 @@
 ---
-title: "LGR pHOS Sim"
-author: "Mike Ackerman, Kevin See, and soon to be others"
-date: "9/5/2019"
+title: "Hatchery Tagging to Estimate pHOS Using IPTDS Detections"
+author: "Kevin See, Mike Ackerman, and soon to be others"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document:
-    toc: true
-    toc_float: true
+    fig_height: 7
+    fig_width: 7
+    smooth_scroll: yes
     theme: journal
+    toc: yes
+    toc_float: true
+  pdf_document:
+    toc: yes
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-rm(list = ls())
+```{r knitrOptions, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 ```
 
-## Objective
+```{r setup}
+# load necessary packages
+library(tidyverse)
+```
 
-First, we want to know what is the coefficient of variation (CV) for current estimates of the proportion of hatchery origin spawners (pHOS) for Chinook salmon and steelhead populations in the Snake River Basin (SRB) given current levels of PIT tagging. Current tagging would include previously tagged fish that arrive at Lower Granite Dam (LGR) with a PIT tag (natural and hatchery origin), and additionally, natural origin fish that are systematically sampled and PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., Camacho *et al.* 2017) and at instream PIT tag detection systems (IPTDS; e.g., Orme and Kinzer 2018) throughout the SRB.
+# Objective
 
-Second, we aim to know how many additional tags (or a tagging rate) would be required in adult hatchery fish captured at LGR to estimate pHOS with a CV < 15% at desired or criitcal populations/locations.
+First, we want to know expected coefficients of variation (CV) for current estimates of the proportion of hatchery origin spawners (*pHOS*) for Chinook salmon and steelhead populations in the Snake River Basin (SRB) given current levels of PIT tagging. Current tagging would include previously tagged fish that arrive at Lower Granite Dam (LGR) with a PIT tag (natural and hatchery origin), and additionally, natural origin fish that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., Camacho *et al.* 2017) and at instream PIT tag detection systems (IPTDS; e.g., Orme and Kinzer 2018) throughout the SRB. Previously PIT tagged hatchery fish would be largely be from hatchery smolt releases throughout the SRB.
 
-## Task Description
+Second, our goal is to determine what level of additional tagging at LGR of adult hatchery fish would allow reasonable estimates of *pHOS*. We will define reasonable as an estimate with a CV of 15% or less. 
 
-The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural-origin Chinook salmon and steelhead into watersheds and populations. However, DABOM could easily be used to generate estimates of hatchery escapement to various watersheds as well, which can be useful for estimating hatchery abundance in natural areas and the proportion of hatchery origin fish on the spawning grounds (i.e., pHOS). Doing so may require a random sample of hatchery fish be PIT tagged at Lower Granite Dam. We propose to determine the tagging rate or number of tags required to achieve unbiased estimates of hatchery escapement and pHOS with appropriate levels of precisions.
+Our evaluation will attempt to focus on desired or critical populations/locations.
+
+# Task Description
+
+The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural origin Chinook salmon into watershed and populations of the SRB. However, DABOM could also be used to generate estimates of hatchery escapement to various watersheds as well, which would be useful for estimating hatchery abundance in natural areas and *pHOS*. Doing so, with reasonable precision, may require a random sample of hatchery fish be PIT tagged at LGR. Here, we aim to determine the tagging rate or number of tags required in hatchery adults at LGR to achieve unbiased estimates of hatchery escapement and *pHOS* with reasonable levels of precision.
+
+# Mathematical Reasoning
+
+The estimate of *pHOS* for any branch *i* can be written as
+
+$$
+\hat{pHOS_i} = \frac{\mu_{x,i}}{\mu_{x,i} + \mu_{y,i}}
+$$
+
+where $\mu_{x,i}$ and $\mu_{y,i}$ are the estimates of hatchery and wild fish who have escaped to spawn in branch $i$. Ignoring the subscript $i$, let $\sigma^2_x$ and $\sigma^2_y$ represent the variance of those estimates. Then we can re-write our equation for *pHOS* as a function of hatchery and wild estimates, assuming they are independent of one another (and assuming multivariate normality):
+
+$$
+\begin{aligned}
+\hat{pHOS} &= \frac{x}{x + y} = 
+  g \left(
+    \begin{array}{c}
+      x \\ 
+      y
+    \end{array}
+    \right) \\
+\\
+g \left(
+  \begin{array}{c}
+    x \\ 
+    y
+  \end{array}
+  \right) &\sim N \left( 
+  \begin{array}{c} 
+    \mu_x \\ 
+    \mu_y 
+    \end{array}, 
+    \left( 
+    \begin{array}{cc}
+      \sigma^2_x & 0 \\
+      0 & \sigma^2_y
+    \end{array}
+      \right)  \right) \\
+\\
+  &\equiv N( \boldsymbol{\mu}, \Sigma)
+\end{aligned}
+$$
+
+Then, via the delta method (or Taylor approximation) [@Doob1935], we can derive the variance of our estimates of *pHOS*:
+
+$$
+\begin{aligned}
+Var(g) &= \left( \frac{ \partial g}{\partial x}, \frac{ \partial g}{\partial y} \right) \Sigma \left( \begin{array}{c} \frac{ \partial g}{\partial x} \\ \frac{ \partial g}{\partial y} \end{array} \right) \\
+\\
+&= \left( \frac{y}{(x+y)^2}, \frac{x}{(x+y)^2} \right) 
+  \left( 
+    \begin{array}{cc}
+      \sigma^2_x & 0 \\
+      0 & \sigma^2_y
+    \end{array}
+  \right) 
+  \left( 
+    \begin{array}{c}
+    \frac{y}{(x+y)^2} \\
+    \frac{x}{(x+y)^2}
+    \end{array}
+  \right)
+\\
+&= \left( \frac{y \sigma^2_x}{(x+y)^2}, \frac{x \sigma^2_y}{(x+y)^2} \right) 
+    \left( 
+    \begin{array}{c}
+    \frac{y}{(x+y)^2} \\
+    \frac{x}{(x+y)^2}
+    \end{array}
+  \right)
+\\
+&= \frac{y^2 \sigma^2_x + x^2 \sigma^2_y}{(x+y)^4},
+\end{aligned}
+$$
+
+so the standard error of *pHOS* is
+
+$$
+SE(g) = \frac{y \sigma_x + x \sigma_y}{(x+y)^2},
+$$
+
+which implies that the CV of *pHOS* can be derived as
+
+$$
+\begin{aligned}
+CV(g) &= \frac{SE(g)}{g} \\
+\\
+&= \frac{y \sigma_x + x \sigma_y}{(x+y)^2} * \frac{(x+y)}{x} \\
+\\
+&= \frac{y \sigma_x + x \sigma_y}{x(x+y)}\\
+\\
+&= \frac{x \sigma_y}{x(x+y)} + \frac{y \sigma_x}{x(x+y)} \\
+\\
+&= \frac{\sigma_y}{(x + y)} + \frac{y}{(x+y)} * \frac{\sigma_x}{x} \\
+\\
+&= \frac{y}{(x+y)} \left( \frac{\sigma_y}{y} + \frac{\sigma_x}{x} \right),
+\end{aligned}
+$$
+
+which is a combination of the proportion of wild fish, the CV of estimate of wild fish and the CV of the estimate of hatchery fish. 
+
+# Figures and Results
+
+Now we can predict the CV of *pHOS* for a variety of situations by varying the percent of wild fish in a stream, and the precision (or CV) of our estimates of wild and hatchery fish. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of wild proportions from 5 to 95%. Within each combination of those two variables, we assumed a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS*. These results can be seen in the figure below.
+
+```{r tradeoff_fig}
+# proportion of wild fish in the stream
+propWild = seq(0.05, 0.95, 0.05)
+# CV of the estimate of wild fish
+cvW = c(0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5)
+# CV of the estimate of hatchery fish
+cvH = seq(0, 1.5, 0.05)
+
+crossing(propWild, cvW, cvH) %>%
+  mutate(pHOS = 1 - propWild,
+         CV = propWild * (cvW + cvH)) %>%
+  mutate_at(vars(propWild, cvW),
+            list(as.factor)) %>%
+  ggplot(aes(x = cvH,
+             y = CV,
+             group = propWild,
+             color = as.numeric(as.character(propWild)))) +
+  scale_color_viridis_c(direction = -1,
+                        end = 0.9,
+                        option = 'C') +
+  geom_line() +
+  # geom_point() +
+  geom_hline(yintercept = 0.15,
+             linetype = 2,
+             color = 'black') +
+  # geom_vline(xintercept = 0.15,
+  #            linetype = 2,
+  #            color = 'black') +
+  theme_bw() +
+  theme(legend.position = 'bottom') +
+  facet_wrap(~ cvW,
+             ncol = 3) +
+  # facet_grid(propWild ~ cvW) +
+  labs(x = 'CV of Hatchery Escp.',
+       y = 'CV of pHOS',
+       color = '% Wild')
+```
+
+The general patterns show that as the proportion of wild fish in the stream descreases, the precision of *pHOS* improves for a given precision level of wild and hatchery escapement estimates. Also, as the precision of the wild estimates improves (i.e. smaller CV), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. 
+
+Another way to look at it would be to examine the maximum CV of hatchery estimates that would provide a reasonable estimate of *pHOS* for a given proportion of wild fish and precision of wild escapement. One way to visualize these results in in the plot below.
+
+```{r}
+cvThres = 0.15
+crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
+         # CV of the estimate of wild fish
+         cvW = seq(0, 1, 0.01),
+         # CV of the estimate of hatchery fish
+         cvH = seq(0, 1.5, 0.03)) %>%
+  mutate(pHOS = 1 - propWild,
+         CV = propWild * (cvW + cvH)) %>%
+  group_by(propWild, cvW) %>%
+  summarise(nTot = n(),
+            nPrec = sum(CV <= cvThres),
+            maxHcv = max(cvH[CV <= cvThres])) %>%
+  ungroup() %>%
+  ggplot(aes(x = cvW,
+             y = propWild)) +
+  geom_tile(aes(fill = maxHcv)) +
+  geom_contour(aes(z = maxHcv),
+               color = 'black',
+               bins = 10) +
+  theme_minimal() +
+  geom_text(x = 0.75,
+            y = 0.75,
+            hjust = 'inward',
+            vjust = 'inward',
+            label = paste0('CV > ', cvThres, '%')) +
+  scale_fill_viridis_c(na.value = 'gray90',
+                       begin = 0.2) +
+  labs(x = 'CV of Wild Escp.',
+       y = '% Wild',
+       fill = 'Max CV\nHatch Est.')
+
+```
+
+From this plot, it is clear that as long as the proportion of wild fish in a stream is below a certain threshold (around 10%), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained. 
 
 ## Assumptions From Scope of Work
 
@@ -36,6 +228,10 @@ The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult
 * How many total hatchery fish escape past LGR? We can run STADEM to determine range of values over the last several years.
 
 Alternatively, to determine the appropriate level of tagging, we may examine the last several years of DABOM results and focus on the number of tags observed within a few different tributaries and the level of precision of the accompanying escapement estimates, accounting for detection probability. We could then build a relationship to predict the precision based on the number of tags detected and the detection probability. After making some assumptions about the transition probability of hatchery fish to a particular tributary, we can use the estimate of detection probability to predict the precision of the escapement estimate under a variety of tagging rates.
+
+## Comments from Lance H. August 5, 2019
+
+I would contact Busack directly, we never saw any specific analysis only Craig’s description of how low a confidence we would have given the low tag rates and detection rates at a single array in a  single year basis.  Also some of the issues we had with Craig’s analysis was his assumption that straying was equal across the landscape, as opposed to straying being more likely near the release points, the effect of transportation on straying, the ability to aggregate information from multiple years to further understand patterns in straying, and a few other things that I don’t have on the top of my head.  
 
 ## Deliverable/Outcome
 
@@ -57,8 +253,10 @@ $$\hat{N}_{j,H} = X_H\psi_{j,H}$$
 $$\hat{N}_{j,W} = X_W\psi_{j,W}$$
 where $X$ is the escapement past LGR and $\psi$ is the movement probability for hatchery ($H$) and wild ($W$) fish, respectively.
 
-## Literature Cited
+# References
 
 Camacho, C.A., K.K. Wright, J. Powell, W.C. Schrader, T. Copeland, M.W. Ackerman, M. Dobos, M.P. Corsi, and M.R. Campbell. 2017. Wild adult steelehad and Chinook salmon abundance and composition at Lower Granite Dam, spawn years 2009-2016. Cumulative Report 2009 through 2016. Idaho Department of Fish and Game Report 17-06.
+
+Doob, J.L. 1935. The limiting distributions of certain statistics. The Annals of Mathematical Statistics 6:160-169.
 
 Orme, R. and R. Kinzer. 2018. Integrated In-stream PIT Tag Detection System Operations and Maintenance; PIT Tag Based Adult Escapement Estimates for Spawn Years 2016 and 2017. Nez Perce Tribe Department of Fisheries Resource Management. Prepared for: Quantititative Consultants, Inc.
