@@ -5,11 +5,6 @@ author:
   - Mike Ackerman^[Biomark, Inc.]
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-  pdf_document:
-    fig_caption: yes
-    fig_height: 6
-    fig_width: 7
-    toc: yes
   html_document:
     fig_caption: yes
     fig_height: 8
@@ -19,32 +14,51 @@ output:
     toc_float:
       collapsed: yes
       smooth_scroll: yes
+  word_document:
+    fig_caption: yes
+    fig_width: 7
+    fig_height: 7
+    toc: yes
+  pdf_document:
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    toc: yes
 #bibliography: ../references/bibliography.bib
 #csl: ../references/american-fisheries-society.csl
 ---
 
-```{r knitrOptions, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+```{r setUp, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+library(knitr)
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
-```
 
-```{r setup}
+library(captioner)
+tab_nums = captioner(prefix = 'Table')
+fig_nums = captioner()
+
+library(pander)
+# options for table formatting
+panderOptions('big.mark', ',')
+panderOptions('keep.trailing.zeros', FALSE)
+panderOptions('table.split.table', Inf)
+
 # load necessary packages
 library(tidyverse)
 ```
 
-# Objective
+# Introduction
 
-First, we want to know expected coefficients of variation (CV) for current estimates of the proportion of hatchery origin spawners (*pHOS*) for Chinook salmon and steelhead populations in the Snake River Basin (SRB) given current levels of PIT tagging. Current tagging would include previously tagged fish that arrive at Lower Granite Dam (LGR) with a PIT tag (natural and hatchery origin), and additionally, natural origin fish that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., Camacho *et al.* 2017) and at instream PIT tag detection systems (IPTDS; e.g., Orme and Kinzer 2018) throughout the SRB. Previously PIT tagged hatchery fish would be largely be from hatchery smolt releases throughout the SRB.
+The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural origin Chinook salmon into watershed and populations of the Snake River Basin (SRB). Escapement estimates are made based on the tagging of a random sample of adults at Lower Granite Dam (LGR) and the subsequent detection of those adults at instream PIT tag detections systems (IPTDS) throughout the basin. DABOM could also be used to generate estimates of hatchery escapement to various locations as well, which would be useful for estimating hatchery abundance in natural areas and the proportion of hatchery origin spawners (*pHOS*). Doing so, with reasonable precision, may require a random sample of hatchery fish be PIT tagged at LGR. Here, we aim to determine the tagging rate or number of tags required in hatchery adults at LGR to achieve unbiased estimates of hatchery escapement and *pHOS* with reasonable levels of precision.
 
-Second, our goal is to determine what level of additional tagging at LGR of adult hatchery fish would allow reasonable estimates of *pHOS*. We will define reasonable as an estimate with a CV of 15% or less. 
+## Objective
 
-Our evaluation will attempt to focus on desired or critical populations/locations.
+First, we want to know expected coefficients of variation (CV) for current estimates of *pHOS* that could be generated for Chinook salmon and steelhead populations in the SRB given current levels of PIT tagging. Current tagging would include previously tagged fish that arrive at LGR with a PIT tag (natural and hatchery origin), and additionally, natural origin fish that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., Camacho *et al.* 2017) and at IPTDS (e.g., Orme and Kinzer 2018) throughout the SRB. Previously PIT tagged hatchery fish would largely be from hatchery smolt releases.
 
-# Task Description
+Second, our goal is to determine what level of additional tagging at LGR of adult hatchery fish would allow reasonable estimates of *pHOS*. We will define reasonable as an estimate with a CV of 15% or less. Our evaluation will attempt to focus on desired or critical populations/locations.
 
-The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural origin Chinook salmon into watershed and populations of the SRB. However, DABOM could also be used to generate estimates of hatchery escapement to various watersheds as well, which would be useful for estimating hatchery abundance in natural areas and *pHOS*. Doing so, with reasonable precision, may require a random sample of hatchery fish be PIT tagged at LGR. Here, we aim to determine the tagging rate or number of tags required in hatchery adults at LGR to achieve unbiased estimates of hatchery escapement and *pHOS* with reasonable levels of precision.
+# Methods
 
-# Mathematical Reasoning
+## Mathematical Reasoning
 
 The estimate of *pHOS* for any branch *i* can be written as
 
