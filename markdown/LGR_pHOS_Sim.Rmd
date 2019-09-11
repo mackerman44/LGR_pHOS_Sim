@@ -1,17 +1,26 @@
 ---
 title: "Hatchery Tagging to Estimate pHOS Using IPTDS Detections"
-author: "Kevin See, Mike Ackerman, and soon to be others"
+author:
+  - Kevin See^[Biomark, Inc.]
+  - Mike Ackerman^[Biomark, Inc.]
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
-output: 
-  html_document:
-    fig_height: 7
-    fig_width: 7
-    smooth_scroll: yes
-    theme: journal
-    toc: yes
-    toc_float: true
+output:
   pdf_document:
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
     toc: yes
+  html_document:
+    fig_caption: yes
+    fig_height: 8
+    fig_width: 8
+    theme: cerulean
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+#bibliography: ../references/bibliography.bib
+#csl: ../references/american-fisheries-society.csl
 ---
 
 ```{r knitrOptions, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
