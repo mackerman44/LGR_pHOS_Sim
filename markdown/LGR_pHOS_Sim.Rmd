@@ -58,40 +58,42 @@ Second, our goal is to determine what level of additional tagging at LGR of adul
 
 # Methods
 
-## Mathematical Reasoning
+## Simulation
 
-The estimate of *pHOS* for any branch *i* can be written as
+### Mathematical Reasoning
+
+The estimate of *pHOS* any any branch *i* in the DABOM model can be written as
 
 $$
-\hat{pHOS_i} = \frac{\mu_{x,i}}{\mu_{x,i} + \mu_{y,i}}
+\hat{pHOS_i} = \frac{\mu_{h,i}}{\mu_{h,i} + \mu_{w,i}}
 $$
 
-where $\mu_{x,i}$ and $\mu_{y,i}$ are the estimates of hatchery and wild fish who have escaped to spawn in branch $i$. Ignoring the subscript $i$, let $\sigma^2_x$ and $\sigma^2_y$ represent the variance of those estimates. Then we can re-write our equation for *pHOS* as a function of hatchery and wild estimates, assuming they are independent of one another (and assuming multivariate normality):
+where $\mu_{h,i}$ and $\mu_{w,i}$ are the estimates of hatchery and wild fish who have escaped to spawn in branch $i$. Ignoring the subscript $i$, let $\sigma^2_h$ and $\sigma^2_w$ represent the variance of those estimates. Then we can re-write our equation for *pHOS* as a function of hatchery and wild escapement estimates, assuming they are independent of one another (and assuming multivariate normality):
 
 $$
 \begin{aligned}
-\hat{pHOS} &= \frac{x}{x + y} = 
+\hat{pHOS} &= \frac{h}{h + w} = 
   g \left(
     \begin{array}{c}
-      x \\ 
-      y
+      h \\ 
+      w
     \end{array}
     \right) \\
 \\
 g \left(
   \begin{array}{c}
-    x \\ 
-    y
+    h \\ 
+    w
   \end{array}
   \right) &\sim N \left( 
   \begin{array}{c} 
-    \mu_x \\ 
-    \mu_y 
+    \mu_h \\ 
+    \mu_w 
     \end{array}, 
     \left( 
     \begin{array}{cc}
-      \sigma^2_x & 0 \\
-      0 & \sigma^2_y
+      \sigma^2_h & 0 \\
+      0 & \sigma^2_w
     \end{array}
       \right)  \right) \\
 \\
@@ -103,38 +105,38 @@ Then, via the delta method (or Taylor approximation) [@Doob1935], we can derive 
 
 $$
 \begin{aligned}
-Var(g) &= \left( \frac{ \partial g}{\partial x}, \frac{ \partial g}{\partial y} \right) \Sigma \left( \begin{array}{c} \frac{ \partial g}{\partial x} \\ \frac{ \partial g}{\partial y} \end{array} \right) \\
+Var(g) &= \left( \frac{ \partial g}{\partial h}, \frac{ \partial g}{\partial w} \right) \Sigma \left( \begin{array}{c} \frac{ \partial g}{\partial h} \\ \frac{ \partial g}{\partial w} \end{array} \right) \\
 \\
-&= \left( \frac{y}{(x+y)^2}, \frac{x}{(x+y)^2} \right) 
+&= \left( \frac{w}{(h+w)^2}, \frac{h}{(h+w)^2} \right) 
   \left( 
     \begin{array}{cc}
-      \sigma^2_x & 0 \\
-      0 & \sigma^2_y
+      \sigma^2_h & 0 \\
+      0 & \sigma^2_w
     \end{array}
   \right) 
   \left( 
     \begin{array}{c}
-    \frac{y}{(x+y)^2} \\
-    \frac{x}{(x+y)^2}
+    \frac{w}{(h+w)^2} \\
+    \frac{h}{(h+w)^2}
     \end{array}
   \right)
 \\
-&= \left( \frac{y \sigma^2_x}{(x+y)^2}, \frac{x \sigma^2_y}{(x+y)^2} \right) 
+&= \left( \frac{w \sigma^2_h}{(h+w)^2}, \frac{h \sigma^2_w}{(h+w)^2} \right) 
     \left( 
     \begin{array}{c}
-    \frac{y}{(x+y)^2} \\
-    \frac{x}{(x+y)^2}
+    \frac{w}{(h+w)^2} \\
+    \frac{h}{(h+w)^2}
     \end{array}
   \right)
 \\
-&= \frac{y^2 \sigma^2_x + x^2 \sigma^2_y}{(x+y)^4},
+&= \frac{w^2 \sigma^2_h + h^2 \sigma^2_w}{(h+w)^4},
 \end{aligned}
 $$
 
 so the standard error of *pHOS* is
 
 $$
-SE(g) = \frac{y \sigma_x + x \sigma_y}{(x+y)^2},
+SE(g) = \frac{w \sigma_h + h \sigma_w}{(h+w)^2},
 $$
 
 which implies that the CV of *pHOS* can be derived as
@@ -143,23 +145,27 @@ $$
 \begin{aligned}
 CV(g) &= \frac{SE(g)}{g} \\
 \\
-&= \frac{y \sigma_x + x \sigma_y}{(x+y)^2} * \frac{(x+y)}{x} \\
+&= \frac{w \sigma_h + h \sigma_w}{(h+w)^2} * \frac{(h+w)}{h} \\
 \\
-&= \frac{y \sigma_x + x \sigma_y}{x(x+y)}\\
+&= \frac{w \sigma_h + h \sigma_w}{h(h+w)}\\
 \\
-&= \frac{x \sigma_y}{x(x+y)} + \frac{y \sigma_x}{x(x+y)} \\
+&= \frac{h \sigma_w}{h(h+w)} + \frac{w \sigma_h}{h(h+w)} \\
 \\
-&= \frac{\sigma_y}{(x + y)} + \frac{y}{(x+y)} * \frac{\sigma_x}{x} \\
+&= \frac{\sigma_w}{(h + w)} + \frac{w}{(h+w)} * \frac{\sigma_h}{h} \\
 \\
-&= \frac{y}{(x+y)} \left( \frac{\sigma_y}{y} + \frac{\sigma_x}{x} \right),
+&= \frac{w}{(h+w)} \left( \frac{\sigma_w}{w} + \frac{\sigma_h}{h} \right),
 \end{aligned}
 $$
 
-which is a combination of the proportion of wild fish, the CV of estimate of wild fish and the CV of the estimate of hatchery fish. 
+which is a combination of the proportion of wild fish, the CV of estimate of wild fish and the CV of the estimate of hatchery fish.
 
-# Figures and Results
+In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch *i* by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch *i*. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
 
-Now we can predict the CV of *pHOS* for a variety of situations by varying the percent of wild fish in a stream, and the precision (or CV) of our estimates of wild and hatchery fish. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of wild proportions from 5 to 95%. Within each combination of those two variables, we assumed a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS*. These results can be seen in the figure below.
+# Results
+
+## Simulation
+
+We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and proportion wild (i.e., inverse of *pHOS*). The results are shown in *Figure X*.
 
 ```{r tradeoff_fig}
 # proportion of wild fish in the stream
