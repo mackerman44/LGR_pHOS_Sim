@@ -5,6 +5,11 @@ author:
   - Mike Ackerman^[Biomark, Inc.]
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    toc: yes
   html_document:
     fig_caption: yes
     fig_height: 8
@@ -19,11 +24,7 @@ output:
     fig_width: 7
     fig_height: 7
     toc: yes
-  pdf_document:
-    fig_caption: yes
-    fig_height: 6
-    fig_width: 7
-    toc: yes
+
 #bibliography: ../references/bibliography.bib
 #csl: ../references/american-fisheries-society.csl
 ---
@@ -161,13 +162,20 @@ which is a combination of the proportion of wild fish, the CV of estimate of wil
 
 In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch *i* by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch *i*. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
 
+```{r captions}
+
+tradeoff_fig = fig_nums('tradeoff_fig',
+                        "Predictions of the CV of pHOS across ranges of the CV hatchery and wild escapement estimates and the proportion wild (inverse of pHOS). The horizontal dotted line depicts a CV of 15%.")
+
+```
+
 # Results
 
 ## Simulation
 
-We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and proportion wild (i.e., inverse of *pHOS*). The results are shown in *Figure X*.
+We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and proportion wild (i.e., inverse of *pHOS*). The results are shown in `r fig_nums('tradeoff_fig', display = 'c')`.
 
-```{r tradeoff_fig}
+```{r tradeoff_fig, fig.cap = fig_nums('tradeoff_fig')}
 # proportion of wild fish in the stream
 propWild = seq(0.05, 0.95, 0.05)
 # CV of the estimate of wild fish
