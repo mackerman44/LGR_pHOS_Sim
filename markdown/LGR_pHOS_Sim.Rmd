@@ -49,21 +49,67 @@ library(tidyverse)
 
 # Introduction
 
-The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural origin Chinook salmon into watershed and populations of the Snake River Basin (SRB). Escapement estimates are made based on the tagging of a random sample of adults at Lower Granite Dam (LGR) and the subsequent detection of those adults at instream PIT tag detections systems (IPTDS) throughout the basin. DABOM could also be used to generate estimates of hatchery escapement to various locations as well, which would be useful for estimating hatchery abundance in natural areas and the proportion of hatchery origin spawners (*pHOS*). Doing so, with reasonable precision, may require a random sample of hatchery fish be PIT tagged at LGR. Here, we aim to determine the tagging rate or number of tags required in hatchery adults at LGR to achieve unbiased estimates of hatchery escapement and *pHOS* with reasonable levels of precision.
+The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural origin spring/summer Chinook salmon and steelhead into watersheds and populations of the of the Snake River Basin (SRB). Escapement estimates are made based on the tagging of a random sample of adults at Lower Granite Dam (LGR) and the subsequent detection of those adults at instream PIT tag detection systems (IPTDS) throughout the SRB. DABOM could also be used to generate estimates of hatchery escapement to various locations as well, which would be useful for estimating hatchery abundance in natural areas and the proportion of hatchery origin spawners (*pHOS*). Doing so, with reasonable precision, may require a random sample (or similar) of adult hatchery fish also be PIT tagged at LGR. Here, we wish to determine expected levels of precision for *pHOS* given current levels of PIT tagging in the SRB, and further, determine the additional tagging, expressed as a tagging rate or number of tags, required in hatchery adults at LGR to achieve unbiased estimates of hatchery escapement and *pHOS* with reasonable levels of precision (e.g, coefficient of variaion [CV] of $\leq$ 15%).
 
-## Objective
+Simultaneously estimating escapement of hatchery-origin (HOR) and natural-origin (NOR) adults to IPTDS locations throughout the SRB based on PIT tagging at LGR is a trivial extension of the DABOM model. Factually, the previous and existing instance of the DABOM model was developed for the upper Columbia River (upstream of Priest Rapids Dam), which capitalized on the same sampling assumptions applied to natural-origin escapement past LGR. However, for multiple reasons (ergonomic limitations at LGR, political considerations, as supposed ethical concerns), PIT tagging of HOR adults at LGR has been precluded. Notably, given trap operations at LGR, HOR adults are trapped, anesthetized, weighed, and measured at the same rate as NOR - a function of "trap rate" constituting a fraction of every hour wherein adults in the ladder are bypassed to the trap. Thus, it is arguable that implantation of a PIT tag constitutes a significantly greater offense to captured adults.
 
-First, we want to know expected coefficients of variation (CV) for current estimates of *pHOS* that could be generated for Chinook salmon and steelhead populations in the SRB given current levels of PIT tagging. Current tagging would include previously tagged fish that arrive at LGR with a PIT tag (natural and hatchery origin), and additionally, natural origin fish that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., Camacho *et al.* 2017) and at IPTDS (e.g., Orme and Kinzer 2018) throughout the SRB. Previously PIT tagged hatchery fish would largely be from hatchery smolt releases.
+Unbeknownst to the proposal for this evaluation, a condition of the Hatchery and Genetics Management Plan (HGMP) required the operation of IDFG HOR steelhead production to conduct a study on HOR contirbution to NOR populations. Thusly, IDFG and NOAA Fisheries endeavored to compile and estimate straying of HOR steelhead upstream of LGR.
 
-Second, our goal is to determine what level of additional tagging at LGR of adult hatchery fish would allow reasonable estimates of *pHOS*. We will define reasonable as an estimate with a CV of 15% or less. Our evaluation will attempt to focus on desired or critical populations/locations.
+This document seeks to begin collaboration between IDFG, NOAA Fisheries, and Biomark to:
+
+1. Capitalize on existing progress on stray rates, and
+2. Advance statistical modeling to determine whether *pHOS* estimates can be reliablly prosecuted by adult HOR PIT tagging at LGR.
+
+In its developed form, the DABOM model includes escapement for HOR and NOR adult salmonids. Demonstrably, the DABOM is fully functional for multiple populations of spring/summer chinook salmon and steelhead upstream of LGR. The performance of DABOM in the upper Columbia River (above Priest Rapids Dam) strongly suggests that the model can be reliably extended to HOR.
+
+This document will be included as part of a Final (Annual) Progress Report for Bonneville Power Administration (BPA) project 2019-006-00.
+
+## Objectives
+
+This assessment aims to determine the sampling/PIT-tagging number/rate at LGR necessary to determine *pHOS* across populations of spring/summer Chinook salmon and steelhead estimated by the DABOM model (supported by the operation of IPTDS supported by BPA project 2018-002-00), within "reasonable" statistical parameters (e.g., CV $\leq$ 15%).
+
+First, we want to know expected coefficients of variation (CV) for current estimates of *pHOS* that could be generated for Chinook salmon and steelhead populations in the SRB given current levels of PIT tagging. Current tagging would include previously tagged fish that arrive at LGR with a PIT tag (NOR and HOR), and additionally, ad-intact fish that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., Camacho *et al.* 2017) and at IPTDS (e.g., Orme and Kinzer 2018) throughout the SRB. Previously PIT tagged hatchery fish would largely be from hatchery smolt releases.
+
+Importantly, currently three "origins" of adult Chinook salmon and steelhead are identified at LGR and include wild (W), hatchery ad-intact (HNC), and hatchery ad-clipped (H). NOR only includes W adults; NOR includes both the HNC and H groups. Currently, all ad-intact fish are systematically PIT tagged at LGR which includes both the W and HNC origins i.e., some HOR adults are currently tagged at LGR, but we need to consider differential tagging rates between HNC and H adults.
+
+Second, our goal is to determine what levels of additional tagging at LGR of adult HOR fish would allow reasonable estimates of *pHOS*. We will define reasonable as an estimate with a CV of 15% or less. Our evaluation may (or may not) attempt to focus on desired or critical populations/locations.
 
 # Methods
 
-## Simulation
+## Brainstorming (Delete Later)
 
-### Mathematical Reasoning
+Kevin, how do we want to approach this? One possible structure is to include 3 potential sections in the Methods and Results perhaps including:
 
-The estimate of *pHOS* any any branch *i* in the DABOM model can be written as
+1. The mathematical reasoning on how to calculate *pHOS* for any given branch *i* and their CV using the DABOM framework
+2. Expected CVs for *pHOS* estimates given current PIT tagging rates in the SRB
+3. Additional adult HOR PIT tagging that would be needed at LGR to achieve CVs of 15% or less, perhaps at target locations/populations
+
+### Methods Section 2
+
+For section 2, we need to make a decision on whether to account for PIT tagged HOR juvenile releases. HOR juvenile tagging fractions $\phi$ can differ by release group $g$, year $y$, and mark type $m$ (HNC or H). For any given return year, you perhaps need to account for several (perhaps 10 - 100) different tagging fractions. This could be compiled from IDFG, I'm just uncertain how readily available that information is. In many cases, these tagging fractions $\phi$, can be small, but in particular, and perhaps important locations, the tagging fraction can be high (e.g., South Fork Clearwater steelhead supplementation releases). Although, for a given DABOM branch $i$ you likely only need to account for a handful of tagging fractions $\phi_{gym}$, it is still useful to have those for all releases.
+
+Then, for returning adults (tags), observations at branch $i$ could be expanded by the tagging fraction $\phi$ and detection probability $\psi$ for each combination of release group $g$, year $y$, and mark type $m$ (HNC or H), where 
+
+$$
+\mu_{hi} = \frac{n_{higym}}{\phi_{higym}*\psi_{higym}}
+$$
+except sum over all combinations of $g$, $y$, and $m$. Oh geez, help me out with my notation here!
+
+For this above scenario, we might also account for the newly tagged HNC adults at LGR as well (i.e., all ad-intact adults captured at the trap are PIT tagged including HNC). Note, we don't need to account for differential survial among groups; we are only interested in tagging fractions withing groups, as long as we are willing to assume equal survival between tagged and untagged fish within groups.
+
+But then what's the next step here? To do an empirical evaluation we would then need to do a PTAGIS query of HOR observations across SRB IPTDS and be able to 'assign' each observation back to a release 'group'. Not a trivial task. And going down this path seems to require HOR runs of DABOM. 
+
+### Methods Section 3
+
+Now we need to figure out, depending on results from Section #2, what level of additional tagging (number or rate) is needed for HOR adults at LGR to achieve reasonable CVs for estimates of *pHOS*. This additional tagging would likely be targeted at just ad-clipped (H) fish. In this case, we could also easily calculate the tagging fraction by species x release group x brood year for adults except in this case we can ingore both $g$ and $y$ because those should be equal across groups! i.e., because we are tagging at LGR. However, we do need to account for differential tagging fractions between H and HNC, however, HNC could be set equal to the W tagging fraction (i.e., all ad-intact fish are tagged at the same rate). The final consideration to make is whether we need a time varying component in tagging fractions for juveniles and adults. I'm thinking we make a simplifying assumption here and ignore a time-varying component for this exercise.
+
+Here's where I need help. How do we than calculate the 'overall or global' tagging fraction for a group i.e., the tagging fraction after considering juvenile and adult tagging for a given release group? And then use that to calculate abundance for that release group? And then sum across groups? Are tagging fractions for a group a summation across life stage tagging fractions? Need to clean up some of my notation and thoughts here?
+
+In the end, for Methods section #3, perhaps it makes most sense to ignore juvenile PIT tagging fractions and simply focus on adult tagging at LGR due to 1) low juvenile tag rates and 2) complexity of problem. 
+
+## Simulation (and Mathematical Reasoning)
+
+First, we demonstrate how an estimate of *pHOS* can be generated under the DABOM framework. The estimate of *pHOS* at any branch *i* in the DABOM model can be written as
 
 $$
 \hat{pHOS_i} = \frac{\mu_{h,i}}{\mu_{h,i} + \mu_{w,i}}
@@ -171,7 +217,7 @@ tradeoff_fig = fig_nums('tradeoff_fig',
 
 # Results
 
-## Simulation
+## Simulation (and Mathematical Reasoning)
 
 We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and proportion wild (i.e., inverse of *pHOS*). The results are shown in `r fig_nums('tradeoff_fig', display = 'c')`.
 
@@ -269,6 +315,12 @@ Alternatively, to determine the appropriate level of tagging, we may examine the
 ## Comments from Lance H. August 5, 2019
 
 I would contact Busack directly, we never saw any specific analysis only Craig’s description of how low a confidence we would have given the low tag rates and detection rates at a single array in a  single year basis.  Also some of the issues we had with Craig’s analysis was his assumption that straying was equal across the landscape, as opposed to straying being more likely near the release points, the effect of transportation on straying, the ability to aggregate information from multiple years to further understand patterns in straying, and a few other things that I don’t have on the top of my head.  
+
+## Comment from Bill S. October 8, 2019
+
+We need to account for the fact that adult hatchery fish at LGR come in two flavors: ad-intact and ad-clipped. Darren currently PIT-tags all ad-intact fish that are trapped, both hathcery and wild (that don't have a previous PIT tag). So it seems that our major objective #2 (how many additional hatchery adults at LGR need to be PIT tagged) should focus on ad-clipped adults only.
+
+In other words, we need to account for differential tagging rates between ad-clipped and ad-intact (HNC) when estimating pHOS for objective #2.
 
 ## Deliverable/Outcome
 
