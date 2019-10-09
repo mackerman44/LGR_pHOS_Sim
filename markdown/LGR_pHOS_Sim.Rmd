@@ -99,6 +99,14 @@ For this above scenario, we might also account for the newly tagged HNC adults a
 
 But then what's the next step here? To do an empirical evaluation we would then need to do a PTAGIS query of HOR observations across SRB IPTDS and be able to 'assign' each observation back to a release 'group'. Not a trivial task. And going down this path seems to require HOR runs of DABOM. 
 
+Maybe it makes sense to include Craig Busack's demonstration here to show that, even given high detection probabilities, it may be difficult to observe HOR fish at a given location if tagging rates and number of fish are low, which could lead to biased estimates of *pHOS* at given locations if only juvenile observations are used.
+
+NEXT STEPS:
+
+1. Get PIT tagging fractions/numbers by hatchery x release group x year x mark type (H vs HNC) from IDFG.
+2. Identify 2-3 locations each for Chinook and steelhead to evaluate?
+3. Run PTAGIS query for those locations and examing HOR observations; can we track down release 'groups' for each observation?
+
 ### Methods Section 3
 
 Now we need to figure out, depending on results from Section #2, what level of additional tagging (number or rate) is needed for HOR adults at LGR to achieve reasonable CVs for estimates of *pHOS*. This additional tagging would likely be targeted at just ad-clipped (H) fish. In this case, we could also easily calculate the tagging fraction by species x release group x brood year for adults except in this case we can ingore both $g$ and $y$ because those should be equal across groups! i.e., because we are tagging at LGR. However, we do need to account for differential tagging fractions between H and HNC, however, HNC could be set equal to the W tagging fraction (i.e., all ad-intact fish are tagged at the same rate). The final consideration to make is whether we need a time varying component in tagging fractions for juveniles and adults. I'm thinking we make a simplifying assumption here and ignore a time-varying component for this exercise.
