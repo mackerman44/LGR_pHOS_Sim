@@ -74,6 +74,25 @@ Importantly, currently three "origins" of adult Chinook salmon and steelhead are
 
 Second, our goal is to determine what levels of additional tagging at LGR of adult HOR fish would allow reasonable estimates of *pHOS*. We will define reasonable as an estimate with a CV of 15% or less. Our evaluation may (or may not) attempt to focus on desired or critical populations/locations.
 
+## Scenarios from e-mail to IDFG 10-10-2019
+
+I had a chance to discuss this a little further with Chris and Kevin, yesterday. It seems like we’re headed towards breaking this evaluation down into 3 chunks:
+
+1.	Expected precision (CV) of pHOS estimates given current PIT tagging rates of hatchery smolt releases.
+
+This would be the idea of estimating the hatchery escapement to a given branch in DABOM using a tag expansion approach (observations / (detection efficiency * tagging fraction)) with uncertainty and combining that with estimates of wild escapement from DABOM to estimate pHOS with uncertainty. Note: DABOM requires a random sample at LGR, and thus, we can’t generate a hatchery abundance estimate to a DABOM node using juvenile tagging. This, of course, will require us to compile some information on tagging fractions in hatchery smolt releases (by release group x year x mark type [HNC vs. H]). Who is the current keeper of that information that we could work to get the necessary data? Also, to keep the scope reasonable, we’d like to limit this to 3-5 DABOM nodes or locations, per species, that either are representative of many scenarios or of particular management interest. One’s that immediately come to mind are SF Clearwater STHD, Big Creek STHD, SFSR Chinook. Anybody have others they’d immediately like to add; otherwise I’ll just pick out some locations.
+
+2.	Expected precision (CV) of pHOS estimates given current PIT tagging rates of adults (W and HNC) at LGR.
+
+This would leverage that we already PIT tag all ad-intact (W and HNC) adults at LGR at the same rate. Kevin is just going to do some re-runs of DABOM for the HNC individuals to get escapement estimates for HNC, which we can then easily combine with the W DABOM estimates and get pHOS with uncertainty. Of course, this ignores all ad-clipped H fish, but could be interesting for particular supplementation locations. Unfortunately, it seems there’s no easy way to combine juvenile smolt release tag information (tag expansion) and adult tag (LGR abundance x movement probability) information and so scenarios #1 and #2 need to be done separately.
+
+3.	Expected precision (CV) of pHOS estimates by adding theoretical tagging of ad-clipped hatchery adults at LGR (ignoring juvenile smolt releases).
+
+This would be a simulation exercise where we evaluate a range of tag rates/numbers for H adults at LGR and estimate escapement of W, H, and HNC adults to a given DABOM branch, then combine H and HNC abundance to estimate pHOS with uncertainty.
+
+How does that sound? If that works for folks Kevin will start working on scenario 2 as time allows, and I’ll work with IDFG to start compiling the tagging fraction and location information for 1.
+
+
 # Methods
 
 ## Brainstorming (Delete Later)
