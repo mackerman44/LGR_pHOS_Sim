@@ -1,0 +1,163 @@
+SiteID,SiteType,SiteName,Node,ESU_DPS,MPG,POP_NAME,TRT
+18M,INT,Eighteenmile Creek,HECA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+18M,INT,Eighteenmile Creek,HECB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+ACB,INT,Asotin Cr. at Cloverland Brdg.,ACBB0,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+ACB,INT,Asotin Cr. at Cloverland Brdg.,ACBA0,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+ACM,INT,Asotin Creek near mouth,ACMA0,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+ACM,INT,Asotin Creek near mouth,ACMB0,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+AFC,INT,No./So. Fk Asotin Cr. Jct. ISA,AFCA0,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+AFC,INT,No./So. Fk Asotin Cr. Jct. ISA,AFCB0,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+AGC,INT,"Agency Creek, Lemhi R. Basin",AGCA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+AGC,INT,"Agency Creek, Lemhi R. Basin",AGCB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+BHC,INT,Bohannon Creek Lemhi R Basin,BHCA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+BHC,INT,Bohannon Creek Lemhi R Basin,BHCB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+BRC,INT,Bear Valley Adult Video Weir,BRC,Snake River Basin Steelhead DPS,Salmon River,Middle Fork Salmon River upper mainstem,MFUMA-s
+BSC,INT,Big Sheep Creek ISA at km 6,BSCA0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+BSC,INT,Big Sheep Creek ISA at km 6,BSCB0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+BTL,INT,"Lower Big Timber, Lemhi Basin",BTLA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+BTL,INT,"Lower Big Timber, Lemhi Basin",BTLB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+BTM,INT,Big Timber Creek - Middle,BTMA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+BTM,INT,Big Timber Creek - Middle,BTMB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+BTU,INT,Big Timber Creek - Upper,BTUA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+BTU,INT,Big Timber Creek - Upper,BTUB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+CAC,INT,Canyon Creek ISA @ km 1,CACA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+CAC,INT,Canyon Creek ISA @ km 1,CACB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+CCA,INT,Lower Charley Creek ISA,CCAB0,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+CCA,INT,Lower Charley Creek ISA,CCAA0,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+CCW,INT,Catherine Creek Ladder/Weir,CCWA0,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River upper mainstem,GRUMA-s
+CCW,INT,Catherine Creek Ladder/Weir,CCWB0,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River upper mainstem,GRUMA-s
+CLC,INT,Clear Creek near Kooskia NFH,CLC,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+CMP,INT,Camp Creek at rkm 2 - Imnaha,CMPA0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+CMP,INT,Camp Creek at rkm 2 - Imnaha,CMPB0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+COC,INT,Cow Creek ISA @ stream mouth,COCA0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+COC,INT,Cow Creek ISA @ stream mouth,COCB0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+CRC,INT,"Carmen Creek, Salmon R. Basin",CRCA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+CRC,INT,"Carmen Creek, Salmon R. Basin",CRCB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+CRT,INT,Crooked River Satellite Fac.,SC2A0,Snake River Basin Steelhead DPS,Clearwater River,South Fork Clearwater River,CRSFC-s
+CZY,INT,Crazyman Creek at 0.6 km,CZYA0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+CZY,INT,Crazyman Creek at 0.6 km,CZYB0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+ESS,INT,EFSF Salmon River at Parks Cr.,ESSA0,Snake River Basin Steelhead DPS,Salmon River,South Fork Salmon River,SFMAI-s
+ESS,INT,EFSF Salmon River at Parks Cr.,ESSB0,Snake River Basin Steelhead DPS,Salmon River,South Fork Salmon River,SFMAI-s
+HEC,INT,Hawley Cr/18 Mile Cr Array,HECA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+HEC,INT,Hawley Cr/18 Mile Cr Array,HECB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+HLM,INT,Potlatch River near Helmer,HLMA0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+HLM,INT,Potlatch River near Helmer,HLMB0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+HYC,INT,Hayden Creek In-stream Array,HYCB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+HYC,INT,Hayden Creek In-stream Array,HYCA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+IML,INT,Imnaha River Weir Adult Ladder,IMLA0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IML,INT,Imnaha River Weir Adult Ladder,IMLB0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IR1,INT,Lower Imnaha River ISA @ km 7,IR1,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IR2,INT,Lower Imnaha River ISA @ km 10,IR2,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IR3,INT,Upper Imnaha River ISA @ km 41,IR3A0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IR3,INT,Upper Imnaha River ISA @ km 41,IR3B0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IR4,INT,Imnaha Weir Downstream Array,IR4A0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IR4,INT,Imnaha Weir Downstream Array,IR4B0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IR5,INT,Imnaha Weir Upstream Array,IR5A0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IR5,INT,Imnaha Weir Upstream Array,IR5B0,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+JOC,INT,Joseph Creek ISA @ km 3,JOCA0,Snake River Basin Steelhead DPS,Grande Ronde River,Joseph Creek,GRJOS-s
+JOC,INT,Joseph Creek ISA @ km 3,JOCB0,Snake River Basin Steelhead DPS,Grande Ronde River,Joseph Creek,GRJOS-s
+JUL,INT,Potlatch River near Juliaetta,JUL,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+KEN,INT,Kenney Creek In-stream Arrays,KENA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+KEN,INT,Kenney Creek In-stream Arrays,KENB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+KHS,INT,Big Bear Cr. @ Kendrick HS,KHSA0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+KHS,INT,Big Bear Cr. @ Kendrick HS,KHSB0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+KRS,INT,SF Salmon River at Krassel Cr.,KRS,Snake River Basin Steelhead DPS,Salmon River,South Fork Salmon River,SFMAI-s
+LAP,INT,"Lapwai Creek, near its mouth",LAPA0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+LAP,INT,"Lapwai Creek, near its mouth",LAPB0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+LB8,INT,Big Eightmile Creek,LB8A0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LB8,INT,Big Eightmile Creek,LB8B0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LBS,INT,Big Springs Creek,LBSA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LBS,INT,Big Springs Creek,LBSB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LC1,INT,Lower Lolo Creek at rkm 21,LC1,Snake River Basin Steelhead DPS,Clearwater River,Lolo Creek,CRLOL-s
+LC2,INT,Upper Lolo Creek at rkm 25,LC2,Snake River Basin Steelhead DPS,Clearwater River,Lolo Creek,CRLOL-s
+LCL,INT,"Lee Creek, Lemhi R. Basin",LCLA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LCL,INT,"Lee Creek, Lemhi R. Basin",LCLB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LLR,INT,Lower Lemhi River,LLRB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LLR,INT,Lower Lemhi River,LLRA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LLS,INT,Lemhi Little Springs Instream,LLSA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LLS,INT,Lemhi Little Springs Instream,LLSB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LRL,INT,Lower Lochsa River Array Site,LRL,Snake River Basin Steelhead DPS,Clearwater River,Lochsa River,CRLOC-s
+LRU,INT,Lochsa River Upper Site,LRU,Snake River Basin Steelhead DPS,Clearwater River,Lochsa River,CRLOC-s
+LRW,INT,Lemhi River Weir,LRWB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LRW,INT,Lemhi River Weir,LRWA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+LTR,INT,Lower Tucannon River,LTR,Snake River Basin Steelhead DPS,Lower Snake,Tucannon River,SNTUC-s
+MIS,INT,Mission Creek,MISA0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+MIS,INT,Mission Creek,MISB0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+MTR,INT,Middle Tucannon River,MTR,Snake River Basin Steelhead DPS,Lower Snake,Tucannon River,SNTUC-s
+NFS,INT,North Fork Salmon River,NFSA0,Snake River Basin Steelhead DPS,Salmon River,North Fork Salmon River,SRNFS-s
+NFS,INT,North Fork Salmon River,NFSB0,Snake River Basin Steelhead DPS,Salmon River,North Fork Salmon River,SRNFS-s
+PCA,INT,Panther Creek Array,PCAA0,Snake River Basin Steelhead DPS,Salmon River,Panther Creek,SRPAN-s
+PCA,INT,Panther Creek Array,PCAB0,Snake River Basin Steelhead DPS,Salmon River,Panther Creek,SRPAN-s
+PCM,INT,"Pine Creek Mouth, Potlatch R.",PCMA0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+PCM,INT,"Pine Creek Mouth, Potlatch R.",PCMB0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+RFL,INT,Redfish Lake Creek,RFL,Snake River Basin Steelhead DPS,Salmon River,Salmon River upper mainstem,SRUMA-s
+RRT,INT,Red River Satellite Facility,SC2A0,Snake River Basin Steelhead DPS,Clearwater River,South Fork Clearwater River,CRSFC-s
+SC1,INT,Lower SF Clearwater R at rkm 1,SC1,Snake River Basin Steelhead DPS,Clearwater River,South Fork Clearwater River,CRSFC-s
+SC2,INT,Lower SF Clearwater R at rkm 2,SC2B0,Snake River Basin Steelhead DPS,Clearwater River,South Fork Clearwater River,CRSFC-s
+SFG,INT,SF Salmon at Guard Station Br.,SFG,Snake River Basin Steelhead DPS,Salmon River,NA,NA
+STL,INT,Sawtooth Hatchery Adult Trap,STL,Snake River Basin Steelhead DPS,Salmon River,Salmon River upper mainstem,SRUMA-s
+STR,INT,SF Salmon Satellite Facility,STR,Snake River Basin Steelhead DPS,Salmon River,South Fork Salmon River,SFMAI-s
+SW1,INT,Lower Selway River Array,SW1,Snake River Basin Steelhead DPS,Clearwater River,Selway River,CRSEL-s
+SW2,INT,Upper Selway River Array,SW2,Snake River Basin Steelhead DPS,Clearwater River,Selway River,CRSEL-s
+SWT,INT,Sweetwater Cr. near its mouth,SWTA0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+SWT,INT,Sweetwater Cr. near its mouth,SWTB0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+TAY,INT,Big Creek at Taylor Ranch,TAYA0,Snake River Basin Steelhead DPS,Salmon River,"Big, Camas, and Loon Creek",MFBIG-s
+TAY,INT,Big Creek at Taylor Ranch,TAYB0,Snake River Basin Steelhead DPS,Salmon River,"Big, Camas, and Loon Creek",MFBIG-s
+UGR,INT,Upper Grande Ronde at rkm 155,UGR,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River upper mainstem,GRUMA-s
+UGS,INT,Upper Grande Ronde Starkey,UGSA0,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River upper mainstem,GRUMA-s
+UGS,INT,Upper Grande Ronde Starkey,UGSB0,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River upper mainstem,GRUMA-s
+USE,INT,Upper Salmon River at rkm 437,USE,Snake River Basin Steelhead DPS,Salmon River,NA,NA
+USI,INT,Upper Salmon River at rkm 460,USI,Snake River Basin Steelhead DPS,Salmon River,NA,NA
+UTR,INT,Upper Tucannon River,UTR,Snake River Basin Steelhead DPS,Lower Snake,Tucannon River,SNTUC-s
+VC1,INT,"Valley Creek, Upstream Site",VC1,Snake River Basin Steelhead DPS,Salmon River,Salmon River upper mainstem,SRUMA-s
+VC2,INT,"Valley Creek, Downstream Site",VC2,Snake River Basin Steelhead DPS,Salmon River,Salmon River upper mainstem,SRUMA-s
+WEB,INT,Webb Creek,WEBA0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+WEB,INT,Webb Creek,WEBB0,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+WEN,INT,Wenaha River Mouth,WENA0,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River lower mainstem tributaries,GRLMT-s
+WEN,INT,Wenaha River Mouth,WENB0,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River lower mainstem tributaries,GRLMT-s
+WPC,INT,"Wimpey Creek, Lemhi R. Basin",WPCA0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+WPC,INT,"Wimpey Creek, Lemhi R. Basin",WPCB0,Snake River Basin Steelhead DPS,Salmon River,Lemhi River,SRLEM-s
+WR1,INT,Wallowa River at river km 14,WR1,Snake River Basin Steelhead DPS,Grande Ronde River,Wallowa River,GRWAL-s
+WR2,INT,Wallowa River at rkm 32,WR2A0,Snake River Basin Steelhead DPS,Grande Ronde River,Wallowa River,GRWAL-s
+WR2,INT,Wallowa River at rkm 32,WR2B0,Snake River Basin Steelhead DPS,Grande Ronde River,Wallowa River,GRWAL-s
+YFK,INT,Yankee Fork Salmon River,YFKA0,Snake River Basin Steelhead DPS,Salmon River,Salmon River upper mainstem,SRUMA-s
+YFK,INT,Yankee Fork Salmon River,YFKB0,Snake River Basin Steelhead DPS,Salmon River,Salmon River upper mainstem,SRUMA-s
+YPP,INT,Yellow Pine Pit Lake,YPPA0,Snake River Basin Steelhead DPS,Salmon River,South Fork Salmon River,SFMAI-s
+YPP,INT,Yellow Pine Pit Lake,YPPB0,Snake River Basin Steelhead DPS,Salmon River,South Fork Salmon River,SFMAI-s
+ZEN,INT,Secesh River at Zena Cr. Ranch,ZENA0,Snake River Basin Steelhead DPS,Salmon River,Secesh River,SFSEC-s
+ZEN,INT,Secesh River at Zena Cr. Ranch,ZENB0,Snake River Basin Steelhead DPS,Salmon River,Secesh River,SFSEC-s
+ALMOTC,MRR,Almota Creek - tributary to Snake River,ALMOTC,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+ALPOWC,MRR,"Alpowa Creek, lower Snake River",ALPOWC,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+ASOTIC,MRR,"Asotin Creek, Snake River above Clarkston, WA",ASOTIC,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+BCANF,MRR,Big Canyon Facility,BCANF,Snake River Basin Steelhead DPS,Grande Ronde River,Wallowa River,GRWAL-s
+BIGBEC,MRR,"Big Bear Creek, Potlatch River",BIGBEC,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+CATHEW,MRR,Catherine Creek Weir,CATHEW,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River upper mainstem,GRUMA-s
+CROTRP,MRR,Crooked River Trap,SC2A0,Snake River Basin Steelhead DPS,Clearwater River,South Fork Clearwater River,CRSFC-s
+DRY2C,MRR,Dry Creek - tributary to Imnaha River,DRY2C,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+FISTRP,MRR,Fish Creek Trap,FISTRP,Snake River Basin Steelhead DPS,Clearwater River,Lochsa River,CRLOC-s
+FREEZC,MRR,Freezeout Creek - tributary to Imnaha River,FREEZC,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+GEORGC,MRR,"George Creek, Asotin Creek watershed",GEORGC,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+GRANDW,MRR,Grande Ronde River Weir,GRANDW,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River upper mainstem,GRUMA-s
+GUMBTC,MRR,"Gumboot Creek, Imnaha River Basin",GUMBTC,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+HORS3C,MRR,"Horse Creek, Imnaha River Basin",HORS3C,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+IMNAHW,MRR,Imnaha River Weir,IMNAHW,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+JOHNSC,MRR,Johnson Creek,JOHNSC,Snake River Basin Steelhead DPS,Salmon River,South Fork Salmon River,SFMAI-s
+JOSEPC,MRR,"Joseph Creek, Grande Ronde River Basin",JOSEPC,Snake River Basin Steelhead DPS,Grande Ronde River,Joseph Creek,GRJOS-s
+KOOS,MRR,Kooskia National Fish Hatchery,KOOS,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+LAKEC,MRR,Lake Creek,LAKEC,Snake River Basin Steelhead DPS,Salmon River,Secesh River,SFSEC-s
+LBEARC,MRR,"Little Bear Creek, Potlatch River watershed",LBEARC,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+LOOKGC,MRR,Lookingglass Creek,LOOKGC,Snake River Basin Steelhead DPS,Grande Ronde River,Grande Ronde River upper mainstem,GRUMA-s
+LOSTIW,MRR,Lostine River Weir,LOSTIW,Snake River Basin Steelhead DPS,Grande Ronde River,Wallowa River,GRWAL-s
+LSHEEF,MRR,Little Sheep Facility,LSHEEF,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+MAHOGC,MRR,"Mahogany Creek, Imnaha River Basin",MAHOGC,Snake River Basin Steelhead DPS,Imnaha River,Imnaha River,IRMAI-s
+PAHH,MRR,Pahsimeroi Hatchery,PAHH,Snake River Basin Steelhead DPS,Salmon River,Pahsimeroi River,SRPAH-s
+PENAWC,MRR,Penawawa Creek - tributary to Snake River,PENAWC,Snake River Basin Steelhead DPS,Lower Snake,Tucannon River,SNTUC-s
+POTREF,MRR,East Fork Potlatch River,POTREF,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+POTRWF,MRR,West Fork Potlatch River,POTRWF,Snake River Basin Steelhead DPS,Clearwater River,Clearwater River lower mainstem,CRLMA-s
+RAPH,MRR,Rapid River Hatchery,RAPH,Snake River Basin Steelhead DPS,Salmon River,Little Salmon and Rapid River,SRLSR-s
+REDR,MRR,Red River,SC2A0,Snake River Basin Steelhead DPS,Clearwater River,South Fork Clearwater River,CRSFC-s
+REDTRP,MRR,Red River Trap,SC2A0,Snake River Basin Steelhead DPS,Clearwater River,South Fork Clearwater River,CRSFC-s
+SALEFT,MRR,East Fork Salmon River Trap,SALEFT,Snake River Basin Steelhead DPS,Salmon River,East Fork Salmon River,SREFS-s
+TENMC2,MRR,"Tenmile Creek, tributary to Snake River",TENMC2,Snake River Basin Steelhead DPS,Lower Snake,Asotin Creek,SNASO-s
+TUCH,MRR,Tucannon River Hatchery,TUCH,Snake River Basin Steelhead DPS,Lower Snake,Tucannon River,SNTUC-s
+WALH,MRR,Wallowa Hatchery,WALH,Snake River Basin Steelhead DPS,Grande Ronde River,Wallowa River,GRWAL-s
