@@ -104,7 +104,7 @@ How does that sound? If that works for folks Kevin will start working on scenari
 
 Kevin, how do we want to approach this? One possible structure is to include 3 potential sections in the Methods and Results perhaps including:
 
-1. The mathematical reasoning on how to calculate *pHOS* for any given branch *i* and their CV using the DABOM framework
+1. The mathematical reasoning on how to calculate *pHOS* for any given branch $i$ and their CV using the DABOM framework
 2. Expected CVs for *pHOS* estimates given current PIT tagging rates in the SRB
 3. Additional adult HOR PIT tagging that would be needed at LGR to achieve CVs of 15% or less, perhaps at target locations/populations
 
@@ -141,7 +141,7 @@ In the end, for Methods section #3, perhaps it makes most sense to ignore juveni
 
 ## Simulation (and Mathematical Reasoning)
 
-First, we demonstrate how an estimate of *pHOS* can be generated under the DABOM framework. The estimate of *pHOS* at any branch *i* in the DABOM model can be written as
+First, we demonstrate how an estimate of *pHOS* can be generated under the DABOM framework. The estimate of *pHOS* at any branch $i$ in the DABOM model can be written as
 
 $$
 \hat{pHOS_i} = \frac{\mu_{h,i}}{\mu_{h,i} + \mu_{w,i}}
@@ -238,7 +238,7 @@ $$
 
 which is a combination of the proportion of wild fish, the CV of estimate of wild fish and the CV of the estimate of hatchery fish.
 
-In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch *i* by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch *i*. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
+In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch $i$ by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch $i$. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
 
 ```{r captions}
 
