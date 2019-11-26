@@ -45,6 +45,8 @@ theme_set(theme_bw())
 
 # Introduction
 
+Check this out.
+
 We are interested in determining the relationship between the trap rate at Lower Granite and the precision of our population, sex and age estimates at the TRT population level for the Snake Basin ESU / DPS. 
 
 ```{r read_in_est}
