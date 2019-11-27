@@ -59,6 +59,43 @@ pop_est = c('Chinook', 'Steelhead') %>%
   rename(Species = species)
 ```
 
+```{r read_in_sites}
+# which sites are attached to which TRT populations?
+site_pop = c('Chinook', 'Steelhead') %>%
+  as.list() %>%
+  set_names() %>%
+  map_df(.id = 'Species',
+         .f = function(x) read_csv(paste0('../data/Site_TRT_', x, '.csv')))
+
+```
+
+```{r}
+# determine which populations don't have good detection infrastructure to make estimates
+
+# this populations have a single detection site
+single_site_pops = site_pop %>%
+  group_by(Species, TRT, POP_NAME) %>%
+  summarise(n_sites = n_distinct(SiteID)) %>%
+  arrange(Species, n_sites) %>%
+  filter(n_sites == 1) %>%
+  left_join(site_pop %>%
+              select(Species, TRT, SiteID:SiteName) %>%
+              distinct()) %>%
+  select(-n_sites)
+
+
+# site_pop %>%
+#   group_by(Species, TRT, POP_NAME) %>%
+#   summarise(n_sites = n_distinct(SiteID)) %>%
+#   arrange(Species, n_sites) %>%
+#   filter(n_sites == 2) %>%
+#   left_join(site_pop %>%
+#               select(Species, TRT, SiteID:SiteName) %>%
+#               distinct()) %>%
+#   as.data.frame()
+```
+
+
 # Methods
 
 We started by gathering data on all the estimates that have been made for population abundance at the TRT spatial scale, and examining the relationship between the number of tags observed in each population, and the coefficient of variation (CV) of the estimate. We fit a model on the log scale:
@@ -74,7 +111,7 @@ We then need to determine how many tags would need to be deployed at Lower Grani
 
 ```{r}
 tags_deploy = crossing(Species = c('Chinook', 'Steelhead'),
-         spawn_yr = c(2010:2019)) %>%
+                       spawn_yr = c(2010:2019)) %>%
   filter(!(Species == 'Chinook' & spawn_yr == 2019)) %>%
   mutate(tot_tags = map2_int(.x = Species,
                              .y = spawn_yr,
@@ -97,7 +134,8 @@ prop_det_df = tags_deploy %>%
 min_yr = 2013
 min_tags = tibble(Species = c('Chinook',
                               'Steelhead'),
-                  min_tags = c(53, 45))
+                  min_tags = c(50))
+                  # min_tags = c(53, 45))
 
 tags_est_df = pop_est %>%
   mutate_at(vars(spawn_yr),
@@ -128,6 +166,34 @@ tags_est_df = pop_est %>%
 #              scales = 'free') +
 #   scale_fill_viridis_d()
 ```
+
+```{r, eval = F}
+pop_est %>%
+  mutate_at(vars(spawn_yr),
+            list(~ as.integer(as.character(.)))) %>%
+  filter(spawn_yr >= min_yr) %>%
+  select(spawn_yr, Species, TRT, n_tags) %>%
+  left_join(tags_deploy) %>%
+  mutate(prop_tags_det = n_tags / tot_tags) %>%
+  ggplot(aes(x = spawn_yr,
+             y = prop_tags_det,
+             color = Species)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.01,
+             linetype = 2,
+             color = 'darkgray') +
+  scale_color_brewer(palette = 'Set1') +
+  facet_wrap(~ Species + TRT)
+
+tags_est_df %>%
+  filter(prop_tags_det < 0.01) %>%
+  full_join(single_site_pops) %>%
+  as.data.frame()
+
+
+```
+
 
 \newpage
 
@@ -323,6 +389,10 @@ The expected number of tags needed to be deployed at Lower Granite to achieve a 
 
 ```{r}
 tags_tables = tags_est_df %>%
+  left_join(site_pop %>%
+              select(Species, TRT, Name = POP_NAME) %>%
+              distinct()) %>%
+  select(Species, TRT, Name, everything()) %>%
   arrange(Species, desc(tot_tags_need)) %>%
   split(list(.$Species))
 
