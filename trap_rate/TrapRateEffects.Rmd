@@ -1,8 +1,9 @@
 ---
-title: "Tagging Rate at Lower Granite"
+title: "Tagging Rate at Lower Granite Dam"
 author:
-  - Kevin See^[Biomark, Inc.]
-  - Mike Ackerman^[Biomark, Inc.]
+- Kevin See^[Biomark, Inc.]
+- Mike Ackerman^[Biomark, Inc.]
+- Kyle Meier^[Biomark, Inc.]
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   html_document:
@@ -38,9 +39,14 @@ theme_set(theme_bw())
 # setwd('trap_rate')
 ```
 
+```{r captions}
+remove_tab = tab_nums('remove_tab',
+                      'Populations, by species, with a low number of total tags deployed at LGR detected within. These populations were further examined as to whether low detections were due to true low population size or infrastructure not intended for population monitoring.')
+```
+
 # Introduction
 
-We are interested in determining the relationship between the trap rate at Lower Granite and the precision of our population, sex and age estimates at the TRT population level for the Snake Basin ESU / DPS. 
+We are interested in determining the relationship between the number of PIT tags implanted in adults at Lower Granite Dam (LGR) and the precision of abundance estimates at the technical recovery team (TRT) population scale for Snake River Basin spring/summer Chinook salmon ESU and steelhead DPS. The number of PIT tags to implant at LGR can then be used to make inferences about trapping and tagging rates. We further consider the precision of sex and age (total) specific estimates for each population, which are necessary for estimating population productivity (e.g., recruits per spawner/female).
 
 ```{r read_in_est}
 AbundanceFolder = '../../SnakeBasinFishStatus/Abundance_results' # for processed files
@@ -98,18 +104,17 @@ single_site_pops = site_pop %>%
 
 # Methods
 
-We started by gathering data on all the estimates that have been made for population abundance at the TRT spatial scale, and examining the relationship between the number of tags observed in each population, and the coefficient of variation (CV) of the estimate. We fit a model on the log scale:
+First, we wanted to leverage results based on empirical data from the inception of the PIT tagging program at LGR (2010) to the present. We started by gathering data on all estimates that have been made for population abundance at the TRT spacial scale, and examining the relationship between the number of tags observed in each population, and the coefficient (CV) of the estimate. We fit a model on the log scale:
 
 $$
 \text{CV} \sim \exp(a + b * n_{tags})
 $$
-and also a more flexible version using a loess spline. We were interested in how many tags would need to be detected for each model to predict a CV of $\leq$ 0.15.
+and, in addition, a more flexible version using a loess spline. We were interested in how many tags would need to be detected within each TRT population, and using each model, to predict a CV of $\leq$ 0.15. Similarly, we alse examined the relationship between the proportion of all tags that were deployed at LGR that were detected within each population, and the CV of the population estimate. 
 
-We also examined a similar relationship between the proportion of total tags deployed at Lower Granite that were detected in each TRT population, and the CV of the population estimate.
-
-We then need to determine how many tags would need to be deployed at Lower Granite dam to achieve that minimum number of tags at each TRT population to acheive that level of precision in our abundance estimates. To do this, we started by looking at the proportion of tags deployed at Lower Granite that were detected in each TRT population. Next, we estimated the average of that proportion for each TRT population. Finally, given the minimum number of detections required to achieve a precise abundance estimate, we estimated the number of total tags needed to be deployed at Lower Granite that would be expected to result in the minimum number of detections with that TRT population. We can also predict for a given number of tags deployed at Lower Granite whether there will be sufficient detections in each TRT population to achieve a reasonably precise abundance estimate.
+The previous provides information on the number of tags, or the proportion of all deployed tags, returning to a population necessary to achieve a precise abundance estimate. We then need to determine how many tags would need to be deployed at LGR to achieve that minimum number of tags to each TRT population to achieve that level of precision in our abundance estimates. To do this, we started by looking at the proportion of tags deployed at LGR that were detected in each TRT population by year, and then averaged across years. Finally, given the minimum number of detections required to achieve a precise abundance estimate, we estimated the number of total tags needed to be deployed at LGR that would be expected to result in the minimum number of detections for that TRT population. We can also predict for a given number of tags deployed at LGR whether there will be sufficient detections in each TRT population to achieve a reasonably precise abundance estimate.
 
 ```{r}
+# the number of tags deployed by species and year at LGR
 tags_deploy = crossing(Species = c('Chinook', 'Steelhead'),
                        spawn_yr = c(2010:2019)) %>%
   filter(!(Species == 'Chinook' & spawn_yr == 2019)) %>%
@@ -194,16 +199,76 @@ tags_est_df %>%
 
 ```
 
+## Populations with Low Detections
+
+When we initially examined the proportion of all tags deployed at LGR that were detected in each TRT population, by species, we noted a number of populations had very low proportions (e.g., < 2%). The low proportion of tags observed within a population can be due to three primary reasons:
+
+1. True low spawner abundance.
+2. Low detection probability of sites within the population.
+3. Detection infrastructure within the population was not intended to monitor natural origin spawner abudance (e.g., hatchery rack detections).
+
+In practice, detection probabilities at instream PIT tag detection systems (IPTDS) intended for population abundance monitoring have high detection probabilities, so we further examined populations with low proportions of detections and whether that was due to reasons #1 or #3 (or a combination thereof) above. In addition, the proportion of detections within a population was averaged across years, and thus, we considered populations where infrastructure was installed in a later year. `r tab_nums('remove_tab', display = 'c')` and the following narrative provide a summary of populations and years we chose to remove from the analysis due to non-existent IPTDS or infrastructure not intended for natural population monitoring. We additionally note some populations with low proportions of detections that we believe to be due to low population size.
+
+`r tab_nums('remove_tab')`
+```{r}
+remove_t = read_excel('../data/TRT_Pop_Considerations.xlsx') %>%
+  select(-Notes)
+pander(remove_t)
+
+rmv = remove_t %>%
+  select(-SiteIDs) %>%
+  gather(key, value, `2013`:`2019`) %>%
+  filter(value == 'Y') %>%
+  rename(spawn_yr = key,
+         remove = value)
+```  
+
+### Chinook
+
+* CRLOC: LRL installed October 2016. LRU installed December 2017.
+* CRLOL: Not removed from analysis. Poor precision likely due to small population size.
+* GRCAT: CCW installed in March 2015.
+* GRLOO: Only includes ad-intact adults that return to the Lookingglass Hatchery (LOOKGC).
+* GRUMA: UGS site installed in November 2017. Complete data only for 2018. 
+* GRWEN: Tandem array was installed in 2018, but blew out soon after. Re-installed in 2019. No long term data.
+* IRBSH: Not removed from analysis. Poor precision likely due to small population size.
+* SEMEA: SW1 installed December 2016. SW2 installed September 2017.
+* SNTUC: Population occurs below LGR.
+* SREFS: Array installed in 2016, but blown out soon after and not re-installed.
+* SRLSR: Only includes ad-intact adults that return to the Rapid River Hatchery weir (RAPH).
+* SRNFS: Installed in 2016, but perfomed poorly initially. System upgraded in 2018.
+* SRPAH: Only includes ad-intact adults that return to the Pahsimeroi Hatchery weir (PAHH).
+* SRPAN: Site installed in July 2017.
+* SRYFS: Not removed from analysis. Poor precision likely due to small population size.
+
+Also note that the GRLOS, GRMIN, GRCAT, and GRUMA Chinook salmon TRT populations all occur above the UGR array; however, we don't know which population an adult is destined for after passing UGR unless it is detected again upstream. As a result, Chinook salmon adults that are last observed at the UGR site cannot be used in population abundance estimates. One might consider how final observations at UGR could be leveraged in the future for upriver abundance estimates.
+
+### Steelhead
+
+* CRLOC-s: LRL installed October 2016. LRU installed December 2017. Remaining abundance estimates from FISTRP.
+* CRSEL-s: SW1 installed December 2016. SW2 installed September 2017.
+* SFSEC-s: Not removed from analysis. Believe poor precision is due to low population size.
+* SNTUC-s: Population occurs below LGR.
+* SREFS-s: Array installed in 2016, but blown out soon after and not re-installed.
+* SRLSR-s: Only includes ad-intact adults that return to the Rapid River Hatchery weir (RAPH).
+* SRNFS-s: Installed in 2016, but perfomed poorly initially. System upgraded in 2018.
+* SRPAH-s: Only includes ad-intact adults that return to the Pahsimeroi Hatchery weir (PAHH).
+* SRUMA-s: Not removed from analysis. Believe poor precision is due to low population size.
 
 \newpage
 
 # Results
 
-## Number of Tags in a TRT Population
+## Number of Tags Required in a TRT Population
 
 After gathering the data, we made the following plot:
 
 ```{r n_tags_vs_cv_fig, fig.cap="Scatterplot of the number of PIT tags detected in each population and the CV of the abundance estimate for that population. The lines are GLM and Loess fits to that data."}
+pop_est = pop_est %>%
+  left_join(rmv) %>%
+  filter(is.na(remove)) %>%
+  select(-remove)
+
 pop_est %>%
   ggplot(aes(x = n_tags,
              y = cv)) +
@@ -388,11 +453,20 @@ prop_det_df %>%
 The expected number of tags needed to be deployed at Lower Granite to achieve a minimum number of detections in each TRT population (leading to reasonably precise estimate of abundance), is shown below. 
 
 ```{r}
+# This is ugly and brute force, but I can fix later using remove_t
+rmv_trt = data.frame(Species = c(rep('Chinook', 12), rep('Steelhead', 7)),
+                     TRT = c('CRLOC', 'GRCAT', 'GRLOO', 'GRUMA', 'GRWEN', 'SEMEA', 'SNTUC',
+                             'SREFS', 'SRLSR', 'SRNFS', 'SRPAH', 'SRPAN', 'CRLOC-s',
+                             'CRSEL-s', 'SNTUC-s', 'SREFS-s', 'SRLSR-s', 'SRNFS-s', 'SRPAH-s'),
+                     Remove = rep('Yes', 19))
+
 tags_tables = tags_est_df %>%
   left_join(site_pop %>%
               select(Species, TRT, Name = POP_NAME) %>%
               distinct()) %>%
   select(Species, TRT, Name, everything()) %>%
+  left_join(rmv_trt) %>%
+  filter(is.na(Remove)) %>%
   arrange(Species, desc(tot_tags_need)) %>%
   split(list(.$Species))
 
@@ -409,6 +483,8 @@ Finally, we summarised these results by examining what percentage of the TRT pop
 
 tags_est_df %>%
   select(Species, TRT, tot_tags_need) %>%
+  left_join(rmv_trt) %>%
+  filter(is.na(Remove)) %>%
   crossing(tot_tags_deploy = seq(500, 8000, by = 100)) %>%
   mutate(sufficient = if_else(tot_tags_deploy >= tot_tags_need,
                               T, F)) %>%
@@ -425,7 +501,6 @@ tags_est_df %>%
   labs(x = '# Tags Deployed at Lower Granite',
        y = expression(paste("Proportion of TRT Populations with Precise ", hat(N))))
 ```
-
 
 # Conclusions
 
