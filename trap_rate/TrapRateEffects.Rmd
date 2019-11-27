@@ -1,0 +1,437 @@
+---
+title: "Tagging Rate at Lower Granite"
+author:
+  - Kevin See^[Biomark, Inc.]
+  - Mike Ackerman^[Biomark, Inc.]
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    theme: cerulean
+    toc: yes
+    toc_depth: 1
+    toc_float: yes
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+# library(knitr)
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+
+library(pander)
+# options for table formatting
+panderOptions('big.mark', ',')
+# panderOptions('digits', 3)
+# panderOptions('round', 3)
+panderOptions('keep.trailing.zeros', FALSE)
+panderOptions('table.split.table', Inf)
+
+library(captioner)
+tab_nums = captioner(prefix = 'Table')
+fig_nums = captioner()
+
+# load packages for analysis
+library(tidyverse)
+library(readxl)
+library(scales)
+library(janitor)
+
+theme_set(theme_bw())
+# setwd('trap_rate')
+```
+
+# Introduction
+
+We are interested in determining the relationship between the trap rate at Lower Granite and the precision of our population, sex and age estimates at the TRT population level for the Snake Basin ESU / DPS. 
+
+```{r read_in_est}
+AbundanceFolder = '../../SnakeBasinFishStatus/Abundance_results' # for processed files
+
+pop_est = c('Chinook', 'Steelhead') %>%
+  as.list() %>%
+  set_names() %>%
+  map_df(.f = function(x) {
+    read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_', x, '.xlsx'))
+  }) %>%
+  filter(!is.na(n_tags)) %>%
+  mutate_at(vars(spawn_yr:TRT),
+            list(as.factor)) %>%
+  mutate_at(vars(cv),
+            list(as.numeric)) %>%
+  rename(Species = species)
+```
+
+```{r read_in_sites}
+# which sites are attached to which TRT populations?
+site_pop = c('Chinook', 'Steelhead') %>%
+  as.list() %>%
+  set_names() %>%
+  map_df(.id = 'Species',
+         .f = function(x) read_csv(paste0('../data/Site_TRT_', x, '.csv')))
+
+```
+
+```{r}
+# determine which populations don't have good detection infrastructure to make estimates
+
+# this populations have a single detection site
+single_site_pops = site_pop %>%
+  group_by(Species, TRT, POP_NAME) %>%
+  summarise(n_sites = n_distinct(SiteID)) %>%
+  arrange(Species, n_sites) %>%
+  filter(n_sites == 1) %>%
+  left_join(site_pop %>%
+              select(Species, TRT, SiteID:SiteName) %>%
+              distinct()) %>%
+  select(-n_sites)
+
+
+# site_pop %>%
+#   group_by(Species, TRT, POP_NAME) %>%
+#   summarise(n_sites = n_distinct(SiteID)) %>%
+#   arrange(Species, n_sites) %>%
+#   filter(n_sites == 2) %>%
+#   left_join(site_pop %>%
+#               select(Species, TRT, SiteID:SiteName) %>%
+#               distinct()) %>%
+#   as.data.frame()
+```
+
+
+# Methods
+
+We started by gathering data on all the estimates that have been made for population abundance at the TRT spatial scale, and examining the relationship between the number of tags observed in each population, and the coefficient of variation (CV) of the estimate. We fit a model on the log scale:
+
+$$
+\text{CV} \sim \exp(a + b * n_{tags})
+$$
+and also a more flexible version using a loess spline. We were interested in how many tags would need to be detected for each model to predict a CV of $\leq$ 0.15.
+
+We also examined a similar relationship between the proportion of total tags deployed at Lower Granite that were detected in each TRT population, and the CV of the population estimate.
+
+We then need to determine how many tags would need to be deployed at Lower Granite dam to achieve that minimum number of tags at each TRT population to acheive that level of precision in our abundance estimates. To do this, we started by looking at the proportion of tags deployed at Lower Granite that were detected in each TRT population. Next, we estimated the average of that proportion for each TRT population. Finally, given the minimum number of detections required to achieve a precise abundance estimate, we estimated the number of total tags needed to be deployed at Lower Granite that would be expected to result in the minimum number of detections with that TRT population. We can also predict for a given number of tags deployed at Lower Granite whether there will be sufficient detections in each TRT population to achieve a reasonably precise abundance estimate.
+
+```{r}
+tags_deploy = crossing(Species = c('Chinook', 'Steelhead'),
+                       spawn_yr = c(2010:2019)) %>%
+  filter(!(Species == 'Chinook' & spawn_yr == 2019)) %>%
+  mutate(tot_tags = map2_int(.x = Species,
+                             .y = spawn_yr,
+                             .f = function(x, y) {
+                               load(paste0('../../SnakeBasinFishStatus/DABOM_results/LGR_DABOM_',x,'_',y,'.rda'))
+                               return(nrow(proc_list$ValidTrapData))
+                             }))
+
+# proportion of all tags seen in one of the TRT populations
+prop_det_df = tags_deploy %>%
+              left_join(pop_est %>%
+                          group_by(spawn_yr, Species) %>%
+                          summarise(tot_tags_det = sum(n_tags)) %>%
+                          ungroup() %>%
+                          mutate_at(vars(spawn_yr),
+                                    list(~ as.integer(as.character(.))))) %>%
+              mutate(prop_det = tot_tags_det / tot_tags)
+
+
+min_yr = 2013
+min_tags = tibble(Species = c('Chinook',
+                              'Steelhead'),
+                  min_tags = c(50))
+                  # min_tags = c(53, 45))
+
+tags_est_df = pop_est %>%
+  mutate_at(vars(spawn_yr),
+            list(~ as.integer(as.character(.)))) %>%
+  filter(spawn_yr >= min_yr) %>%
+  # select(spawn_yr, Species, TRT, n_tags) %>%
+  left_join(tags_deploy) %>%
+  mutate(prop_tags_det = n_tags / tot_tags) %>%
+  group_by(Species, TRT) %>%
+  summarise_at(vars(prop_tags_det),
+               list(mean)) %>%
+  left_join(min_tags) %>%
+  mutate(tot_tags_need = min_tags / prop_tags_det)
+
+
+# tags_est_df %>%
+#   ggplot(aes(x = tot_tags_need)) +
+#   geom_histogram(aes(fill = TRT),
+#                  bins = 20) +
+#   geom_vline(data = tags_deploy %>%
+#                filter(spawn_yr >= min_yr) %>%
+#                group_by(Species) %>%
+#                summarise_at(vars(tot_tags),
+#                             list(mean)),
+#              aes(xintercept = tot_tags),
+#              linetype = 2) +
+#   facet_wrap(~ Species,
+#              scales = 'free') +
+#   scale_fill_viridis_d()
+```
+
+```{r, eval = F}
+pop_est %>%
+  mutate_at(vars(spawn_yr),
+            list(~ as.integer(as.character(.)))) %>%
+  filter(spawn_yr >= min_yr) %>%
+  select(spawn_yr, Species, TRT, n_tags) %>%
+  left_join(tags_deploy) %>%
+  mutate(prop_tags_det = n_tags / tot_tags) %>%
+  ggplot(aes(x = spawn_yr,
+             y = prop_tags_det,
+             color = Species)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.01,
+             linetype = 2,
+             color = 'darkgray') +
+  scale_color_brewer(palette = 'Set1') +
+  facet_wrap(~ Species + TRT)
+
+tags_est_df %>%
+  filter(prop_tags_det < 0.01) %>%
+  full_join(single_site_pops) %>%
+  as.data.frame()
+
+
+```
+
+
+\newpage
+
+# Results
+
+## Number of Tags in a TRT Population
+
+After gathering the data, we made the following plot:
+
+```{r n_tags_vs_cv_fig, fig.cap="Scatterplot of the number of PIT tags detected in each population and the CV of the abundance estimate for that population. The lines are GLM and Loess fits to that data."}
+pop_est %>%
+  ggplot(aes(x = n_tags,
+             y = cv)) +
+  geom_point() +
+  scale_color_brewer(palette = 'Set1') + 
+  geom_hline(yintercept = 0.15,
+             linetype = 2) +
+  geom_smooth(aes(color = 'Loess'),
+              span = 0.9,
+              se = F,
+              fullrange = T) +
+  geom_smooth(aes(color = 'GLM'),
+              method = glm,
+              method.args = list(family = gaussian(link = "log")),
+              se = F,
+              fullrange = T) +
+  facet_wrap(~ Species) +
+  labs(x = '# PIT Tags Detected',
+       y = 'CV of Pop. Est.',
+       color = 'Model')
+```
+
+```{r perc_tags_vs_cv_fig, fig.cap="Scatterplot of the percentage of PIT tags detected in each population and the CV of the abundance estimate for that population. The lines are GLM and Loess fits to that data."}
+pop_est %>%
+  mutate_at(vars(spawn_yr),
+            list(~ as.integer(as.character(.)))) %>%
+  left_join(tags_deploy) %>%
+  ggplot(aes(x = n_tags / tot_tags,
+             y = cv)) +
+  geom_point() +
+  scale_color_brewer(palette = 'Set1') + 
+  geom_hline(yintercept = 0.15,
+             linetype = 2) +
+  geom_smooth(aes(color = 'Loess'),
+              span = 0.9,
+              se = F,
+              fullrange = T) +
+  geom_smooth(aes(color = 'GLM'),
+              method = glm,
+              method.args = list(family = gaussian(link = "log")),
+              se = F,
+              fullrange = T) +
+  facet_wrap(~ Species) +
+  labs(x = '% PIT Tags Detected',
+       y = 'CV of Pop. Est.',
+       color = 'Model')
+```
+
+
+```{r, eval = F}
+pop_est %>%
+  ggplot(aes(x = n_tags,
+             y = mean)) +
+  geom_point(aes(color = cv <= 0.15)) +
+  scale_color_brewer(palette = 'Set1') + 
+  facet_wrap(~ Species) +
+  geom_vline(xintercept = c(50),
+             linetype = 2) +
+  labs(x = '# PIT Tags Detected',
+       y = 'Pop. Est.',
+       color = 'Acceptable\nPrecision')
+```
+
+We tried fitting a separate model for each species. After fitting those models, we examined the minimum number of tags it would take to achieve a predicted CV of $\leq$ 0.15 for the abundance estimate. We also fit models examining what proportion of the total tags would need to be detected to achieve that CV level. Those results are shown in the tables below.
+
+```{r}
+mod_df = pop_est %>%
+  group_by(Species) %>%
+  nest() %>%
+  mutate(mod_glm = map(data,
+                      .f = function(x) {
+                        glm(cv ~ n_tags,
+                            family = gaussian(link = 'log'),
+                            data = x)
+                      }),
+         mod_loess = map(data,
+                         .f = function(x) {
+                           loess(cv ~ n_tags,
+                                 data = x)
+                         }))
+
+mod_df %>%
+  gather(model, mod_fit, starts_with('mod')) %>%
+  mutate(pred = map(.x = mod_fit,
+                    .f = function(x) {
+                      tibble(n_tags = seq(0, 300)) %>%
+                        mutate(pred_cv = predict(x, 
+                                                 newdata = .,
+                                                 type = 'response'))
+                      })) %>%
+  select(Species, 
+         Model = model, pred) %>%
+  mutate(Model = recode(Model,
+                        'mod_glm' = 'GLM',
+                        'mod_loess' = 'Loess')) %>%
+  unnest(cols = c(pred)) %>%
+  group_by(Species, Model) %>%
+  filter(pred_cv <= 0.15) %>%
+  slice(1) %>%
+  pander()
+
+```  
+
+```{r}
+prop_mod_df = pop_est %>%
+  mutate_at(vars(spawn_yr),
+            list(~ as.integer(as.character(.)))) %>%
+  left_join(tags_deploy) %>%
+  mutate(prop_tags = n_tags / tot_tags) %>%
+  group_by(Species) %>%
+  nest() %>%
+  mutate(mod_glm = map(data,
+                      .f = function(x) {
+                        glm(cv ~ prop_tags,
+                            family = gaussian(link = 'log'),
+                            data = x)
+                      }),
+         mod_loess = map(data,
+                         .f = function(x) {
+                           loess(cv ~ prop_tags,
+                                 data = x)
+                         }))
+
+prop_mod_df %>%
+  gather(model, mod_fit, starts_with('mod')) %>%
+  mutate(pred = map(.x = mod_fit,
+                    .f = function(x) {
+                      tibble(prop_tags = seq(0, 0.5, by = 0.001)) %>%
+                        mutate(pred_cv = predict(x, 
+                                                 newdata = .,
+                                                 type = 'response'))
+                      })) %>%
+  select(Species, 
+         Model = model, pred) %>%
+  mutate(Model = recode(Model,
+                        'mod_glm' = 'GLM',
+                        'mod_loess' = 'Loess')) %>%
+  unnest(cols = c(pred)) %>%
+  group_by(Species, Model) %>%
+  filter(pred_cv <= 0.15) %>%
+  slice(1) %>%
+  pander()
+
+```  
+
+### Sex and Age Estimates
+
+We want to note that reasonably precise estimates of sex and age structure are also a desired outcome. However, it will not take 50 female tags detected in a population to achieve reasonable precision for the sex structure. Rather, we will take the total abundance estimate and multiply it by the proportion female, which will be estimated from all of the tags detected in that TRT population. If we have about 50 total tags detected in the population for a good abundance estimate, the proportion female will be fairly precise because 50 is a good sample size for proportions, especially when the proportion is somewhere near 50%. Therefore, the CV for the number of females in that population will be slightly larger than the CV of the total abundance, but probably not by much. 
+
+Similar arguements hold for age structure, although as we attempt to account for more age classes, the precision will suffer. Therefore, for a Chinook population with 3 age classes, I expect to get reasonable estimates with a sample size close to 50. For a steelhead population with up to 6 age classes, the precision will suffer, especially since some of those age classes we would expect to have very few fish. 
+
+## Total Tags at Lower Granite
+
+The proportion of tags detected in any TRT population has changed over time, due to more in-stream PIT tag detection infrastructure being installed. 
+
+```{r prop_black_box, fig.cap = "Proportion of PIT tags detected within a TRT population each year, by species."}
+prop_det_df %>%
+  ggplot(aes(x = spawn_yr,
+             y = prop_det,
+             color = Species)) +
+  geom_line() +
+  geom_point() +
+  scale_color_brewer(palette = 'Set1') +
+  scale_x_continuous(breaks = pretty_breaks()) +
+  labs(x = 'Spawn Year',
+       y = 'Proportion Tags Detected after LGR',
+       color = 'Species')
+```
+
+We chose to focus on the period from `r min_yr` on, since the infrastructure has been more stable since then. The average proportion of tags detected in a TRT population, by species, is shown below.
+
+```{r}
+prop_det_df %>%
+              filter(spawn_yr >= min_yr) %>%
+              group_by(Species) %>%
+              summarise_at(vars(prop_det),
+                           list(mean)) %>%
+  clean_names(case = 'upper_camel') %>%
+  pander()
+```
+
+The expected number of tags needed to be deployed at Lower Granite to achieve a minimum number of detections in each TRT population (leading to reasonably precise estimate of abundance), is shown below. 
+
+```{r}
+tags_tables = tags_est_df %>%
+  left_join(site_pop %>%
+              select(Species, TRT, Name = POP_NAME) %>%
+              distinct()) %>%
+  select(Species, TRT, Name, everything()) %>%
+  arrange(Species, desc(tot_tags_need)) %>%
+  split(list(.$Species))
+
+tags_tables[[1]] %>%
+  pander(round = 3)
+
+tags_tables[[2]] %>%
+  pander(round = 3)
+```
+
+Finally, we summarised these results by examining what percentage of the TRT population abundance estimates we would expect to be reasonably precise (i.e. CV $\leq$ 0.15) given a certain number of tags deployed at Lower Granite.
+
+```{r perc_good_CV, fig.cap = "Expected proportion of TRT populations with good CV of abundance estimates for a given number of PIT tags deployed at Lower Granite, colored by species."}
+
+tags_est_df %>%
+  select(Species, TRT, tot_tags_need) %>%
+  crossing(tot_tags_deploy = seq(500, 8000, by = 100)) %>%
+  mutate(sufficient = if_else(tot_tags_deploy >= tot_tags_need,
+                              T, F)) %>%
+  group_by(Species, tot_tags_deploy) %>%
+  summarise(n_TRT_suff = sum(sufficient),
+            n_TRT_not_suff = sum(!sufficient),
+            n_TRT_tot = n_TRT_suff + n_TRT_not_suff) %>%
+  ggplot(aes(x = tot_tags_deploy,
+             y = n_TRT_suff / n_TRT_tot,
+             color = Species)) +
+  geom_line() +
+  geom_point() +
+  scale_color_brewer(palette = 'Set1') +
+  labs(x = '# Tags Deployed at Lower Granite',
+       y = expression(paste("Proportion of TRT Populations with Precise ", hat(N))))
+```
+
+
+# Conclusions
+
+These results suggest we need to detect a minimum of 45 tags per steelhead TRT population, and 53 tags per spring/summer Chinook TRT population to achieve acceptable precision in our abundance estimates at the TRT spatial scale. 
+
+## Next Steps
+
+1. Determine if some TRT populations should be excluded from this analysis because we don't have good PIT tag detection infrastructure
+1. Translate the number of total tags into a tagging rate, depending on total run size at Lower Granite.

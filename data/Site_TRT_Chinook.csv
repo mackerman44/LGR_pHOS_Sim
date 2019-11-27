@@ -1,0 +1,163 @@
+SiteID,SiteType,SiteName,Node,ESU_DPS,MPG,POP_NAME,TRT
+18M,INT,Eighteenmile Creek,HECA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+18M,INT,Eighteenmile Creek,HECB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+ACB,INT,Asotin Cr. at Cloverland Brdg.,ACBB0,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+ACB,INT,Asotin Cr. at Cloverland Brdg.,ACBA0,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+ACM,INT,Asotin Creek near mouth,ACMA0,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+ACM,INT,Asotin Creek near mouth,ACMB0,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+AFC,INT,No./So. Fk Asotin Cr. Jct. ISA,AFCA0,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+AFC,INT,No./So. Fk Asotin Cr. Jct. ISA,AFCB0,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+AGC,INT,"Agency Creek, Lemhi R. Basin",AGCA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+AGC,INT,"Agency Creek, Lemhi R. Basin",AGCB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+BHC,INT,Bohannon Creek Lemhi R Basin,BHCA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+BHC,INT,Bohannon Creek Lemhi R Basin,BHCB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+BRC,INT,Bear Valley Adult Video Weir,BRC,Snake River Spring/Summer-run Chinook Salmon ESU,Middle Fork Salmon River,Bear Valley Creek,MFBEA
+BSC,INT,Big Sheep Creek ISA at km 6,BSCA0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Big Sheep Creek,IRBSH
+BSC,INT,Big Sheep Creek ISA at km 6,BSCB0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Big Sheep Creek,IRBSH
+BTL,INT,"Lower Big Timber, Lemhi Basin",BTLA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+BTL,INT,"Lower Big Timber, Lemhi Basin",BTLB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+BTM,INT,Big Timber Creek - Middle,BTMA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+BTM,INT,Big Timber Creek - Middle,BTMB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+BTU,INT,Big Timber Creek - Upper,BTUA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+BTU,INT,Big Timber Creek - Upper,BTUB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+CAC,INT,Canyon Creek ISA @ km 1,CACA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+CAC,INT,Canyon Creek ISA @ km 1,CACB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+CCA,INT,Lower Charley Creek ISA,CCAB0,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+CCA,INT,Lower Charley Creek ISA,CCAA0,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+CCW,INT,Catherine Creek Ladder/Weir,CCWA0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Catherine Creek,GRCAT
+CCW,INT,Catherine Creek Ladder/Weir,CCWB0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Catherine Creek,GRCAT
+CLC,INT,Clear Creek near Kooskia NFH,CLC,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lawyer Creek,SCLAW
+CMP,INT,Camp Creek at rkm 2 - Imnaha,CMPA0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Big Sheep Creek,IRBSH
+CMP,INT,Camp Creek at rkm 2 - Imnaha,CMPB0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Big Sheep Creek,IRBSH
+COC,INT,Cow Creek ISA @ stream mouth,COCA0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+COC,INT,Cow Creek ISA @ stream mouth,COCB0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+CRC,INT,"Carmen Creek, Salmon R. Basin",CRCA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+CRC,INT,"Carmen Creek, Salmon R. Basin",CRCB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+CRT,INT,Crooked River Satellite Fac.,SC2A0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Upper South Fork Clearwater,SCUMA
+CZY,INT,Crazyman Creek at 0.6 km,CZYA0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+CZY,INT,Crazyman Creek at 0.6 km,CZYB0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+ESS,INT,EFSF Salmon River at Parks Cr.,ESSA0,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,East Fork South Fork Salmon River,SFEFS
+ESS,INT,EFSF Salmon River at Parks Cr.,ESSB0,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,East Fork South Fork Salmon River,SFEFS
+HEC,INT,Hawley Cr/18 Mile Cr Array,HECA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+HEC,INT,Hawley Cr/18 Mile Cr Array,HECB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+HLM,INT,Potlatch River near Helmer,HLMA0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+HLM,INT,Potlatch River near Helmer,HLMB0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+HYC,INT,Hayden Creek In-stream Array,HYCB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+HYC,INT,Hayden Creek In-stream Array,HYCA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+IML,INT,Imnaha River Weir Adult Ladder,IMLA0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+IML,INT,Imnaha River Weir Adult Ladder,IMLB0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+IR1,INT,Lower Imnaha River ISA @ km 7,IR1,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,NA,NA
+IR2,INT,Lower Imnaha River ISA @ km 10,IR2,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,NA,NA
+IR3,INT,Upper Imnaha River ISA @ km 41,IR3A0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+IR3,INT,Upper Imnaha River ISA @ km 41,IR3B0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+IR4,INT,Imnaha Weir Downstream Array,IR4A0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+IR4,INT,Imnaha Weir Downstream Array,IR4B0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+IR5,INT,Imnaha Weir Upstream Array,IR5A0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+IR5,INT,Imnaha Weir Upstream Array,IR5B0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+JOC,INT,Joseph Creek ISA @ km 3,JOCA0,NA,NA,NA,NA
+JOC,INT,Joseph Creek ISA @ km 3,JOCB0,NA,NA,NA,NA
+JUL,INT,Potlatch River near Juliaetta,JUL,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+KEN,INT,Kenney Creek In-stream Arrays,KENA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+KEN,INT,Kenney Creek In-stream Arrays,KENB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+KHS,INT,Big Bear Cr. @ Kendrick HS,KHSA0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+KHS,INT,Big Bear Cr. @ Kendrick HS,KHSB0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+KRS,INT,SF Salmon River at Krassel Cr.,KRS,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,South Fork Salmon River mainstem,SFMAI
+LAP,INT,"Lapwai Creek, near its mouth",LAPA0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lapwai/Big Canyon,CRLAP
+LAP,INT,"Lapwai Creek, near its mouth",LAPB0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lapwai/Big Canyon,CRLAP
+LB8,INT,Big Eightmile Creek,LB8A0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LB8,INT,Big Eightmile Creek,LB8B0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LBS,INT,Big Springs Creek,LBSA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LBS,INT,Big Springs Creek,LBSB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LC1,INT,Lower Lolo Creek at rkm 21,LC1,Snake River Spring/Summer-run Chinook Salmon ESU,Wet Clearwater,Lolo Creek,CRLOL
+LC2,INT,Upper Lolo Creek at rkm 25,LC2,Snake River Spring/Summer-run Chinook Salmon ESU,Wet Clearwater,Lolo Creek,CRLOL
+LCL,INT,"Lee Creek, Lemhi R. Basin",LCLA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LCL,INT,"Lee Creek, Lemhi R. Basin",LCLB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LLR,INT,Lower Lemhi River,LLRB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LLR,INT,Lower Lemhi River,LLRA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LLS,INT,Lemhi Little Springs Instream,LLSA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LLS,INT,Lemhi Little Springs Instream,LLSB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LRL,INT,Lower Lochsa River Array Site,LRL,Snake River Spring/Summer-run Chinook Salmon ESU,Wet Clearwater,Lochsa River,CRLOC
+LRU,INT,Lochsa River Upper Site,LRU,Snake River Spring/Summer-run Chinook Salmon ESU,Wet Clearwater,Lochsa River,CRLOC
+LRW,INT,Lemhi River Weir,LRWB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LRW,INT,Lemhi River Weir,LRWA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+LTR,INT,Lower Tucannon River,LTR,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Tucannon River,SNTUC
+MIS,INT,Mission Creek,MISA0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lapwai/Big Canyon,CRLAP
+MIS,INT,Mission Creek,MISB0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lapwai/Big Canyon,CRLAP
+MTR,INT,Middle Tucannon River,MTR,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Tucannon River,SNTUC
+NFS,INT,North Fork Salmon River,NFSA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,North Fork Salmon River,SRNFS
+NFS,INT,North Fork Salmon River,NFSB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,North Fork Salmon River,SRNFS
+PCA,INT,Panther Creek Array,PCAA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Panther Creek,SRPAN
+PCA,INT,Panther Creek Array,PCAB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Panther Creek,SRPAN
+PCM,INT,"Pine Creek Mouth, Potlatch R.",PCMA0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+PCM,INT,"Pine Creek Mouth, Potlatch R.",PCMB0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+RFL,INT,Redfish Lake Creek,RFL,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Salmon River upper mainstem above Redfish Lake,SRUMA
+RRT,INT,Red River Satellite Facility,SC2A0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Upper South Fork Clearwater,SCUMA
+SC1,INT,Lower SF Clearwater R at rkm 1,SC1,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Upper South Fork Clearwater,SCUMA
+SC2,INT,Lower SF Clearwater R at rkm 2,SC2B0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Upper South Fork Clearwater,SCUMA
+SFG,INT,SF Salmon at Guard Station Br.,SFG,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,NA,NA
+STL,INT,Sawtooth Hatchery Adult Trap,STL,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Salmon River upper mainstem above Redfish Lake,SRUMA
+STR,INT,SF Salmon Satellite Facility,STR,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,South Fork Salmon River mainstem,SFMAI
+SW1,INT,Lower Selway River Array,SW1,Snake River Spring/Summer-run Chinook Salmon ESU,Wet Clearwater,Meadow Creek,SEMEA
+SW2,INT,Upper Selway River Array,SW2,Snake River Spring/Summer-run Chinook Salmon ESU,Wet Clearwater,Meadow Creek,SEMEA
+SWT,INT,Sweetwater Cr. near its mouth,SWTA0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lapwai/Big Canyon,CRLAP
+SWT,INT,Sweetwater Cr. near its mouth,SWTB0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lapwai/Big Canyon,CRLAP
+TAY,INT,Big Creek at Taylor Ranch,TAYA0,Snake River Spring/Summer-run Chinook Salmon ESU,Middle Fork Salmon River,Big Creek,MFBIG
+TAY,INT,Big Creek at Taylor Ranch,TAYB0,Snake River Spring/Summer-run Chinook Salmon ESU,Middle Fork Salmon River,Big Creek,MFBIG
+UGR,INT,Upper Grande Ronde at rkm 155,UGR,NA,NA,NA,NA
+UGS,INT,Upper Grande Ronde Starkey,UGSA0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Grande Ronde River upper mainstem,GRUMA
+UGS,INT,Upper Grande Ronde Starkey,UGSB0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Grande Ronde River upper mainstem,GRUMA
+USE,INT,Upper Salmon River at rkm 437,USE,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,NA,NA
+USI,INT,Upper Salmon River at rkm 460,USI,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,NA,NA
+UTR,INT,Upper Tucannon River,UTR,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Tucannon River,SNTUC
+VC1,INT,"Valley Creek, Upstream Site",VC1,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Valley Creek,SRVAL
+VC2,INT,"Valley Creek, Downstream Site",VC2,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Valley Creek,SRVAL
+WEB,INT,Webb Creek,WEBA0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lapwai/Big Canyon,CRLAP
+WEB,INT,Webb Creek,WEBB0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lapwai/Big Canyon,CRLAP
+WEN,INT,Wenaha River Mouth,WENA0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Wenaha River,GRWEN
+WEN,INT,Wenaha River Mouth,WENB0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Wenaha River,GRWEN
+WPC,INT,"Wimpey Creek, Lemhi R. Basin",WPCA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+WPC,INT,"Wimpey Creek, Lemhi R. Basin",WPCB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Lemhi River,SRLEM
+WR1,INT,Wallowa River at river km 14,WR1,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,NA,NA
+WR2,INT,Wallowa River at rkm 32,WR2A0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Lostine River,GRLOS
+WR2,INT,Wallowa River at rkm 32,WR2B0,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Lostine River,GRLOS
+YFK,INT,Yankee Fork Salmon River,YFKA0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Yankee Fork,SRYFS
+YFK,INT,Yankee Fork Salmon River,YFKB0,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Yankee Fork,SRYFS
+YPP,INT,Yellow Pine Pit Lake,YPPA0,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,East Fork South Fork Salmon River,SFEFS
+YPP,INT,Yellow Pine Pit Lake,YPPB0,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,East Fork South Fork Salmon River,SFEFS
+ZEN,INT,Secesh River at Zena Cr. Ranch,ZENA0,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,Secesh River,SFSEC
+ZEN,INT,Secesh River at Zena Cr. Ranch,ZENB0,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,Secesh River,SFSEC
+ALMOTC,MRR,Almota Creek - tributary to Snake River,ALMOTC,NA,NA,NA,NA
+ALPOWC,MRR,"Alpowa Creek, lower Snake River",ALPOWC,NA,NA,NA,NA
+ASOTIC,MRR,"Asotin Creek, Snake River above Clarkston, WA",ASOTIC,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+BCANF,MRR,Big Canyon Facility,BCANF,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Lostine River,GRLOS
+BIGBEC,MRR,"Big Bear Creek, Potlatch River",BIGBEC,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+CATHEW,MRR,Catherine Creek Weir,CATHEW,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Catherine Creek,GRCAT
+CROTRP,MRR,Crooked River Trap,SC2A0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Upper South Fork Clearwater,SCUMA
+DRY2C,MRR,Dry Creek - tributary to Imnaha River,DRY2C,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+FISTRP,MRR,Fish Creek Trap,FISTRP,Snake River Spring/Summer-run Chinook Salmon ESU,Wet Clearwater,Lochsa River,CRLOC
+FREEZC,MRR,Freezeout Creek - tributary to Imnaha River,FREEZC,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+GEORGC,MRR,"George Creek, Asotin Creek watershed",GEORGC,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Asotin Creek,SNASO
+GRANDW,MRR,Grande Ronde River Weir,GRANDW,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Grande Ronde River upper mainstem,GRUMA
+GUMBTC,MRR,"Gumboot Creek, Imnaha River Basin",GUMBTC,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+HORS3C,MRR,"Horse Creek, Imnaha River Basin",HORS3C,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+IMNAHW,MRR,Imnaha River Weir,IMNAHW,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+JOHNSC,MRR,Johnson Creek,JOHNSC,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,East Fork South Fork Salmon River,SFEFS
+JOSEPC,MRR,"Joseph Creek, Grande Ronde River Basin",JOSEPC,NA,NA,NA,NA
+KOOS,MRR,Kooskia National Fish Hatchery,KOOS,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Lawyer Creek,SCLAW
+LAKEC,MRR,Lake Creek,LAKEC,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,Secesh River,SFSEC
+LBEARC,MRR,"Little Bear Creek, Potlatch River watershed",LBEARC,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+LOOKGC,MRR,Lookingglass Creek,LOOKGC,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Lookingglass Creek,GRLOO
+LOSTIW,MRR,Lostine River Weir,LOSTIW,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Lostine River,GRLOS
+LSHEEF,MRR,Little Sheep Facility,LSHEEF,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Big Sheep Creek,IRBSH
+MAHOGC,MRR,"Mahogany Creek, Imnaha River Basin",MAHOGC,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Imnaha River mainstem,IRMAI
+PAHH,MRR,Pahsimeroi Hatchery,PAHH,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,Pahsimeroi River,SRPAH
+PENAWC,MRR,Penawawa Creek - tributary to Snake River,PENAWC,NA,NA,NA,NA
+POTREF,MRR,East Fork Potlatch River,POTREF,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+POTRWF,MRR,West Fork Potlatch River,POTRWF,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Polatch River,CRPOT
+RAPH,MRR,Rapid River Hatchery,RAPH,Snake River Spring/Summer-run Chinook Salmon ESU,South Fork Salmon River,Little Salmon River,SRLSR
+REDR,MRR,Red River,SC2A0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Upper South Fork Clearwater,SCUMA
+REDTRP,MRR,Red River Trap,SC2A0,Snake River Spring/Summer-run Chinook Salmon ESU,Dry Clearwater,Upper South Fork Clearwater,SCUMA
+SALEFT,MRR,East Fork Salmon River Trap,SALEFT,Snake River Spring/Summer-run Chinook Salmon ESU,Upper Salmon River,East Fork Salmon River,SREFS
+TENMC2,MRR,"Tenmile Creek, tributary to Snake River",TENMC2,NA,NA,NA,NA
+TUCH,MRR,Tucannon River Hatchery,TUCH,Snake River Spring/Summer-run Chinook Salmon ESU,Lower Snake,Tucannon River,SNTUC
+WALH,MRR,Wallowa Hatchery,WALH,Snake River Spring/Summer-run Chinook Salmon ESU,Grande Ronde / Imnaha,Lostine River,GRLOS
