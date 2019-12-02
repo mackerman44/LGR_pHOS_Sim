@@ -92,6 +92,21 @@ pop_est = c('Chinook', 'Steelhead') %>%
   mutate_at(vars(cv),
             list(as.numeric)) %>%
   rename(Species = species)
+
+p_est = c('Chinook', 'Steelhead') %>%
+  as.list() %>%
+  set_names() %>%
+  map_df(.f = function(x) {
+    read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_', x, '.xlsx'),
+               'Site Detect Eff')
+  }) %>%
+  # filter(!is.na(n_tags)) %>%
+  mutate_at(vars(spawn_yr:TRT),
+            list(as.factor)) %>%
+  mutate_at(vars(cv),
+            list(as.numeric)) %>%
+  rename(Species = species)
+
 ```
 
 ```{r read_in_sites}
@@ -240,9 +255,11 @@ In practice, detection probabilities at instream PIT tag detection systems (IPTD
 
 `r tab_nums('remove_tab')`
 ```{r}
-remove_t = read_excel('../data/TRT_Pop_Considerations.xlsx') %>%
-  select(-Notes)
-pander(remove_t)
+remove_t = read_excel('../data/TRT_Pop_Considerations.xlsx')
+  
+remove_t %>%
+  select(-Notes) %>%
+  pander()
 
 rmv = remove_t %>%
   select(-SiteIDs) %>%
@@ -254,35 +271,25 @@ rmv = remove_t %>%
 
 ### Chinook
 
-* CRLOC: LRL installed October 2016. LRU installed December 2017.
-* CRLOL: Not removed from analysis. Poor precision may be due to small population size.
-* GRCAT: CCW installed in March 2015.
-* GRLOO: Only includes natural origin adults that return to the Lookingglass Hatchery (LOOKGC).
-* GRUMA: UGS site installed in November 2017. Complete data only for 2018. 
-* GRWEN: Tandem array was installed in 2018, but blew out soon after. Re-installed in 2019. No long term data.
-* IRBSH: Not removed from analysis. Poor precision may be due to small population size.
-* SEMEA: SW1 installed December 2016. SW2 installed September 2017.
-* SNTUC: Population occurs below LGR.
-* SREFS: Array installed in 2016, but blown out soon after and not re-installed.
-* SRLSR: Only includes natural origin adults that return to the Rapid River Hatchery weir (RAPH).
-* SRNFS: Installed in 2016, but perfomed poorly initially. System upgraded in 2018.
-* SRPAH: Only includes natural adults that return to the Pahsimeroi Hatchery weir (PAHH).
-* SRPAN: Site installed in July 2017.
-* SRYFS: Not removed from analysis. Poor precision may be due to small population size.
+```{r}
+remove_t %>%
+  filter(Species == 'Chinook') %>%
+  select(TRT, Notes) %>%
+  pander(style = 'rmarkdown',
+         justify = 'left')
+```
 
 Also note that the GRLOS, GRMIN, GRCAT, and GRUMA Chinook salmon TRT populations all occur above the UGR array; however, we don't know which population an adult is destined for after passing UGR unless it is detected again upstream. As a result, Chinook salmon adults that are last observed at the UGR site cannot be used in population abundance estimates. One might consider how final observations at UGR could be leveraged in the future for upriver abundance estimates.
 
 ### Steelhead
 
-* CRLOC-s: LRL installed October 2016. LRU installed December 2017. Remaining abundance estimates from FISTRP.
-* CRSEL-s: SW1 installed December 2016. SW2 installed September 2017.
-* SFSEC-s: Not removed from analysis. Believe poor precision is due to low population size.
-* SNTUC-s: Population occurs below LGR.
-* SREFS-s: Array installed in 2016, but blown out soon after and not re-installed.
-* SRLSR-s: Only includes ad-intact adults that return to the Rapid River Hatchery weir (RAPH).
-* SRNFS-s: Installed in 2016, but perfomed poorly initially. System upgraded in 2018.
-* SRPAH-s: Only includes ad-intact adults that return to the Pahsimeroi Hatchery weir (PAHH).
-* SRUMA-s: Not removed from analysis. Believe poor precision is due to low population size.
+```{r}
+remove_t %>%
+  filter(Species == 'Steelhead') %>%
+  select(TRT, Notes) %>%
+  pander(style = 'rmarkdown',
+         justify = 'left')
+```
 
 \newpage
 
@@ -294,9 +301,9 @@ Also note that the GRLOS, GRMIN, GRCAT, and GRUMA Chinook salmon TRT populations
 
 ```{r n_tags_vs_cv_fig, fig.cap = n_tags_vs_cv_fig}
 pop_est = pop_est %>%
-  left_join(rmv) %>%
-  filter(is.na(remove)) %>%
-  select(-remove)
+  anti_join(rmv) %>%
+  mutate_at(vars(spawn_yr:TRT),
+            list(fct_drop))
 
 pop_est %>%
   ggplot(aes(x = n_tags,
@@ -487,21 +494,20 @@ Next, `r tab_nums('lgr_tags_needed', display = 'c')` summarizes the total number
 
 `r tab_nums('lgr_tags_needed')`
 ```{r}
-# This is ugly and brute force, but I can fix later using remove_t
-rmv_trt = data.frame(Species = c(rep('Chinook', 12), rep('Steelhead', 7)),
-                     TRT = c('CRLOC', 'GRCAT', 'GRLOO', 'GRUMA', 'GRWEN', 'SEMEA', 'SNTUC',
-                             'SREFS', 'SRLSR', 'SRNFS', 'SRPAH', 'SRPAN', 'CRLOC-s',
-                             'CRSEL-s', 'SNTUC-s', 'SREFS-s', 'SRLSR-s', 'SRNFS-s', 'SRPAH-s'),
-                     Remove = rep('Yes', 19))
+rmv %>%
+  filter(remove == 'Y') %>%
+  select(Species, TRT) %>%
+  distinct()
 
 tags_tables = tags_est_df %>%
   left_join(site_pop %>%
               select(Species, TRT, Name = POP_NAME) %>%
               distinct()) %>%
   select(Species, TRT, Name, everything()) %>%
-  left_join(rmv_trt) %>%
-  filter(is.na(Remove)) %>%
-  select(-Remove) %>%
+  anti_join(rmv %>%
+  filter(remove == 'Y') %>%
+  select(Species, TRT) %>%
+  distinct()) %>%
   arrange(Species, desc(tot_tags_need)) %>%
   split(list(.$Species))
 
