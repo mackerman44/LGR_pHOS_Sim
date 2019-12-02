@@ -166,6 +166,7 @@ prop_det_df = tags_deploy %>%
 
 
 min_yr = 2013
+# min_tags = minumum number of tags that need to be detected for reasonable precision
 min_tags = tibble(Species = c('Chinook',
                               'Steelhead'),
                   min_tags = c(50))
@@ -183,7 +184,6 @@ tags_est_df = pop_est %>%
                list(mean)) %>%
   left_join(min_tags) %>%
   mutate(tot_tags_need = min_tags / prop_tags_det)
-
 
 # tags_est_df %>%
 #   ggplot(aes(x = tot_tags_need)) +
@@ -539,7 +539,7 @@ tags_est_df %>%
 
 # Conclusions
 
-These results suggest we need to detect a minimum of about 50 tags per TRT population to achieve acceptable precision in our abundance estimates at the TRT spatial scale. 
+These results suggest we need to detect a minimum of about 50 tags per TRT population to achieve acceptable precision in our abundance estimates at the TRT spatial scale. Additionally, `r fig_nums('perc_good_cv', display = 'c')` could be interpreted as follows: Assuming a given TRT population contains IPTDS infrastructure intended for natural origin abundance monitoring and 4,000 PIT tags deployed at LGR, we'd expect that about 60-75% of all TRT population abundance estimates would have 'good' precision (i.e. CV $\leq$ 0.15).
 
 ## Next Steps
 
