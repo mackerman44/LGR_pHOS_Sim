@@ -39,6 +39,7 @@ library(scales)
 library(janitor)
 library(sf)
 library(ggrepel)
+library(ggpubr)
 
 theme_set(theme_bw())
 # setwd('trap_rate')
@@ -126,7 +127,7 @@ tag50_fig = fig_nums('tag50_fig',
                      'The number of PIT tags detected in a TRT population and the corresponding population abundance estimate, by species, using results back to spawn year 2013. Estimates shown in blue had a CV of 15% or less. The dashed vertical line denotes 50 PIT tags detected.')
 
 prop_tags_lgr_fig = fig_nums('prop_tags_lgr_fig',
-                             'The proportion of tags detected within a TRT population each year, by species.')
+                             'The proportion of all tags deployed at LGR that were later detected within any TRT population each year, by species.')
 
 prop_det_tab = tab_nums('prop_det_tab',
                         'The average proportion of tags deployed at LGR detected in a TRT population, by species.')
@@ -564,7 +565,7 @@ prop_mod_df %>%
 
 ```  
 
-`r tab_nums('n_tags_tab', display = 'c')` shows that we need to detect about 55 Chinook salmon and 40-46 steelhead to achieve a CV of 15% or less for natural origin abundance estimates. Further, `r tab_nums('n_tags_tab', display = 'c')` shows that, using past results, we need to detect about 3% of Chinook salmon or slight greater than 1% of steelhead PIT tags deployed at LGR to achieve reasonable precise estimates of abundance. For the sake of simplicity, let's assume that we need to detect 50 PIT tags within a population, for both species, to achieve a precise abundance estimate `r fig_nums('tag50_fig', display = 'c')`.
+`r tab_nums('n_tags_tab', display = 'c')` shows that we need to detect about 55 Chinook salmon and 40-46 steelhead to achieve a CV of 15% or less for natural origin abundance estimates. Further, `r tab_nums('n_tags_tab', display = 'c')` shows that, using past results, we need to detect about 3% of Chinook salmon or slighty greater than 1% of steelhead PIT tags deployed at LGR to achieve reasonably precise estimates of abundance. For the sake of simplicity, let's assume that we need to detect 50 PIT tags within a population, for both species, to achieve a precise abundance estimate (`r fig_nums('tag50_fig', display = 'c')`).
 
 ```{r, eval = T, fig.cap = tag50_fig}
 pop_est %>%
@@ -582,13 +583,13 @@ pop_est %>%
 
 ### Sex and Age Estimates
 
-We want to note that reasonably precise estimates of abundance, by sex and total age, are also a desired outcome as they are necessary to construct brood tables and estimate population productivity. However, note that it will not require 50 female tags detected within a population to achieve reasonable precision of female abundance. Rather, we will take the total abundance estimate to a TRT population and multiply it by a binomial (female vs. male) proportion to generate abundance by females and males. The binomial proportions will be estimated from all of the tags detected in that TRT population. If we have about 50 total tags detected in a populaion for a good abundance estimate, the proportion female or male will be fairly precise because 50 is a good sample size for proportions, especially when the proportion is somewhere near 50%. Therefore, the CV for the number of females in that population will be slightly larger than the CV of the total abundance, but probably not by much. 
+We want to note that reasonably precise estimates of abundance, by sex and total age, are also a desired outcome as they are necessary to construct brood tables and estimate population productivity. However, note that it will not require 50 female tags detected within a population to achieve reasonable precision for female abundance. Rather, we will take the total abundance estimate to a TRT population and multiply it by a binomial (female vs. male) proportion to generate abundance by females and males. The binomial proportions will be estimated from all of the tags detected in that TRT population. If we have about 50 total tags detected in a populaion for a good abundance estimate, the proportion female or male will be fairly precise because 50 is a good sample size for proportions, especially when the proportion is somewhere near 50%. Therefore, the CV for the number of females in that population will be slightly larger than the CV of the total abundance, but probably not by much. 
 
 Similar arguments hold for abundance by total age (multinomial proportions), although as we attempt to account for more age classses, the precision will suffer. Therefore, for a Chinook salmon population with 3 total age classes, we expect to get reasonable estimates with a sample size close to 50. However, for a steelhead population with up to 6 or so total age classes, the precision will suffer, especially since some of the total age classes may have very few fish.
 
 ## Total Tags at Lower Granite
 
-We now have an estimate of the number of PIT tags that need to be detected within a TRT population (50) to achieve an abundance estimate with reasonable precision. But now we want to know how many PIT tags would need to be deployed at LGR to observe 50 PIT tags within any population. The proportion of tags detected in any TRT population has changed over time, due to more IPTDS infrastructure being installed `r fig_nums('prop_tags_lgr_fig', display = 'c')`, and thus, we chose to focus on the period from `r min_yr` on, since the infrastructure has been more stable since then. Since `r min_yr`, the average proportion of all tags deployed from LGR that were detected in a TRT population, by species, is shown in `r tab_nums('prop_det_tab', display = 'c')`.
+We now have an estimate of the number of PIT tags that need to be detected within a TRT population (50) to achieve an abundance estimate with reasonable precision. But now we want to know how many PIT tags would need to be deployed at LGR to observe 50 PIT tags within any population. The proportion of total tags deployed at LGR and detected within any TRT population has changed over time, due to more IPTDS infrastructure being installed (`r fig_nums('prop_tags_lgr_fig', display = 'c')`), and thus, we chose to focus on the period from `r min_yr` on, since the infrastructure has been more stable since then. Since `r min_yr`, the average proportion of all tags deployed from LGR that were detected in a TRT population, by species, is shown in `r tab_nums('prop_det_tab', display = 'c')`.
 
 ```{r prop_black_box, fig.cap = prop_tags_lgr_fig}
 prop_det_df %>%
@@ -615,7 +616,7 @@ prop_det_df %>%
   pander()
 ```
 
-Next, `r tab_nums('lgr_tags_needed', display = 'c')` summarizes the total number of tags that would need to be deployed at LGR to achieve a precise abundance estimate for any given population. 
+Next, `r tab_nums('lgr_tags_needed', display = 'c')` summarizes the total number of tags that would need to be deployed at LGR to achieve a precise abundance estimate for any given population. `r tab_nums('lgr_tags_needed', display = 'c')` only includes TRT populations which contain IPTDS intended for natural origin population abundance monitoring. 
 
 `r tab_nums('lgr_tags_needed')`
 ```{r}
@@ -638,7 +639,7 @@ tags_tables[[2]] %>%
   pander(round = 3)
 ```
 
-Finally, we summarised these results by examining what percentage of the TRT population abundance estimates we would expect to be reasonably precise (i.e. CV $\leq$ 0.15) given a certain number of tags deployed at Lower Granite (`r fig_nums('perc_good_cv', display = 'c')`). Results were similar for each species. As an example, if 2,000 PIT tags were deployed for each species at LGR, we might expect that approximately 40% of TRT population abundance estimates would have a CV of 15% or less; with 4,000 PIT tags per species, we'd expect that about 62-75% of population abundance estimates would be reasonably precise. 
+Finally, we summarised these results by examining the percentage of TRT population abundance estimates we would expect to be reasonably precise (i.e., CV $\leq$ 0.15) given a certain number of tags deployed at Lower Granite (`r fig_nums('perc_good_cv', display = 'c')`). Results were similar for each species. As an example, if 2,000 PIT tags were deployed for each species at LGR, we might expect that approximately 40% of TRT population abundance estimates would have a CV of 15% or less; with 4,000 PIT tags per species, we'd expect that about 62-75% of population abundance estimates would be reasonably precise. 
 
 Another way to interpret `r fig_nums('perc_good_cv', display = 'c')` is to see which TRT populations would or would not be expected to have a reasonably precise abundance estimate for a given number of tags. For example, if 5,000 spring/summer Chinook were tagged, we could expect reasonable abundance estimates for all populations except SRYFS, CRLOL and IRBSH. 
 
