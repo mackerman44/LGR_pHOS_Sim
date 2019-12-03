@@ -9,8 +9,10 @@ output:
   html_document:
     theme: cerulean
     toc: yes
-    toc_depth: 1
+    toc_depth: 3
     toc_float: yes
+    fig_height: 6
+    fig_width: 8
 ---
 
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
@@ -31,13 +33,77 @@ fig_nums = captioner()
 
 # load packages for analysis
 library(tidyverse)
+library(magrittr)
 library(readxl)
 library(scales)
 library(janitor)
+library(sf)
+library(ggrepel)
 
 theme_set(theme_bw())
 # setwd('trap_rate')
 ```
+
+```{r functions}
+assign_POP_GSI <- function(species, configuration, site_df){
+
+  #load('./data/ConfigurationFiles/DABOM_map_data.rda')
+  load('../../SnakeBasinFishStatus/data/ConfigurationFiles/Snake_POP_metadata.rda')
+
+  config <- configuration %>%
+    filter(SiteID %in% site_df$SiteID) %>%
+    filter(SiteID != 'GRA') %>%
+    select(SiteID, SiteType, SiteName, RKM, Latitude, Longitude, Node) %>%
+    distinct() %>%
+    sf::st_as_sf(coords = c('Longitude', 'Latitude'),
+                 crs = 4326)
+
+  if(species == 'Steelhead'){
+    pop_sf <- SR_st_pop
+    
+    ignore <- c('USE', 'USI', 'SFG')
+    sfclw <-  c('SC1', 'SC2')
+    
+    df <- config %>%
+      sf::st_join(pop_sf %>%
+                    select(ESU_DPS, MPG, POP_NAME, TRT = TRT_POPID, GSI_Group)) %>%
+      mutate(POP_NAME = ifelse(SiteID %in% ignore, NA, POP_NAME),
+             TRT = ifelse(SiteID %in% ignore, NA, TRT)) %>%
+      mutate(POP_NAME = ifelse(SiteID %in% sfclw, 'South Fork Clearwater River', POP_NAME),
+             TRT = ifelse(SiteID %in% sfclw, 'CRSFC-s', TRT))
+
+      }
+  
+  if(species == 'Chinook'){
+    pop_sf <- SR_ch_pop
+    
+    ignore <- c('USE', 'USI', 'SFG', 'IR1', 'IR2','WR1', 'UGR')
+    sfclw <-  c('SC1', 'SC2')
+    
+    df <- config %>%
+      sf::st_join(pop_sf %>%
+                    select(ESU_DPS, MPG, POP_NAME, TRT = TRT_POPID, GSI_Group)) %>%
+      mutate(POP_NAME = ifelse(SiteID %in% ignore, NA, POP_NAME),
+             TRT = ifelse(SiteID %in% ignore, NA, TRT)) %>%
+      mutate(POP_NAME = ifelse(SiteID %in% sfclw, 'Upper South Fork Clearwater', POP_NAME),
+             TRT = ifelse(SiteID %in% sfclw, 'SCUMA', TRT))
+    
+  }
+  
+
+    #as_tibble() %>%
+    #select(-geometry)
+    #   mutate_at(vars(obsGSI, TRT, modBranch, MPG, NWR_POPID),
+    #             list(~ if_else(AssignSpawnNode == 'GRA',
+    #                            as.character(NA),
+    #                            .)))
+  
+  return(list(df, pop_sf))
+
+}
+
+```
+
 
 ```{r captions}
 remove_tab = tab_nums('remove_tab',
@@ -69,8 +135,13 @@ lgr_tags_needed = tab_nums('lgr_tags_needed',
                            'The expected number of tags needed to be deployed at LGR to achieve a minimum number of detections in each TRT population leading to reasonably precise estimate of abundance.')
 
 perc_good_cv = fig_nums('perc_good_cv',
-                        'Expected proportion of TRT populations with a good CV of abundance estimates for a given number of PIT tags deployed at LGR, colored by species.')
+                        'Expected proportion of TRT populations with a good CV of abundance estimates for a given number of PIT tags deployed at LGR, faceted by species. Dashed line shows 4,000 tags. Labels depict which additional TRT populations are expected to have a good CV of abundance as the number of tags deployed increases.')
 
+perc_good_cv_v2 = fig_nums('perc_good_cv_v2',
+                        'Expected proportion of TRT populations with a good CV of abundance estimates for a given number of PIT tags deployed at LGR, faceted by species, colored by detection probability scenario.')
+
+det_prob_fig = fig_nums('det_prob_fig',
+                        'Histograms of detection probabilities at each array, estimated from DABOM, facted by MPG and colored by TRT population')
 ```
 
 # Introduction
@@ -80,9 +151,10 @@ We are interested in determining the relationship between the number of PIT tags
 ```{r read_in_est}
 AbundanceFolder = '../../SnakeBasinFishStatus/Abundance_results' # for processed files
 
+# abundance estimates
 pop_est = c('Chinook', 'Steelhead') %>%
   as.list() %>%
-  set_names() %>%
+  rlang::set_names() %>%
   map_df(.f = function(x) {
     read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_', x, '.xlsx'))
   }) %>%
@@ -93,34 +165,83 @@ pop_est = c('Chinook', 'Steelhead') %>%
             list(as.numeric)) %>%
   rename(Species = species)
 
+# detection probability estimates
 p_est = c('Chinook', 'Steelhead') %>%
   as.list() %>%
-  set_names() %>%
+  rlang::set_names() %>%
   map_df(.f = function(x) {
     read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_', x, '.xlsx'),
                'Site Detect Eff')
   }) %>%
   # filter(!is.na(n_tags)) %>%
-  mutate_at(vars(spawn_yr:TRT),
+  mutate_at(vars(spawn_yr:Node),
             list(as.factor)) %>%
   mutate_at(vars(cv),
             list(as.numeric)) %>%
   rename(Species = species)
 
+# # what popualation and MGP are each site associated with?
+# # load configuration file
+# load('../../SnakeBasinFishStatus/data/ConfigurationFiles/site_config.rda')
+# 
+# site_pop = c('Chinook', 'Steelhead') %>%
+#   as.list() %>%
+#   set_names() %>%
+#   map_df(.id = 'Species',
+#          .f = function(x) {
+#            assign_POP_GSI(species = x, 
+#                           configuration = configuration,
+#                           site_df = site_df)[[1]] %>%
+#              as_tibble() %>%
+#              select(SiteID:SiteName, Node, ESU_DPS:TRT)
+#          })
+# 
+# p_est %<>%
+#   left_join(site_pop %>%
+#               select(Species, Node, TRT, POP_NAME, MPG))
 ```
 
 ```{r read_in_sites}
 # which sites are attached to which TRT populations?
 site_pop = c('Chinook', 'Steelhead') %>%
   as.list() %>%
-  set_names() %>%
+  rlang::set_names() %>%
   map_df(.id = 'Species',
          .f = function(x) read_csv(paste0('../data/Site_TRT_', x, '.csv')))
+
+# attach populations to site detection probabilities
+p_est %<>%
+  left_join(site_pop %>%
+              select(Species, Node, TRT, POP_NAME, MPG) %>%
+              distinct())
 
 ```
 
 ```{r}
 # determine which populations don't have good detection infrastructure to make estimates
+p_mpg_list = p_est %>%
+  mutate_at(vars(spawn_yr),
+            list(~ as.integer(as.character(.)))) %>%
+  # filter(spawn_yr >= min_yr) %>%
+  # filter(spawn_yr >= 2013) %>%
+  filter(n_tags > 0,
+         estimate > 0,
+         sd > 0,
+         !is.na(TRT)) %>%
+  split(list(.$Species)) %>%
+  map(.f = function(x) {
+    x %>%
+      mutate_at(vars(TRT, MPG),
+                list(fct_drop)) %>%
+      ggplot(aes(x = estimate,
+                 fill = TRT)) +
+      geom_histogram(binwidth = 0.05) +
+      facet_wrap(~ MPG,
+                 scales = 'free_y') +
+      labs(x = 'Detection Probability',
+           title = unique(x$Species))
+  })
+
 
 # this populations have a single detection site
 single_site_pops = site_pop %>%
@@ -133,16 +254,20 @@ single_site_pops = site_pop %>%
               distinct()) %>%
   select(-n_sites)
 
-
-# site_pop %>%
-#   group_by(Species, TRT, POP_NAME) %>%
-#   summarise(n_sites = n_distinct(SiteID)) %>%
-#   arrange(Species, n_sites) %>%
-#   filter(n_sites == 2) %>%
-#   left_join(site_pop %>%
-#               select(Species, TRT, SiteID:SiteName) %>%
-#               distinct()) %>%
-#   as.data.frame()
+single_site_det = single_site_pops %>%
+  left_join(site_pop) %>%
+  select(Species, SiteID, SiteType, Node, TRT, POP_NAME, MPG) %>%
+  left_join(p_est) %>%
+  filter(n_tags > 0,
+         sd > 0) %>%
+  select(Species:estimate) %>%
+  mutate(loc = if_else(grepl('A0$', Node),
+                             'upstrm',
+                             'dwnstrm')) %>%
+  select(Species:estimate, loc,
+         -Node, -n_tags) %>%
+  spread(loc, estimate) %>%
+  mutate(p_all = 1 - ((1-dwnstrm) * (1 - upstrm)))
 ```
 
 
@@ -494,20 +619,15 @@ Next, `r tab_nums('lgr_tags_needed', display = 'c')` summarizes the total number
 
 `r tab_nums('lgr_tags_needed')`
 ```{r}
-rmv %>%
-  filter(remove == 'Y') %>%
-  select(Species, TRT) %>%
-  distinct()
-
 tags_tables = tags_est_df %>%
   left_join(site_pop %>%
               select(Species, TRT, Name = POP_NAME) %>%
               distinct()) %>%
   select(Species, TRT, Name, everything()) %>%
   anti_join(rmv %>%
-  filter(remove == 'Y') %>%
-  select(Species, TRT) %>%
-  distinct()) %>%
+              filter(remove == 'Y') %>%
+              select(Species, TRT) %>%
+              distinct()) %>%
   arrange(Species, desc(tot_tags_need)) %>%
   split(list(.$Species))
 
@@ -518,30 +638,113 @@ tags_tables[[2]] %>%
   pander(round = 3)
 ```
 
-Finally, we summarised these results by examining what percentage of the TRT population abundance estimates we would expect to be reasonably precise (i.e. CV $\leq$ 0.15) given a certain number of tags deployed at Lower Granite (`r fig_nums('perc_good_cv', display = 'c')`). Results were similar for each species. As an example, if 2,000 PIT tags were deployed for each species at LGR, we might expect that approximately 40% of TRT population abundance estimates would have a CV of 15% or less; with 4,000 PIT tags per species, we'd expect that about 62-75% of population abundance estimates would be reasonably precise.
+Finally, we summarised these results by examining what percentage of the TRT population abundance estimates we would expect to be reasonably precise (i.e. CV $\leq$ 0.15) given a certain number of tags deployed at Lower Granite (`r fig_nums('perc_good_cv', display = 'c')`). Results were similar for each species. As an example, if 2,000 PIT tags were deployed for each species at LGR, we might expect that approximately 40% of TRT population abundance estimates would have a CV of 15% or less; with 4,000 PIT tags per species, we'd expect that about 62-75% of population abundance estimates would be reasonably precise. 
 
-```{r perc_good_CV, fig.cap = perc_good_cv}
+Another way to interpret `r fig_nums('perc_good_cv', display = 'c')` is to see which TRT populations would or would not be expected to have a reasonably precise abundance estimate for a given number of tags. For example, if 5,000 spring/summer Chinook were tagged, we could expect reasonable abundance estimates for all populations except SRYFS, CRLOL and IRBSH. 
 
-tags_est_df %>%
-  select(Species, TRT, tot_tags_need) %>%
-  left_join(rmv_trt) %>%
-  filter(is.na(Remove)) %>%
-  crossing(tot_tags_deploy = seq(500, 8000, by = 100)) %>%
+```{r}
+prop_trt_df = tags_est_df %>%
+  ungroup() %>%
+  mutate(tot_tags_need_05 = prop_tags_det * 1.05,
+         tot_tags_need_10 = prop_tags_det * 1.1,
+         tot_tags_need_20 = prop_tags_det * 1.20) %>%
+  mutate_at(vars(tot_tags_need_05:tot_tags_need_20),
+            list(~ min_tags / .)) %>%
+  select(Species, TRT, starts_with("tot_tags_need")) %>%
+  anti_join(rmv %>%
+              filter(remove == 'Y') %>%
+              select(Species, TRT) %>%
+              distinct()) %>%
+  gather(scenario, tot_tags_need, starts_with("tot_tags_need")) %>%
+  mutate(scenario = recode(scenario,
+                           'tot_tags_need' = 'Current'),
+         scenario = str_replace(scenario,
+                                'tot_tags_need_', 
+                                'Increase p by ')) %>%
+  crossing(tot_tags_deploy = seq(500, 20000, by = 100)) %>%
   mutate(sufficient = if_else(tot_tags_deploy >= tot_tags_need,
                               T, F)) %>%
-  group_by(Species, tot_tags_deploy) %>%
-  summarise(n_TRT_suff = sum(sufficient),
-            n_TRT_not_suff = sum(!sufficient),
-            n_TRT_tot = n_TRT_suff + n_TRT_not_suff) %>%
+  filter(sufficient) %>%
+  group_by(Species, scenario, TRT) %>%
+  filter(tot_tags_deploy == min(tot_tags_deploy)) %>%
+  # filter(scenario == 'Current') %>%
+  group_by(Species, scenario, tot_tags_deploy) %>%
+  summarise(n_trt = n_distinct(TRT),
+            which_trt = paste(TRT, collapse = ', ')) %>%
+  ungroup() %>%
+  left_join(tags_est_df %>%
+              anti_join(rmv) %>%
+              group_by(Species) %>%
+              summarise(tot_trt = n_distinct(TRT))) %>%
+  group_by(Species, scenario) %>%
+  mutate(cum_trt = cumsum(n_trt),
+         prop_trt = cum_trt / tot_trt) %>%
+  ungroup()
+```
+
+
+```{r perc_good_CV, fig.cap = perc_good_cv}
+prop_trt_df %>%
+  filter(scenario == 'Current') %>%
   ggplot(aes(x = tot_tags_deploy,
-             y = n_TRT_suff / n_TRT_tot,
-             color = Species)) +
-  geom_line() +
-  geom_point() +
-  scale_color_brewer(palette = 'Set1') +
+             y = prop_trt)) +
+  geom_point() + 
+  geom_step() +
+  geom_vline(xintercept = 4000,
+             linetype = 2) +
+  geom_label_repel(aes(label = which_trt),
+                   show.legend = F,
+                   force = 2,
+                   size = 3) +
+  facet_wrap(~ Species) +
   labs(x = '# Tags Deployed at Lower Granite',
        y = expression(paste("Proportion of TRT Populations with Precise ", hat(N))))
 ```
+
+One way to increase the number of tags detected in a given population is to increase the total number of tags deployed at Lower Granite, but another could be to increase the probability of detecting a tag assuming it does arrive in that population. This could be done by upgrading older in-stream PIT tag detection equipment, re-deploying it more effectively, or adding detection sites within the population. Without exploring specific ways that detection efficiency could be increased within each population (or even whether it could be increased by the amounts suggested) we evaluated the potential effect on the number of total tags needed to be deployed at Lower Granite if the detection probability was increased by 5, 10 or 20% across the basin. 
+
+`r fig_nums('perc_good_cv_v2', display = 'c')` shows how such increases would impact the number of tags needed to be deployed. The main message from this analysis is that improving detection efficiency, even by as much as 20% (which is actually impossible in most populations, that would increase it to above 100%), does not reduce the number of tags needed very much. This is partly due to the fact that most populations already have high detection efficiency. However, there may be some populations where improving the detection infrastructure could lead to gains in the precision of the abundance estimates (`r fig_nums('det_prob_fig', display = 'c')`).
+
+```{r perc_good_CV_v2, fig.cap = perc_good_cv_v2}
+
+# prop_trt_df %>%
+#   arrange(desc(prop_trt))
+
+prop_trt_df %>%
+  mutate(scenario = str_replace(scenario,
+                                '05', '5%'),
+         scenario = str_replace(scenario,
+                                '10', '10%'),
+         scenario = str_replace(scenario,
+                                '20', '20%'),
+         scenario = as.factor(scenario),
+         scenario = fct_relevel(scenario,
+                                'Increase p by 5%',
+                                after = 1)) %>%
+  ggplot(aes(x = tot_tags_deploy,
+             y = prop_trt,
+             color = scenario)) +
+  geom_point() + 
+  geom_step() +
+  # geom_label_repel(aes(label = which_trt),
+  #                  show.legend = F,
+  #                  force = 2,
+  #                  size = 3) +
+  scale_color_viridis_d(name = 'Scenario',
+                        end = 0.8) +
+  facet_wrap(~ Species) +
+  labs(x = '# Tags Deployed at Lower Granite',
+       y = expression(paste("Proportion of TRT Populations with Precise ", hat(N))))
+
+```
+
+
+```{r det_prob_figure, fig.height = 8, fig.cap = det_prob_fig}
+ggpubr::ggarrange(plotlist = p_mpg_list,
+                  ncol = 1,
+                  nrow = 2)
+```
+
 
 # Conclusions
 
