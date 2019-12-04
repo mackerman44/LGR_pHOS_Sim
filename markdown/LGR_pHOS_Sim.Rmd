@@ -9,8 +9,6 @@ author:
     correspondence: yes
     email: Mike.Ackerman@biomark.com
     institute: biomark
-- Kyle Meier:
-    institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   html_document:
