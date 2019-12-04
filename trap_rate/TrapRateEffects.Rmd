@@ -13,13 +13,16 @@ author:
     institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-<<<<<<< HEAD
   word_document: 
     fig_caption: yes
     fig_height: 7
     fig_width: 7
     toc: yes
-=======
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
+    reference_docx: ../templates/ReportTemplate.docx
   pdf_document:
     fig_height: 6
     fig_width: 8
@@ -29,16 +32,6 @@ output:
     - --lua-filter=../templates/pagebreak.lua
     includes:
       in_header: ../templates/header_ABS.tex
-  word_document:
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 6
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
-    reference_docx: ../templates/ReportTemplate.docx
->>>>>>> 0453e17f7e20f703a32b836da49db7a30134fe9b
   html_document:
     theme: simplex
     toc: yes
