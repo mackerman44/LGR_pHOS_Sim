@@ -1,11 +1,36 @@
 ---
 title: "Tagging Rate at Lower Granite Dam"
 author:
-- Kevin See^[Biomark, Inc.]
-- Mike Ackerman^[Biomark, Inc.]
-- Kyle Meier^[Biomark, Inc.]
+- Kevin See:
+    correspondence: yes
+    email: Kevin.See@biomark.com
+    institute: biomark
+- Mike Ackerman:
+    correspondence: yes
+    email: Mike.Ackerman@biomark.com
+    institute: biomark
+- Kyle Meier:
+    institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
+  pdf_document:
+    fig_height: 6
+    fig_width: 8
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
+    includes:
+      in_header: ../templates/header_ABS.tex
+  word_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
+    reference_docx: ../templates/ReportTemplate.docx
   html_document:
     theme: simplex
     toc: yes
@@ -13,6 +38,13 @@ output:
     toc_float: yes
     fig_height: 6
     fig_width: 8
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
+institute:
+- biomark: Biomark, Inc.
+csl: ../templates/american-fisheries-society.csl
 ---
 
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
@@ -638,7 +670,7 @@ prop_trt_df = tags_est_df %>%
 ```
 
 
-```{r perc_good_CV, fig.height = 8, fig.cap = perc_good_cv}
+```{r perc_good_CV, fig.height = 7, fig.cap = perc_good_cv}
 prop_trt_p = prop_trt_df %>%
   filter(scenario == 'Current') %>%
   ggplot(aes(x = tot_tags_deploy,
@@ -659,7 +691,7 @@ prop_trt_p = prop_trt_df %>%
 prop_trt_p
 ```
 
-```{r perc_good_cv_zoom_figure, fig.height = 8, fig.cap = perc_good_cv_zoom}
+```{r perc_good_cv_zoom_figure, fig.height = 7, fig.cap = perc_good_cv_zoom}
 prop_trt_p +
   scale_x_continuous(limits = c(0, 6000))
 ```
@@ -668,7 +700,7 @@ One way to increase the number of tags detected in a given population is to incr
 
 `r fig_nums('good_cv_det_fig', display = 'c')` shows how such increases would impact the number of tags needed to be deployed. The main message from this analysis is that improving detection efficiency, even by as much as 20% (which is actually impossible in most populations, as that would increase it to above 100%), does not reduce the number of tags needed very much. This is partly due to the fact that most populations already have high detection efficiency. However, there may be certain populations where improving the detection infrastructure could lead to gains in the precision of the abundance estimate. `r fig_nums('det_prob_fig', display = 'c')` summarizes detection probabilities, by population and MPG/DPS, and could be used to provide guidance on populations/areas where IPTDS infrasructure could be best increased or improved.
 
-```{r good_cv_det_figure, fig.height = 8, fig.cap = good_cv_det_fig}
+```{r good_cv_det_figure, fig.height = 7, fig.cap = good_cv_det_fig}
 
 # prop_trt_df %>%
 #   arrange(desc(prop_trt))
@@ -702,7 +734,7 @@ prop_trt_df %>%
 
 ```
 
-```{r det_prob_figure, fig.height = 8, fig.cap = det_prob_fig}
+```{r det_prob_figure, fig.height = 7, fig.cap = det_prob_fig}
 # determine which populations don't have good detection infrastructure to make estimates
 p_mpg_list = p_est %>%
   anti_join(rmv) %>%
