@@ -305,18 +305,11 @@ From this plot, it is clear that as long as the proportion of wild fish in a str
 
 ## Next Steps
 
-# References
-
-Camacho, C.A., K.K. Wright, J. Powell, W.C. Schrader, T. Copeland, M.W. Ackerman, M. Dobos, M.P. Corsi, and M.R. Campbell. 2017. Wild adult steelehad and Chinook salmon abundance and composition at Lower Granite Dam, spawn years 2009-2016. Cumulative Report 2009 through 2016. Idaho Department of Fish and Game Report 17-06.
-
-Doob, J.L. 1935. The limiting distributions of certain statistics. The Annals of Mathematical Statistics 6:160-169.
-
-Orme, R. and R. Kinzer. 2018. Integrated In-stream PIT Tag Detection System Operations and Maintenance; PIT Tag Based Adult Escapement Estimates for Spawn Years 2016 and 2017. Nez Perce Tribe Department of Fisheries Resource Management. Prepared for: Quantititative Consultants, Inc.
-
-# END WORKING DOCUMENT (SCRAP BELOW)
-
-\newpage
-
+* Incorporate results and implications from Craig Busack's script located in ../R/idahopit.R
+    + from Lance Hebdon, August 5, 2019: I would contact Busack directly, we never saw any specific analysis only Craig's description of how low a confidence we would have given the low tag rates and detection rates at a single array in a  single year basis.  Also some of the issues we had with Craig's analysis was his assumption that straying was equal across the landscape, as opposed to straying being more likely near the release points, the effect of transportation on straying, the ability to aggregate information from multiple years to further understand patterns in straying, and a few other things that I don't have on the top of my head.
+* Identify 2-3 locations of interest for each Chinook salmon and steelhead to perform evaluations
+* Do we need to perform a PTAGIS query for particular locations to identify HOR observations; and can we track down release 'groups' for each observation?
+    
 ## Assumptions and Considerations
 
 * What are the appropriate transition probabilities for hatchery fish along model branches? Need to consider harvest of hatchery fish. Presumably transition probabilities are lower for hatchery fish (relative to natural origin fish) due to harvest.
@@ -329,9 +322,17 @@ Orme, R. and R. Kinzer. 2018. Integrated In-stream PIT Tag Detection System Oper
 * How many total hatchery fish escape past LGR? We can run STADEM to determine range of values over the last several years.
 * Is 15% CV for pHOS an appropriate, or even achievable, goal?
 
-## Comments from Lance H. August 5, 2019
+# References
 
-I would contact Busack directly, we never saw any specific analysis only Craig's description of how low a confidence we would have given the low tag rates and detection rates at a single array in a  single year basis.  Also some of the issues we had with Craig's analysis was his assumption that straying was equal across the landscape, as opposed to straying being more likely near the release points, the effect of transportation on straying, the ability to aggregate information from multiple years to further understand patterns in straying, and a few other things that I don't have on the top of my head.  
+Camacho, C.A., K.K. Wright, J. Powell, W.C. Schrader, T. Copeland, M.W. Ackerman, M. Dobos, M.P. Corsi, and M.R. Campbell. 2017. Wild adult steelehad and Chinook salmon abundance and composition at Lower Granite Dam, spawn years 2009-2016. Cumulative Report 2009 through 2016. Idaho Department of Fish and Game Report 17-06.
+
+Doob, J.L. 1935. The limiting distributions of certain statistics. The Annals of Mathematical Statistics 6:160-169.
+
+Orme, R. and R. Kinzer. 2018. Integrated In-stream PIT Tag Detection System Operations and Maintenance; PIT Tag Based Adult Escapement Estimates for Spawn Years 2016 and 2017. Nez Perce Tribe Department of Fisheries Resource Management. Prepared for: Quantititative Consultants, Inc.
+
+# END WORKING DOCUMENT (SCRAP BELOW)
+
+\newpage
 
 ## SCRAP
 
@@ -339,11 +340,6 @@ But then what's the next step here? To do an empirical evaluation we would then 
 
 Maybe it makes sense to include Craig Busack's demonstration here to show that, even given high detection probabilities, it may be difficult to observe HOR fish at a given location if tagging rates and number of fish are low, which could lead to biased estimates of *pHOS* at given locations if only juvenile observations are used.
 
-NEXT STEPS:
-
-2. Identify 2-3 locations each for Chinook and steelhead to evaluate?
-3. Run PTAGIS query for those locations and examing HOR observations; can we track down release 'groups' for each observation?
-  
 ### Methods Section 3
   
 Now we need to figure out, depending on results from Section #2, what level of additional tagging (number or rate) is needed for HOR adults at LGR to achieve reasonable CVs for estimates of *pHOS*. This additional tagging would likely be targeted at just ad-clipped (H) fish. In this case, we could also easily calculate the tagging fraction by species x release group x brood year for adults except in this case we can ingore both $g$ and $y$ because those should be equal across groups! i.e., because we are tagging at LGR. However, we do need to account for differential tagging fractions between H and HNC, however, HNC could be set equal to the W tagging fraction (i.e., all ad-intact fish are tagged at the same rate). The final consideration to make is whether we need a time varying component in tagging fractions for juveniles and adults. I'm thinking we make a simplifying assumption here and ignore a time-varying component for this exercise.

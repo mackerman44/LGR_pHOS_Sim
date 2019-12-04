@@ -1691,17 +1691,15 @@ Figure 1: Predictions of the CV of pHOS across ranges of the CV hatchery and wil
 <h1>Discussion</h1>
 <div id="next-steps" class="section level2">
 <h2>Next Steps</h2>
+<ul>
+<li>Incorporate results and implications from Craig Busack’s script located in ../R/idahopit.R
+<ul>
+<li>from Lance Hebdon, August 5, 2019: I would contact Busack directly, we never saw any specific analysis only Craig’s description of how low a confidence we would have given the low tag rates and detection rates at a single array in a single year basis. Also some of the issues we had with Craig’s analysis was his assumption that straying was equal across the landscape, as opposed to straying being more likely near the release points, the effect of transportation on straying, the ability to aggregate information from multiple years to further understand patterns in straying, and a few other things that I don’t have on the top of my head.</li>
+</ul></li>
+<li>Identify 2-3 locations of interest for each Chinook salmon and steelhead to perform evaluations</li>
+<li>Do we need to perform a PTAGIS query for particular locations to identify HOR observations; and can we track down release ‘groups’ for each observation?</li>
+</ul>
 </div>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
-<p>Camacho, C.A., K.K. Wright, J. Powell, W.C. Schrader, T. Copeland, M.W. Ackerman, M. Dobos, M.P. Corsi, and M.R. Campbell. 2017. Wild adult steelehad and Chinook salmon abundance and composition at Lower Granite Dam, spawn years 2009-2016. Cumulative Report 2009 through 2016. Idaho Department of Fish and Game Report 17-06.</p>
-<p>Doob, J.L. 1935. The limiting distributions of certain statistics. The Annals of Mathematical Statistics 6:160-169.</p>
-<p>Orme, R. and R. Kinzer. 2018. Integrated In-stream PIT Tag Detection System Operations and Maintenance; PIT Tag Based Adult Escapement Estimates for Spawn Years 2016 and 2017. Nez Perce Tribe Department of Fisheries Resource Management. Prepared for: Quantititative Consultants, Inc.</p>
-</div>
-<div id="end-working-document-scrap-below" class="section level1">
-<h1>END WORKING DOCUMENT (SCRAP BELOW)</h1>
-<div style="page-break-after: always;"></div>
 <div id="assumptions-and-considerations" class="section level2">
 <h2>Assumptions and Considerations</h2>
 <ul>
@@ -1716,19 +1714,20 @@ Figure 1: Predictions of the CV of pHOS across ranges of the CV hatchery and wil
 <li>Is 15% CV for pHOS an appropriate, or even achievable, goal?</li>
 </ul>
 </div>
-<div id="comments-from-lance-h.-august-5-2019" class="section level2">
-<h2>Comments from Lance H. August 5, 2019</h2>
-<p>I would contact Busack directly, we never saw any specific analysis only Craig’s description of how low a confidence we would have given the low tag rates and detection rates at a single array in a single year basis. Also some of the issues we had with Craig’s analysis was his assumption that straying was equal across the landscape, as opposed to straying being more likely near the release points, the effect of transportation on straying, the ability to aggregate information from multiple years to further understand patterns in straying, and a few other things that I don’t have on the top of my head.</p>
 </div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Camacho, C.A., K.K. Wright, J. Powell, W.C. Schrader, T. Copeland, M.W. Ackerman, M. Dobos, M.P. Corsi, and M.R. Campbell. 2017. Wild adult steelehad and Chinook salmon abundance and composition at Lower Granite Dam, spawn years 2009-2016. Cumulative Report 2009 through 2016. Idaho Department of Fish and Game Report 17-06.</p>
+<p>Doob, J.L. 1935. The limiting distributions of certain statistics. The Annals of Mathematical Statistics 6:160-169.</p>
+<p>Orme, R. and R. Kinzer. 2018. Integrated In-stream PIT Tag Detection System Operations and Maintenance; PIT Tag Based Adult Escapement Estimates for Spawn Years 2016 and 2017. Nez Perce Tribe Department of Fisheries Resource Management. Prepared for: Quantititative Consultants, Inc.</p>
+</div>
+<div id="end-working-document-scrap-below" class="section level1">
+<h1>END WORKING DOCUMENT (SCRAP BELOW)</h1>
+<div style="page-break-after: always;"></div>
 <div id="scrap" class="section level2">
 <h2>SCRAP</h2>
 <p>But then what’s the next step here? To do an empirical evaluation we would then need to do a PTAGIS query of HOR observations across SRB IPTDS and be able to ‘assign’ each observation back to a release ‘group’. Not a trivial task. And going down this path seems to require HOR runs of DABOM.</p>
 <p>Maybe it makes sense to include Craig Busack’s demonstration here to show that, even given high detection probabilities, it may be difficult to observe HOR fish at a given location if tagging rates and number of fish are low, which could lead to biased estimates of <em>pHOS</em> at given locations if only juvenile observations are used.</p>
-<p>NEXT STEPS:</p>
-<ol start="2" style="list-style-type: decimal">
-<li>Identify 2-3 locations each for Chinook and steelhead to evaluate?</li>
-<li>Run PTAGIS query for those locations and examing HOR observations; can we track down release ‘groups’ for each observation?</li>
-</ol>
 <div id="methods-section-3" class="section level3">
 <h3>Methods Section 3</h3>
 <p>Now we need to figure out, depending on results from Section #2, what level of additional tagging (number or rate) is needed for HOR adults at LGR to achieve reasonable CVs for estimates of <em>pHOS</em>. This additional tagging would likely be targeted at just ad-clipped (H) fish. In this case, we could also easily calculate the tagging fraction by species x release group x brood year for adults except in this case we can ingore both <span class="math inline">\(g\)</span> and <span class="math inline">\(y\)</span> because those should be equal across groups! i.e., because we are tagging at LGR. However, we do need to account for differential tagging fractions between H and HNC, however, HNC could be set equal to the W tagging fraction (i.e., all ad-intact fish are tagged at the same rate). The final consideration to make is whether we need a time varying component in tagging fractions for juveniles and adults. I’m thinking we make a simplifying assumption here and ignore a time-varying component for this exercise.</p>
