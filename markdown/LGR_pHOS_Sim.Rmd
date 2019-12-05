@@ -11,13 +11,6 @@ author:
     institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: 3
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
   html_document:
     fig_height: 6
     fig_width: 8
@@ -25,10 +18,17 @@ output:
     - --lua-filter=../templates/scholarly-metadata.lua
     - --lua-filter=../templates/author-info-blocks.lua
     - --lua-filter=../templates/pagebreak.lua
-    theme: simplex
+    theme: spacelab
     toc: yes
     toc_depth: 3
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
 institute:
 - biomark: Biomark, Inc.
 csl: ../templates/american-fisheries-society.csl
@@ -58,7 +58,7 @@ The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult
 
 Simultaneously estimating escapement of hatchery origin (HOR) and natural origin (NOR) adults to IPTDS locations throughout the SRB based on PIT tagging at LGR is a trivial extension of the DABOM model. Factually, the previous and existing instance of the DABOM model was developed for the upper Columbia River (upstream of Priest Rapids Dam), which capitalized on the same sampling assumptions applied to natural origin escapement past LGR. However, for multiple reasons (ergonomic limitations at LGR, political considerations, supposed ethical concerns), the random sampling and PIT tagging of HOR adults (specifically ad-clipped adults) at LGR has been precluded. Notably, given trap operations at LGR, HOR adults are trapped, anesthetized, weighed, and measured at the same rate as NOR - a function of "trap rate" constituting a fraction of every hour wherein adults in the ladder are bypassed to the trap. Thus, it is arguable that implantation of a PIT tag constitutes a significantly greater offense to captured adults.
 
-Importantly, NOR and HOR refer to the true origin of a Chinook salmon or steelhead; that is born in the natural or hatchery environment, respectively. However, currently three phenotypic origins of adult Chinook salmon and steelhead are identified at LGR and include wild (W), hatchery ad-intact (HNC), and hatchery ad-clipped (H). NOR only includes W adults; HOR includes both the HNC and H groups despite HOR individuals often being phenotypically W. Currently, all ad-intact fish are systematically PIT tagged at LGR wihich includes both the W and HNC origins i.e., some HOR adults are currently tagged at LGR, but we need to consider differential tagging rates between HNC and H adults when evaluating the precision of *pHOS* given current levels of PIT tagging.
+Importantly, NOR and HOR refer to the true origin of a Chinook salmon or steelhead; that is born in the natural or hatchery environment, respectively. However, currently three phenotypic origins of adult Chinook salmon and steelhead are identified at LGR and include wild (W), hatchery ad-intact (HNC), and hatchery ad-clipped (H). NOR only includes W adults; HOR includes both the HNC and H groups despite HNC individuals often being phenotypically W. Currently, all ad-intact fish are systematically PIT tagged at LGR which includes both the W and HNC origins i.e., some HOR adults are currently tagged at LGR, but we need to consider differential tagging rates between HNC and H adults when evaluating the precision of *pHOS* given current levels of PIT tagging.
 
 Unbeknownst to the proposal for this evaluation, a condition of the Hatchery and Genetics Management Plan (HGMP) required the operation of IDFG HOR steelhead production to conduct a study on HOR contributions to NOR populations. Thusly, IDFG and NOAA Fisheries endeavored to compile and estimate straying of HOR steelhead upstream of LGR.
 
