@@ -15,7 +15,7 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   word_document: 
     fig_caption: yes
-    fig_height: 7
+    fig_height: 4
     fig_width: 7
     toc: yes
     pandoc_args:
