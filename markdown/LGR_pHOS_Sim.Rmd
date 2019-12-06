@@ -50,6 +50,8 @@ panderOptions('table.split.table', Inf)
 
 # load necessary packages
 library(tidyverse)
+library(janitor)
+library(lubridate)
 ```
 
 # Introduction
@@ -104,6 +106,52 @@ $$
 Ugh, my notation is atrocius here. Essentially, I want to expand the number of observations for each group by the tagging fraction for that group and the detection probability to get an estimate of abundance for that group. And then sum across release groups to get a total hatchery abundance for that location.
 
 Note that in this scenario we don't need to account for differential survival among groups; we are only interested in the tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts wtihin each group.
+
+```{r read_in_data}
+sc_sthd = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_SC_2016-2019.csv') %>%
+  clean_names(case = 'snake') %>%
+  mutate_at(vars(ends_with('time_value')),
+            list(mdy_hms)) %>%
+  mutate(spawn_yr = year(last_time_value),
+         spawn_yr = if_else(month(last_time_value) >= 7,
+                            spawn_yr + 1,
+                            spawn_yr)) %>%
+  # filter out most recent spawn year, and any detections when last_time_value is < 1 year from mark year
+  filter(spawn_yr < 2020) %>%
+  filter(year(last_time_value) - mark_year_yyyy > 1)
+
+lem_sthd = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_Lem_2016-2019.csv') %>%
+  clean_names(case = 'snake') %>%
+  mutate_at(vars(ends_with('time_value')),
+            list(mdy_hms)) %>%
+  mutate(spawn_yr = year(last_time_value),
+         spawn_yr = if_else(month(last_time_value) >= 7,
+                            spawn_yr + 1,
+                            spawn_yr)) %>%
+  # filter out most recent spawn year, and any detections when last_time_value is < 1 year from mark year
+  filter(spawn_yr < 2020) %>%
+  filter(year(last_time_value) - mark_year_yyyy > 1)
+
+```
+
+```{r}
+# where were fished marked?
+sc_sthd %>%
+  mutate(site_grp = 'SC') %>%
+  bind_rows(lem_sthd %>%
+              mutate(site_grp = 'Lemhi')) %>%
+  group_by(site_grp,
+           srr_code,
+           spawn_yr,
+           mark_year_yyyy,
+           mark_site_name,
+           mark_site_code_value) %>%
+  summarise(n_tags = n_distinct(tag_code)) %>%
+  kable()
+```
+
+
+
 
 ## Section 2. Expected precision of *pHOS* given current PIT tagging of W and HNC adults at LGR
 

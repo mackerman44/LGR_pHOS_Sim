@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Kevin See1,✉, and Mike Ackerman1,✉" />
 
-<meta name="date" content="2019-12-04" />
+<meta name="date" content="2019-12-06" />
 
 <title>Hatchery Tagging to Estimate pHOS Using IPTDS Detections</title>
 
@@ -1430,6 +1429,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1536,7 +1536,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Hatchery Tagging to Estimate pHOS Using IPTDS Detections</h1>
 <h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1,✉</sup></h4>
-<h4 class="date">December 04, 2019</h4>
+<h4 class="date">December 06, 2019</h4>
 
 </div>
 
@@ -1577,6 +1577,264 @@ div.tocify {
 \hat{N_{h,i}} = \sum_{g,y,m} \frac{n_{g,i}}{\phi_{g,i}*\psi_{i}}
 \]</span> Ugh, my notation is atrocius here. Essentially, I want to expand the number of observations for each group by the tagging fraction for that group and the detection probability to get an estimate of abundance for that group. And then sum across release groups to get a total hatchery abundance for that location.</p>
 <p>Note that in this scenario we don’t need to account for differential survival among groups; we are only interested in the tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts wtihin each group.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">site_grp</th>
+<th align="left">srr_code</th>
+<th align="right">spawn_yr</th>
+<th align="right">mark_year_yyyy</th>
+<th align="left">mark_site_name</th>
+<th align="left">mark_site_code_value</th>
+<th align="right">n_tags</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lemhi</td>
+<td align="left">32H</td>
+<td align="right">2017</td>
+<td align="right">2003</td>
+<td align="left">MAVA - Magic Valley Hatchery</td>
+<td align="left">MAVA</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Lemhi</td>
+<td align="left">32H</td>
+<td align="right">2017</td>
+<td align="right">2014</td>
+<td align="left">HAGE - Hagerman NFH</td>
+<td align="left">HAGE</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Lemhi</td>
+<td align="left">32H</td>
+<td align="right">2017</td>
+<td align="right">2014</td>
+<td align="left">MAVA - Magic Valley Hatchery</td>
+<td align="left">MAVA</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Lemhi</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2015</td>
+<td align="left">DWOR - Dworshak National Fish Hatchery</td>
+<td align="left">DWOR</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Lemhi</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2015</td>
+<td align="left">LGR - Lower Granite Dam</td>
+<td align="left">LGR</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Lemhi</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2016</td>
+<td align="left">MAVA - Magic Valley Hatchery</td>
+<td align="left">MAVA</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">Lemhi</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2016</td>
+<td align="left">NISP - Niagara Springs Hatchery</td>
+<td align="left">NISP</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Lemhi</td>
+<td align="left">35H</td>
+<td align="right">2018</td>
+<td align="right">2014</td>
+<td align="left">LGR - Lower Granite Dam</td>
+<td align="left">LGR</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2017</td>
+<td align="right">2013</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2017</td>
+<td align="right">2014</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">104</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2017</td>
+<td align="right">2014</td>
+<td align="left">DWOR - Dworshak National Fish Hatchery</td>
+<td align="left">DWOR</td>
+<td align="right">14</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2017</td>
+<td align="right">2014</td>
+<td align="left">LGR - Lower Granite Dam</td>
+<td align="left">LGR</td>
+<td align="right">14</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2017</td>
+<td align="right">2015</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2014</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2015</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">17</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2015</td>
+<td align="left">DWOR - Dworshak National Fish Hatchery</td>
+<td align="left">DWOR</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2015</td>
+<td align="left">LGR - Lower Granite Dam</td>
+<td align="left">LGR</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2016</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2018</td>
+<td align="right">2016</td>
+<td align="left">DWOR - Dworshak National Fish Hatchery</td>
+<td align="left">DWOR</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2019</td>
+<td align="right">2013</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2019</td>
+<td align="right">2015</td>
+<td align="left">DWOR - Dworshak National Fish Hatchery</td>
+<td align="left">DWOR</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2019</td>
+<td align="right">2016</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">58</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2019</td>
+<td align="right">2016</td>
+<td align="left">DWOR - Dworshak National Fish Hatchery</td>
+<td align="left">DWOR</td>
+<td align="right">9</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2019</td>
+<td align="right">2016</td>
+<td align="left">LGR - Lower Granite Dam</td>
+<td align="left">LGR</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2019</td>
+<td align="right">2017</td>
+<td align="left">CLWH - Clearwater Hatchery</td>
+<td align="left">CLWH</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+<td align="left">32H</td>
+<td align="right">2019</td>
+<td align="right">2017</td>
+<td align="left">LGRLDR - LGR - Release into the Adult Fish Ladder</td>
+<td align="left">LGRLDR</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">SC</td>
+<td align="left">35H</td>
+<td align="right">2017</td>
+<td align="right">2014</td>
+<td align="left">LGR - Lower Granite Dam</td>
+<td align="left">LGR</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="section-2.-expected-precision-of-phos-given-current-pit-tagging-of-w-and-hnc-adults-at-lgr" class="section level2">
 <h2>Section 2. Expected precision of <em>pHOS</em> given current PIT tagging of W and HNC adults at LGR</h2>
