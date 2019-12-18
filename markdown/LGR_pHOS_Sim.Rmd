@@ -18,7 +18,7 @@ output:
     - --lua-filter=../templates/scholarly-metadata.lua
     - --lua-filter=../templates/author-info-blocks.lua
     - --lua-filter=../templates/pagebreak.lua
-    theme: spacelab
+    theme: simplex
     toc: yes
     toc_depth: 3
     toc_float: yes
@@ -52,6 +52,7 @@ panderOptions('table.split.table', Inf)
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(readxl)
 ```
 
 # Introduction
@@ -82,6 +83,12 @@ First, we want to know expected CVs for current estimates of *pHOS* that could b
 Second, our goal is to determine levels of additional tagging at LGR of adult HOR fish (H only) that would allow reasonable estimates of *pHOS*. We will define reasonable as an estimate with a CV of 15% or less. Our evaluation may (or may not) attempt to focus on desired or critical populations/locations.
 
 ```{r captions}
+lgr_tags_needed = tab_nums('lgr_tags_needed',
+                           'The expected number of tags needed to be deployed at LGR to achieve a minimum number of detections in each TRT population leading to reasonably precise estimate of abundance.')
+
+site_table = tab_nums('site_table',
+                      'Steelhead TRT populations and interrogation sites for which we queried interrogation of hatchery adults during spawn years 2017-2019.')
+
 tradeoff_fig = fig_nums('tradeoff_fig',
                         "Predictions of the CV of pHOS across ranges of the CV hatchery and wild escapement estimates and the proportion wild (inverse of pHOS). The horizontal dotted line depicts a CV of 15%.")
 ```
@@ -107,7 +114,150 @@ Ugh, my notation is atrocius here. Essentially, I want to expand the number of o
 
 Note that in this scenario we don't need to account for differential survival among groups; we are only interested in the tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts wtihin each group.
 
-```{r read_in_data}
+### Approach
+
+The IDFG provided us with tagging fraction (i.e., expansion factor) information for steelhead hatchery smolt releases from brood years (BY) 2013 through 2018. In addition, we have interrogation data and abundance estimates for wild steelhead populations available through spawn year (SY) 2019. Using SY2019 hatchery adults as an example, those adults would have entered the Columbia River to initiate their spawning run during summer 2018; and thus 1-ocean adults would have emigrated to the ocean in 2017 (hence BY2016) and 2-ocean adults would have emigrated in 2016 (BY2015). Following this logic, we need to consider to following BY smolt releases for each adult SY.
+
+* SY2019: 1-ocean = BY2016, 2-ocean = BY2015
+* SY2018: 1-ocean = BY2015, 2-ocean = BY2014
+* SY2017: 1-ocean = BY2014, 2-ocean = BY2013
+
+And thus, the earliest SY we can consider is 2017 as their 1-ocean adults originate from BY2013.
+
+```{r tag_deploy}
+min_yr = 2013
+min_tags = 50
+
+# the number of tags deployed by species and year at LGR
+tags_deploy = crossing(Species = 'Steelhead',
+                       spawn_yr = c(2010:2019)) %>%
+  mutate(tot_tags = map2_int(.x = Species,
+                             .y = spawn_yr,
+                             .f = function(x, y) {
+                               load(paste0('../../SnakeBasinFishStatus/DABOM_results/LGR_DABOM_Steelhead_', y , '.rda'))
+                               return(nrow(proc_list$ValidTrapData))
+                             }))
+```
+
+##### Locations
+
+In a recent assessment by See et al. (2019), it was determined that approximately `r min_tags` observations of unique fish were necessary within a TRT population or location to estimate wild population abundance with 'good' precision. `r tab_nums('lgr_tags_needed', display = 'c')` is from that report and shows the total number of tags estimated to be deployed in natural origin adults at LGR to estimate abundance in each population with reasonable precision. In addition to populations considered there, we will also initially consider the Lochsa, Selway, and North Fork Salmon River.
+
+`r tab_nums('lgr_tags_needed')`
+```{r sthd_ests}
+AbundanceFolder = '../../SnakeBasinFishStatus/Abundance_results' # for processed files
+# wild steelhead abundance estimates
+sthd_est = read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_Steelhead.xlsx'), sheet = 2) %>%
+  filter(!is.na(n_tags)) %>%
+  mutate_at(vars(spawn_yr:TRT),
+            list(as.factor)) %>%
+  mutate(cv = as.numeric(cv)) %>%
+  mutate(spawn_yr = as.integer(as.character(spawn_yr))) %>%
+  filter(spawn_yr >= min_yr) %>%
+  left_join(tags_deploy) %>%
+  mutate(prop_tags_det = n_tags / tot_tags) %>%
+  group_by(Species, TRT) %>%
+  summarise_at(vars(prop_tags_det),
+               list(mean)) %>%
+  mutate(min_tags = min_tags) %>%
+  mutate(tot_tags_need = min_tags / prop_tags_det) %>%
+  arrange(-tot_tags_need)
+
+# which sites are attached to which TRT populations?
+sthd_pop = read_csv('../data/Site_TRT_Steelhead.csv')
+rmv_pops = c('SRLSR-s', 'SREFS-s', 'SRPAH-s', 'SNTUC-s')
+
+sthd_est = sthd_est %>%
+  left_join(sthd_pop %>%
+              select(TRT, Name = POP_NAME) %>%
+              distinct()) %>%
+  select(Species, TRT, Name, everything()) %>%
+  filter(!TRT %in% rmv_pops)
+
+sthd_est %>%
+  rename(`% Tags Detected` = prop_tags_det,
+         `Min. # Tags` = min_tags,
+         `Total Tags Needed` = tot_tags_need) %>%
+  pander(round = 3)
+```
+
+We will perform a query in PTAGIS for the following TRT populations and Site IDs within those locations.
+
+`r tab_nums('site_table')`
+```{r site_ids}
+trts = pull(sthd_est, TRT)
+
+sites = sthd_pop %>%
+  select(TRT, SiteID) %>%
+  filter(TRT %in% trts) %>%
+  distinct() %>%
+  mutate(site_char = nchar(SiteID)) %>%
+  filter(site_char == 3) %>%
+  select(-site_char)
+
+site_table = sites %>%
+  group_by(TRT) %>%
+  summarise(toString(SiteID)) %>%
+  ungroup() %>%
+  arrange(TRT)
+
+pander(site_table)
+```
+
+```{r filter_sites}
+
+```
+
+```{r filter_sites2, eval = F}
+# performed a PTAGIS query with the following filters
+# Species = Steelhead
+# Rear Type = Hatchery
+# Last Obs Date/Time = 7/1/2016 - 6/30/2017
+# Obs Site %in% sites$SiteID
+sthd_obs = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_SY16-19.csv') %>%
+  clean_names(case = 'snake') %>%
+  filter(mark_site_code_value %in% c("CLWH", "DWOR", "HAGE", "MAVA", "NISP")) %>%
+  mutate_at(vars(ends_with('time_value')),
+            list(mdy_hm)) %>%
+  mutate(mark_date_mmddyyyy = as.Date(mark_date_mmddyyyy, format = "%m/%d/%Y")) %>%
+  mutate(mark_month = month(mark_date_mmddyyyy)) %>%
+  mutate(brood_yr = year(mark_date_mmddyyyy),
+         brood_yr = if_else(mark_month < 5,
+                            mark_year_yyyy - 1,
+                            mark_year_yyyy)) %>%
+  # filter out marks previous to 2013
+  filter(mark_year_yyyy >= 2013) %>%
+  # filter out any detection when last_time_value is < 1 yr from mark_year_yyyy; presumable juvenile interrogations
+  filter(year(last_time_value) - mark_year_yyyy > 1) %>%
+  # if last observation is in July or later, assign fish to next spawn year
+  mutate(spawn_yr = year(last_time_value),
+         spawn_yr = if_else(month(last_time_value) >= 7,
+                            spawn_yr + 1,
+                            spawn_yr)) %>%
+  left_join(sites, by = c("site_code_value" = "SiteID")) %>%
+  # finally, the diff between spawn_yr and brood_yr should always be 3 or 4
+  mutate(brood_to_spawn = spawn_yr - brood_yr) %>%
+  filter(brood_to_spawn %in% c(3,4)) %>%
+  select(-brood_to_spawn)
+
+write_csv(sthd_obs, "../data/PTAGIS/pHOS_IntSumm_Sthd_SY16-19_filtered.csv")
+
+table(sthd_obs$spawn_yr, sthd_obs$brood_yr)
+table(sthd_obs$TRT, sthd_obs$spawn_yr)
+```
+
+We will consider the following locations:
+
+1. Lemhi River (SRLEM-s)
+2. South Fork Clearwater River (CRSFC-s)
+3. Lochsa River (CRLOC-s)
+4. Big Creek (MFBIG-s)
+5. North Fork Salmon River (SRNFS-s)
+6. South Fork Salmon River (SFMAI-s, SFSEC-s)
+
+We have smolt marking information for brood years (BY) 2013-2018. BY2013 smolts would be released in spring 2014, emigrate to the ocean for 1 ('A-run') or 2 ('B-run') years and enter the Columbia again in 2015 or 2016 to spawn in spring 2016 or 2017. As a result, we will limit our PTAGIS query to spawn years 2016 to 2019, the years for which we have PIT tag marking fraction information for smolt releases.
+
+```{r read_in_data, eval = F}
 sc_sthd = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_SC_2016-2019.csv') %>%
   clean_names(case = 'snake') %>%
   mutate_at(vars(ends_with('time_value')),
@@ -134,7 +284,7 @@ lem_sthd = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_Lem_2016-2019.csv') %>%
 
 ```
 
-```{r}
+```{r eval = F}
 # where were fished marked?
 sc_sthd %>%
   mutate(site_grp = 'SC') %>%
@@ -149,9 +299,6 @@ sc_sthd %>%
   summarise(n_tags = n_distinct(tag_code)) %>%
   kable()
 ```
-
-
-
 
 ## Section 2. Expected precision of *pHOS* given current PIT tagging of W and HNC adults at LGR
 
