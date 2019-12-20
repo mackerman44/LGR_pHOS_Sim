@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kevin See1,✉, and Mike Ackerman1,✉" />
 
-<meta name="date" content="2019-12-17" />
+<meta name="date" content="2019-12-20" />
 
 <title>Hatchery Tagging to Estimate pHOS Using IPTDS Detections</title>
 
@@ -1519,7 +1519,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Hatchery Tagging to Estimate pHOS Using IPTDS Detections</h1>
 <h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1,✉</sup></h4>
-<h4 class="date">December 17, 2019</h4>
+<h4 class="date">December 20, 2019</h4>
 
 </div>
 
@@ -1572,7 +1572,8 @@ div.tocify {
 <div id="locations" class="section level5">
 <h5>Locations</h5>
 <p>In a recent assessment by See et al. (2019), it was determined that approximately 50 observations of unique fish were necessary within a TRT population or location to estimate wild population abundance with ‘good’ precision. Table 1 is from that report and shows the total number of tags estimated to be deployed in natural origin adults at LGR to estimate abundance in each population with reasonable precision. In addition to populations considered there, we will also initially consider the Lochsa, Selway, and North Fork Salmon River.</p>
-<p>Table 1: The expected number of tags needed to be deployed at LGR to achieve a minimum number of detections in each TRT population leading to reasonably precise estimate of abundance.</p>
+Table 1: The expected number of tags needed to be deployed at LGR to achieve a minimum number of detections in each TRT population leading to reasonably precise estimate of abundance.
+<center>
 <table>
 <colgroup>
 <col width="11%"></col>
@@ -1731,7 +1732,10 @@ div.tocify {
 </tr>
 </tbody>
 </table>
+</center>
 <p>We will perform a query in PTAGIS for the following TRT populations and Site IDs within those locations.</p>
+Table 2: Steelhead TRT populations and interrogation sites for which we queried interrogation of hatchery adults during spawn years 2017-2019.
+<center>
 <table style="width:58%;">
 <colgroup>
 <col width="13%"></col>
@@ -1740,7 +1744,7 @@ div.tocify {
 <thead>
 <tr class="header">
 <th align="center">TRT</th>
-<th align="center">toString(SiteID)</th>
+<th align="center">SiteID</th>
 </tr>
 </thead>
 <tbody>
@@ -1814,16 +1818,474 @@ div.tocify {
 </tr>
 </tbody>
 </table>
-<p>We will consider the following locations:</p>
-<ol style="list-style-type: decimal">
-<li>Lemhi River (SRLEM-s)</li>
-<li>South Fork Clearwater River (CRSFC-s)</li>
-<li>Lochsa River (CRLOC-s)</li>
-<li>Big Creek (MFBIG-s)</li>
-<li>North Fork Salmon River (SRNFS-s)</li>
-<li>South Fork Salmon River (SFMAI-s, SFSEC-s)</li>
-</ol>
-<p>We have smolt marking information for brood years (BY) 2013-2018. BY2013 smolts would be released in spring 2014, emigrate to the ocean for 1 (‘A-run’) or 2 (‘B-run’) years and enter the Columbia again in 2015 or 2016 to spawn in spring 2016 or 2017. As a result, we will limit our PTAGIS query to spawn years 2016 to 2019, the years for which we have PIT tag marking fraction information for smolt releases.</p>
+</center>
+<p>We have smolt marking information for brood years (BY) 2013-2018. BY2013 smolts would be released in spring 2014, emigrate and rear in the ocean for 1 (‘A-run’) or 2 (‘B-run’) years and enter the Columbia again in 2015 or 2016 to spawn in spring 2016 or 2017. As a result, we will limit our PTAGIS query to spawn years 2016 to 2019, the years for which we have PIT tag marking fraction information for smolt releases. We placed the following constraints on our PTAGIS query:</p>
+<ul>
+<li>Species: Steelhead</li>
+<li>Rear: Hatchery</li>
+<li>Last Obs Date/Time: 07/01/2016 - 06/30/2019</li>
+<li>Obs Site: in Table 2</li>
+</ul>
+<p>Next, we filtered the results of the PTAGIS query to only include the following IPTDS observations:</p>
+<ul>
+<li>Mark Site Code Value: From Snake River hatcheries for which we have tagging fraction data for BY2013-2018 (i.e., CLWH, DWOR, HAGE, MAVA, NISP).</li>
+<li>Mark Year: Excluded marks that occurred prior to 2013. This includes filtering “orphan” tags.</li>
+<li>Last Obs Time - Mark Year &lt; 1: In many cases, the mark year was less than 1 year prior to the final IPTDS observation. These observations are presumably from hatchery smolt releases and were removed.</li>
+<li>Spawn Year - Brood Year = 3 or 4: Returning adult hatchery steelhead should be 3 (‘A-run’) or 4 (‘B-run’) years old. We excluded any observations where this was not the case.</li>
+</ul>
+<p>Finally, for each observation, IDFG provided us with information on whether the tag was from an RAL or RTR release, and for RAL fish, the appropriate expansion value. Descriptions of RTR vs. RAL are as follows:</p>
+<ul>
+<li>RTR (“Return-to-River”): A sort-by-code designation for smolts that will automatically be returned to the river when detected at a dam, when other fish may be getting transported. They do not represent the release group at-large, therefore represent only themselves with an expansion value of “1”.</li>
+<li>RAL (“Run-at-Large”): A sort-by-code designation for smolts that will be transported or returned to the river in accordance with the protocol at the dam when they are detected. They represent the release group with a tagging rate that excludes any smolts that have an RTR tag in them. The expansion value of RAL tagged fish is the inverse of the tag rate.</li>
+</ul>
+<p>In our case, we were only interested in RAL observations.</p>
+Table 3: The number of observations of adult hatchery steelhead by location, spawn year, and mark site.
+<center>
+<table style="width:92%;">
+<colgroup>
+<col width="13%"></col>
+<col width="18%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="11%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">TRT</th>
+<th align="center">Spawn Year</th>
+<th align="center">CLWH</th>
+<th align="center">DWOR</th>
+<th align="center">HAGE</th>
+<th align="center">MAVA</th>
+<th align="center">NISP</th>
+<th align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">CRLMA-s</td>
+<td align="center">2017</td>
+<td align="center">1</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">CRLOL-s</td>
+<td align="center">2017</td>
+<td align="center">-</td>
+<td align="center">14</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">14</td>
+</tr>
+<tr class="odd">
+<td align="center">CRLOL-s</td>
+<td align="center">2018</td>
+<td align="center">-</td>
+<td align="center">6</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">CRLOL-s</td>
+<td align="center">2019</td>
+<td align="center">-</td>
+<td align="center">2</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">CRSFC-s</td>
+<td align="center">2017</td>
+<td align="center">103</td>
+<td align="center">11</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">114</td>
+</tr>
+<tr class="even">
+<td align="center">CRSFC-s</td>
+<td align="center">2018</td>
+<td align="center">25</td>
+<td align="center">7</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">32</td>
+</tr>
+<tr class="odd">
+<td align="center">CRSFC-s</td>
+<td align="center">2019</td>
+<td align="center">66</td>
+<td align="center">16</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">82</td>
+</tr>
+<tr class="even">
+<td align="center">IRMAI-s</td>
+<td align="center">2018</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">2</td>
+<td align="center">-</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">MFBIG-s</td>
+<td align="center">2018</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">1</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">MFBIG-s</td>
+<td align="center">2019</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">1</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">SRLEM-s</td>
+<td align="center">2017</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">2</td>
+<td align="center">-</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="center">SRLEM-s</td>
+<td align="center">2018</td>
+<td align="center">-</td>
+<td align="center">1</td>
+<td align="center">-</td>
+<td align="center">6</td>
+<td align="center">1</td>
+<td align="center">8</td>
+</tr>
+<tr class="odd">
+<td align="center">SRNFS-s</td>
+<td align="center">2018</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">2</td>
+<td align="center">-</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="center">SRUMA-s</td>
+<td align="center">2017</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">3</td>
+<td align="center">8</td>
+<td align="center">-</td>
+<td align="center">11</td>
+</tr>
+<tr class="odd">
+<td align="center">SRUMA-s</td>
+<td align="center">2018</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">17</td>
+<td align="center">1</td>
+<td align="center">-</td>
+<td align="center">18</td>
+</tr>
+<tr class="even">
+<td align="center">SRUMA-s</td>
+<td align="center">2019</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">-</td>
+<td align="center">4</td>
+</tr>
+</tbody>
+</table>
+</center>
+<table>
+<colgroup>
+<col width="7%"></col>
+<col width="9%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="15%"></col>
+<col width="12%"></col>
+<col width="6%"></col>
+<col width="13%"></col>
+<col width="5%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">TRT</th>
+<th align="center">Spawn Year</th>
+<th align="center">CLWH</th>
+<th align="center">DWOR</th>
+<th align="center">HAGE</th>
+<th align="center">MAVA</th>
+<th align="center">NISP</th>
+<th align="center">Hatchery Abundance</th>
+<th align="center">Wild Abundance</th>
+<th align="center">CV (%)</th>
+<th align="center">Total Abundance</th>
+<th align="center">pHOS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">CRLMA-s</td>
+<td align="center">2,017</td>
+<td align="center">77</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">77</td>
+<td align="center">272</td>
+<td align="center">7.5</td>
+<td align="center">349</td>
+<td align="center">0.221</td>
+</tr>
+<tr class="even">
+<td align="center">CRLOL-s</td>
+<td align="center">2,017</td>
+<td align="center">NA</td>
+<td align="center">992</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">992</td>
+<td align="center">125</td>
+<td align="center">10.6</td>
+<td align="center">1,117</td>
+<td align="center">0.888</td>
+</tr>
+<tr class="odd">
+<td align="center">CRLOL-s</td>
+<td align="center">2,018</td>
+<td align="center">NA</td>
+<td align="center">592</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">592</td>
+<td align="center">134</td>
+<td align="center">11.3</td>
+<td align="center">726</td>
+<td align="center">0.815</td>
+</tr>
+<tr class="even">
+<td align="center">CRLOL-s</td>
+<td align="center">2,019</td>
+<td align="center">NA</td>
+<td align="center">197</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">197</td>
+<td align="center">2,050</td>
+<td align="center">38.3</td>
+<td align="center">2,247</td>
+<td align="center">0.088</td>
+</tr>
+<tr class="odd">
+<td align="center">CRSFC-s</td>
+<td align="center">2,017</td>
+<td align="center">7,454</td>
+<td align="center">1,372</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">8,826</td>
+<td align="center">499</td>
+<td align="center">8.1</td>
+<td align="center">9,325</td>
+<td align="center">0.946</td>
+</tr>
+<tr class="even">
+<td align="center">CRSFC-s</td>
+<td align="center">2,018</td>
+<td align="center">1,558</td>
+<td align="center">568</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">2,126</td>
+<td align="center">122</td>
+<td align="center">13.7</td>
+<td align="center">2,248</td>
+<td align="center">0.946</td>
+</tr>
+<tr class="odd">
+<td align="center">CRSFC-s</td>
+<td align="center">2,019</td>
+<td align="center">3,912</td>
+<td align="center">1,298</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">5,210</td>
+<td align="center">151</td>
+<td align="center">15.7</td>
+<td align="center">5,361</td>
+<td align="center">0.972</td>
+</tr>
+<tr class="even">
+<td align="center">IRMAI-s</td>
+<td align="center">2,018</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">141</td>
+<td align="center">NA</td>
+<td align="center">141</td>
+<td align="center">672</td>
+<td align="center">6.2</td>
+<td align="center">813</td>
+<td align="center">0.173</td>
+</tr>
+<tr class="odd">
+<td align="center">MFBIG-s</td>
+<td align="center">2,018</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">72</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">72</td>
+<td align="center">140</td>
+<td align="center">10.8</td>
+<td align="center">212</td>
+<td align="center">0.34</td>
+</tr>
+<tr class="even">
+<td align="center">MFBIG-s</td>
+<td align="center">2,019</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">83</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">83</td>
+<td align="center">80</td>
+<td align="center">16.8</td>
+<td align="center">163</td>
+<td align="center">0.509</td>
+</tr>
+<tr class="odd">
+<td align="center">SRLEM-s</td>
+<td align="center">2,017</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">79</td>
+<td align="center">NA</td>
+<td align="center">79</td>
+<td align="center">169</td>
+<td align="center">9.5</td>
+<td align="center">248</td>
+<td align="center">0.319</td>
+</tr>
+<tr class="even">
+<td align="center">SRLEM-s</td>
+<td align="center">2,018</td>
+<td align="center">NA</td>
+<td align="center">119</td>
+<td align="center">NA</td>
+<td align="center">383</td>
+<td align="center">133</td>
+<td align="center">635</td>
+<td align="center">108</td>
+<td align="center">10.5</td>
+<td align="center">743</td>
+<td align="center">0.855</td>
+</tr>
+<tr class="odd">
+<td align="center">SRNFS-s</td>
+<td align="center">2,018</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">136</td>
+<td align="center">NA</td>
+<td align="center">136</td>
+<td align="center">205</td>
+<td align="center">71.8</td>
+<td align="center">341</td>
+<td align="center">0.399</td>
+</tr>
+<tr class="even">
+<td align="center">SRUMA-s</td>
+<td align="center">2,017</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">496</td>
+<td align="center">460</td>
+<td align="center">NA</td>
+<td align="center">956</td>
+<td align="center">73</td>
+<td align="center">30.6</td>
+<td align="center">1,029</td>
+<td align="center">0.929</td>
+</tr>
+<tr class="odd">
+<td align="center">SRUMA-s</td>
+<td align="center">2,018</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">1,235</td>
+<td align="center">40</td>
+<td align="center">NA</td>
+<td align="center">1,275</td>
+<td align="center">50</td>
+<td align="center">30.7</td>
+<td align="center">1,325</td>
+<td align="center">0.962</td>
+</tr>
+<tr class="even">
+<td align="center">SRUMA-s</td>
+<td align="center">2,019</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">166</td>
+<td align="center">108</td>
+<td align="center">NA</td>
+<td align="center">274</td>
+<td align="center">38</td>
+<td align="center">37.5</td>
+<td align="center">312</td>
+<td align="center">0.878</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>

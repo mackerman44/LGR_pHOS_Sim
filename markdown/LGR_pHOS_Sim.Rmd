@@ -89,6 +89,9 @@ lgr_tags_needed = tab_nums('lgr_tags_needed',
 site_table = tab_nums('site_table',
                       'Steelhead TRT populations and interrogation sites for which we queried interrogation of hatchery adults during spawn years 2017-2019.')
 
+obs_summary = tab_nums('obs_summary',
+                       'The number of observations of adult hatchery steelhead by location, spawn year, and mark site.')
+
 tradeoff_fig = fig_nums('tradeoff_fig',
                         "Predictions of the CV of pHOS across ranges of the CV hatchery and wild escapement estimates and the proportion wild (inverse of pHOS). The horizontal dotted line depicts a CV of 15%.")
 ```
@@ -144,6 +147,7 @@ tags_deploy = crossing(Species = 'Steelhead',
 In a recent assessment by See et al. (2019), it was determined that approximately `r min_tags` observations of unique fish were necessary within a TRT population or location to estimate wild population abundance with 'good' precision. `r tab_nums('lgr_tags_needed', display = 'c')` is from that report and shows the total number of tags estimated to be deployed in natural origin adults at LGR to estimate abundance in each population with reasonable precision. In addition to populations considered there, we will also initially consider the Lochsa, Selway, and North Fork Salmon River.
 
 `r tab_nums('lgr_tags_needed')`
+<center>
 ```{r sthd_ests}
 AbundanceFolder = '../../SnakeBasinFishStatus/Abundance_results' # for processed files
 # wild steelhead abundance estimates
@@ -180,10 +184,12 @@ sthd_est %>%
          `Total Tags Needed` = tot_tags_need) %>%
   pander(round = 3)
 ```
+</center>
 
 We will perform a query in PTAGIS for the following TRT populations and Site IDs within those locations.
 
 `r tab_nums('site_table')`
+<center>
 ```{r site_ids}
 trts = pull(sthd_est, TRT)
 
@@ -199,24 +205,26 @@ site_table = sites %>%
   group_by(TRT) %>%
   summarise(toString(SiteID)) %>%
   ungroup() %>%
-  arrange(TRT)
+  arrange(TRT) %>%
+  rename(SiteID = `toString(SiteID)`)
 
 pander(site_table)
 ```
+</center>
+
+We have smolt marking information for brood years (BY) 2013-2018. BY2013 smolts would be released in spring 2014, emigrate and rear in the ocean for 1 ('A-run') or 2 ('B-run') years and enter the Columbia again in 2015 or 2016 to spawn in spring 2016 or 2017. As a result, we will limit our PTAGIS query to spawn years 2016 to 2019, the years for which we have PIT tag marking fraction information for smolt releases. We placed the following constraints on our PTAGIS query:
+
+* Species: Steelhead
+* Rear: Hatchery
+* Last Obs Date/Time: 07/01/2016 - 06/30/2019
+* Obs Site: in `r tab_nums('site_table', display = 'c')`
 
 ```{r filter_sites}
+snake_hatcheries = c("CLWH", "DWOR", "HAGE", "MAVA", "NISP")
 
-```
-
-```{r filter_sites2, eval = F}
-# performed a PTAGIS query with the following filters
-# Species = Steelhead
-# Rear Type = Hatchery
-# Last Obs Date/Time = 7/1/2016 - 6/30/2017
-# Obs Site %in% sites$SiteID
 sthd_obs = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_SY16-19.csv') %>%
   clean_names(case = 'snake') %>%
-  filter(mark_site_code_value %in% c("CLWH", "DWOR", "HAGE", "MAVA", "NISP")) %>%
+  filter(mark_site_code_value %in% snake_hatcheries) %>%
   mutate_at(vars(ends_with('time_value')),
             list(mdy_hm)) %>%
   mutate(mark_date_mmddyyyy = as.Date(mark_date_mmddyyyy, format = "%m/%d/%Y")) %>%
@@ -241,21 +249,7 @@ sthd_obs = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_SY16-19.csv') %>%
   select(-brood_to_spawn)
 
 write_csv(sthd_obs, "../data/PTAGIS/pHOS_IntSumm_Sthd_SY16-19_filtered.csv")
-
-table(sthd_obs$spawn_yr, sthd_obs$brood_yr)
-table(sthd_obs$TRT, sthd_obs$spawn_yr)
 ```
-
-We will consider the following locations:
-
-1. Lemhi River (SRLEM-s)
-2. South Fork Clearwater River (CRSFC-s)
-3. Lochsa River (CRLOC-s)
-4. Big Creek (MFBIG-s)
-5. North Fork Salmon River (SRNFS-s)
-6. South Fork Salmon River (SFMAI-s, SFSEC-s)
-
-We have smolt marking information for brood years (BY) 2013-2018. BY2013 smolts would be released in spring 2014, emigrate to the ocean for 1 ('A-run') or 2 ('B-run') years and enter the Columbia again in 2015 or 2016 to spawn in spring 2016 or 2017. As a result, we will limit our PTAGIS query to spawn years 2016 to 2019, the years for which we have PIT tag marking fraction information for smolt releases.
 
 ```{r read_in_data, eval = F}
 sc_sthd = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_SC_2016-2019.csv') %>%
@@ -281,23 +275,68 @@ lem_sthd = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_Lem_2016-2019.csv') %>%
   # filter out most recent spawn year, and any detections when last_time_value is < 1 year from mark year
   filter(spawn_yr < 2020) %>%
   filter(year(last_time_value) - mark_year_yyyy > 1)
-
 ```
 
-```{r eval = F}
-# where were fished marked?
-sc_sthd %>%
-  mutate(site_grp = 'SC') %>%
-  bind_rows(lem_sthd %>%
-              mutate(site_grp = 'Lemhi')) %>%
-  group_by(site_grp,
-           srr_code,
-           spawn_yr,
-           mark_year_yyyy,
-           mark_site_name,
-           mark_site_code_value) %>%
-  summarise(n_tags = n_distinct(tag_code)) %>%
-  kable()
+Next, we filtered the results of the PTAGIS query to only include the following IPTDS observations:
+
+* Mark Site Code Value: From Snake River hatcheries for which we have tagging fraction data for BY2013-2018 (i.e., `r snake_hatcheries`).
+* Mark Year: Excluded marks that occurred prior to 2013. This includes filtering "orphan" tags.
+* Last Obs Time - Mark Year < 1: In many cases, the mark year was less than 1 year prior to the final IPTDS observation. These observations are presumably from hatchery smolt releases and were removed.
+* Spawn Year - Brood Year = 3 or 4: Returning adult hatchery steelhead should be 3 ('A-run') or 4 ('B-run') years old. We excluded any observations where this was not the case.
+
+Finally, for each observation, IDFG provided us with information on whether the tag was from an RAL or RTR release, and for RAL fish, the appropriate expansion value. Descriptions of RTR vs. RAL are as follows:
+
+* RTR ("Return-to-River"): A sort-by-code designation for smolts that will automatically be returned to the river when detected at a dam, when other fish may be getting transported. They do not represent the release group at-large, therefore represent only themselves with an expansion value of "1".
+* RAL ("Run-at-Large"): A sort-by-code designation for smolts that will be transported or returned to the river in accordance with the protocol at the dam when they are detected. They represent the release group with a tagging rate that excludes any smolts that have an RTR tag in them. The expansion value of RAL tagged fish is the inverse of the tag rate.
+
+In our case, we were only interested in RAL observations.
+
+`r tab_nums('obs_summary')`
+<center>
+```{r hatchery_observation}
+final_sthd_obs = read_excel("../data/PTAGIS/pHOS_IntSumm_Sthd_SY16-19_filtered_fb.xlsx")
+
+obs_table = final_sthd_obs %>%  
+  select(tag_code:expansion_value, mark_site_code_value, brood_yr:TRT) %>%
+  filter(sbycode == "RAL") %>%
+  group_by(TRT, spawn_yr) %>%
+  count(mark_site_code_value) %>%
+  spread(key = mark_site_code_value, value = n) %>%
+  ungroup() %>%
+  mutate(Total = select(., CLWH:NISP) %>% rowSums(na.rm = T)) %>%
+  rename(`Spawn Year` = spawn_yr) %>%
+  mutate_all(~replace_na(., "-"))
+
+pander(obs_table)
+```
+</center>
+
+```{r phos}
+pHOS = final_sthd_obs %>%
+  select(tag_code:expansion_value, mark_site_code_value, brood_yr:TRT) %>%
+  filter(sbycode == 'RAL') %>%
+  group_by(TRT, spawn_yr, mark_site_code_value) %>%
+  summarise(Abundance = round(sum(expansion_value),0)) %>%
+  spread(key = mark_site_code_value, value = Abundance) %>%
+  ungroup() %>%
+  mutate(`Hatchery Abundance` = select(., CLWH:NISP) %>% rowSums(na.rm = T)) %>%
+  rename(`Spawn Year` = spawn_yr)
+    
+wild_abund = read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_Steelhead.xlsx'), sheet = 2) %>%
+  select(TRT, spawn_yr, median, cv) %>%
+  mutate(cv = as.numeric(cv)) %>%
+  filter(median != 0) %>%
+  mutate(cv = cv*100) %>%
+  rename(`Wild Abundance` = median,
+         `CV (%)` = cv)
+
+pHOS = pHOS %>%
+  left_join(wild_abund, by = c("TRT" = "TRT",
+                               "Spawn Year" = "spawn_yr")) %>%
+  mutate(`Total Abundance` = `Hatchery Abundance` + `Wild Abundance`) %>%
+  mutate(pHOS = round(`Hatchery Abundance`/`Total Abundance`,3))
+pander(pHOS)
+
 ```
 
 ## Section 2. Expected precision of *pHOS* given current PIT tagging of W and HNC adults at LGR
