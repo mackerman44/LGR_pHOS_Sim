@@ -319,6 +319,8 @@ obs_table = final_sthd_obs %>%
   rename(`Spawn Year` = spawn_yr)
 
 obs_table %>%
+  mutate_at(vars(`Spawn Year`),
+            list(as.factor)) %>%
   pander(missing = '-')
 ```
 </center>
