@@ -146,6 +146,8 @@ tags_deploy = crossing(Species = 'Steelhead',
 
 In a recent assessment by See et al. (2019), it was determined that approximately `r min_tags` observations of unique fish were necessary within a TRT population or location to estimate wild population abundance with 'good' precision. `r tab_nums('lgr_tags_needed', display = 'c')` is from that report and shows the total number of tags estimated to be deployed in natural origin adults at LGR to estimate abundance in each population with reasonable precision. In addition to populations considered there, we will also initially consider the Lochsa, Selway, and North Fork Salmon River.
 
+**I'm not sure this table is necessary, or why the limit of 50 tags plays into this analysis. For hatchery fish, we just need to work with whatever detections we have, and the expansion factors given to us. Table 2 seems to do a nice job of summarizing where we are interested in doing this work, let's focus on that.**
+
 `r tab_nums('lgr_tags_needed')`
 <center>
 ```{r sthd_ests}
@@ -188,6 +190,8 @@ sthd_est %>%
 
 We will perform a query in PTAGIS for the following TRT populations and Site IDs within those locations.
 
+**Consider adding a column with a more descriptive name of each population, as I did.**
+
 `r tab_nums('site_table')`
 <center>
 ```{r site_ids}
@@ -208,7 +212,15 @@ site_table = sites %>%
   arrange(TRT) %>%
   rename(SiteID = `toString(SiteID)`)
 
-pander(site_table)
+site_table %>%
+  left_join(sthd_est %>%
+              ungroup() %>%
+              select(TRT, Name) %>%
+              distinct()) %>%
+  select(TRT, Name, SiteID) %>%
+  pander()
+
+# pander(site_table)
 ```
 </center>
 
@@ -304,10 +316,10 @@ obs_table = final_sthd_obs %>%
   spread(key = mark_site_code_value, value = n) %>%
   ungroup() %>%
   mutate(Total = select(., CLWH:NISP) %>% rowSums(na.rm = T)) %>%
-  rename(`Spawn Year` = spawn_yr) %>%
-  mutate_all(~replace_na(., "-"))
+  rename(`Spawn Year` = spawn_yr)
 
-pander(obs_table)
+obs_table %>%
+  pander(missing = '-')
 ```
 </center>
 
@@ -323,19 +335,31 @@ pHOS = final_sthd_obs %>%
   rename(`Spawn Year` = spawn_yr)
     
 wild_abund = read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_Steelhead.xlsx'), sheet = 2) %>%
-  select(TRT, spawn_yr, median, cv) %>%
+  select(TRT, spawn_yr,
+         n_wild_tags = n_tags,
+         median, cv) %>%
   mutate(cv = as.numeric(cv)) %>%
   filter(median != 0) %>%
   mutate(cv = cv*100) %>%
   rename(`Wild Abundance` = median,
          `CV (%)` = cv)
 
-pHOS = pHOS %>%
+pHOS = obs_table %>%
+  mutate_at(vars(`Spawn Year`),
+            list(as.numeric)) %>%
+  select(TRT, `Spawn Year`,
+         n_hatch_tags = Total) %>%
+  left_join(pHOS) %>%
   left_join(wild_abund, by = c("TRT" = "TRT",
                                "Spawn Year" = "spawn_yr")) %>%
   mutate(`Total Abundance` = `Hatchery Abundance` + `Wild Abundance`) %>%
-  mutate(pHOS = round(`Hatchery Abundance`/`Total Abundance`,3))
-pander(pHOS)
+  mutate(pHOS = round(`Hatchery Abundance`/`Total Abundance`,3)) %>%
+  rename(`n. Tags Hatchery` = n_hatch_tags,
+         `n. Tags Wild` = n_wild_tags)
+pHOS %>%
+  mutate_at(vars(`Spawn Year`),
+            list(as.factor)) %>% 
+  pander(missing = '-')
 
 ```
 
@@ -446,7 +470,7 @@ CV(g) &= \frac{SE(g)}{g} \\
 \end{aligned}
 $$
 
-which is a combination of the proportion of wild fish, the CV of estimate of wild fish and the CV of the estimate of hatchery fish.
+which is a combination of the proportion of wild fish, the CV of the estimate of wild fish and the CV of the estimate of hatchery fish.
 
 In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch $i$ by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch $i$. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
 
