@@ -29,7 +29,7 @@ writeDABOM_LGD(file_name = basic_modNm,
 
 #-------------------------------
 spp = 'Steelhead'
-yr = 2017
+yr = 2018
 
 # for(yr in 2017:2019) {
   
@@ -49,12 +49,12 @@ yr = 2017
   # In 2010 and 2011, the Asotin Creek weir was upstream of ACB. For those years, 
   # take all detections at ASOTIC and move them to ACBA0
   #------------------------------------------------------------------------------
-  if(spp == 'Steelhead' & yr %in% c(2010, 2011)) {
+  # if(spp == 'Steelhead' & yr %in% c(2010, 2011)) {
     proc_ch <- proc_ch %>%
       mutate(Node = if_else(Node == 'ASOTIC',
                             'ACBA0',
                             Node))
-  }
+  # }
   
   # filepath for specific JAGS model code for species and year
   mod_path = paste0('hnc_dabom/ModelFiles/LGR_DABOM_HNC_', spp, '_', yr, '.txt')
@@ -158,6 +158,8 @@ yr = 2017
   #--------------------------------------------------------------------------------
   # Save the results
   #--------------------------------------------------------------------------------
+  proc_list$ProcCapHist = proc_ch
+  
   save(dabom_mod, dabom_list, proc_list,
        file = paste0('hnc_dabom/ModelFits/LGR_DABOM_HNC_', spp, '_', yr,'.rda'))
   
