@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: Run DABOM for hatchery no-clip steelhead from several years at Lower Granite
 # Created: 12/31/19
-# Last Modified: 12/31/19
+# Last Modified: 1/2/2020
 # Notes: 
 
 #-------------------------------
@@ -18,7 +18,8 @@ library(jagsUI)
 
 #-------------------------------
 # should initial movement probabilities be time-varying?
-time_varying = TRUE
+# time_varying = TRUE
+time_varying = FALSE
 
 # file path to the default and initial model 
 basic_modNm = 'hnc_dabom/ModelFiles/LGR_DABOM.txt'
@@ -28,9 +29,9 @@ writeDABOM_LGD(file_name = basic_modNm,
 
 #-------------------------------
 spp = 'Steelhead'
-yr = 2019
+yr = 2017
 
-for(yr in 2017:2019) {
+# for(yr in 2017:2019) {
   
   load(paste0("data/DABOM/DABOM_preppd_LGR_", spp, '_', yr, '.rda'))
   
@@ -71,6 +72,18 @@ for(yr in 2017:2019) {
   dabom_list = createDABOMcapHist(proc_ch,
                                   proc_list$NodeOrder,
                                   split_matrices = T)
+  
+  n_tags_br = map_dbl(dabom_list,
+                      .f = function(x) {
+                        sum(rowSums(x) > 0)
+                      })
+  
+  dabom_list[which(n_tags_br > 0)] %>%
+    map_dbl(.f = function(x) {
+      sum(rowSums(x) > 0)
+    })
+  
+  
   #------------------------------------------------------------------------------
   # Only Used to Debug
   #------------------------------------------------------------------------------
@@ -129,9 +142,10 @@ for(yr in 2017:2019) {
                           inits = init_fnc,
                           parameters.to.save = jags_params,
                           model.file = mod_path,
-                          n.chains = 2,
-                          n.iter = 4,
-                          n.burnin = 2,
+                          n.chains = 1,
+                          n.iter = 2,
+                          n.burnin = 1,
+                          n.thin = 1,
                           DIC = F)
                           # n.chains = 4,
                           # n.iter = 5000,
@@ -147,4 +161,4 @@ for(yr in 2017:2019) {
   save(dabom_mod, dabom_list, proc_list,
        file = paste0('hnc_dabom/ModelFits/LGR_DABOM_HNC_', spp, '_', yr,'.rda'))
   
-}
+# }
