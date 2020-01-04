@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: Run DABOM for hatchery no-clip steelhead from several years at Lower Granite
 # Created: 12/31/19
-# Last Modified: 1/2/2020
+# Last Modified: 1/3/2020
 # Notes: 
 
 #-------------------------------
@@ -31,7 +31,7 @@ writeDABOM_LGD(file_name = basic_modNm,
 spp = 'Steelhead'
 yr = 2018
 
-# for(yr in 2017:2019) {
+for(yr in 2019:2017) {
   
   load(paste0("data/DABOM/DABOM_preppd_LGR_", spp, '_', yr, '.rda'))
   
@@ -138,21 +138,24 @@ yr = 2018
   # about 3.75 days!!!!!
   
   set.seed(12)
-  dabom_mod <- jags.basic(data = jags_data,
+  dabom_mod <- try(jags.basic(data = jags_data,
                           inits = init_fnc,
                           parameters.to.save = jags_params,
                           model.file = mod_path,
-                          n.chains = 1,
-                          n.iter = 2,
-                          n.burnin = 1,
-                          n.thin = 1,
-                          DIC = F)
-                          # n.chains = 4,
-                          # n.iter = 5000,
-                          # n.burnin = 2500,
-                          # n.thin = 10,
-                          # DIC = T)
+                          # n.chains = 1,
+                          # n.iter = 2,
+                          # n.burnin = 1,
+                          # n.thin = 1,
+                          # DIC = F))
+                          n.chains = 4,
+                          n.iter = 5000,
+                          n.burnin = 2500,
+                          n.thin = 10,
+                          DIC = T))
   
+  if(class(dabom_mod) == 'try-error') {
+    next
+  }
   
   
   #--------------------------------------------------------------------------------
@@ -163,4 +166,4 @@ yr = 2018
   save(dabom_mod, dabom_list, proc_list,
        file = paste0('hnc_dabom/ModelFits/LGR_DABOM_HNC_', spp, '_', yr,'.rda'))
   
-# }
+}

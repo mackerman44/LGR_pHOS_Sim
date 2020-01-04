@@ -206,53 +206,11 @@ model{
   # 27 bins: 	Tucannon (1), Penawawa (2), Almota (3), Alpowa (4), Asotin (5), Ten Mile Cr. (6), Lapwai (7), Potlatch (8), Joseph Creek (9), Cow Creek (10), Imnaha (11), Lolo (12), SF Clearwater (13), Wenaha River (14), Clear Creek (15), Lochsa (16), Selway (17), Lookingglass Creek (18), Wallowa (19),  Grande Ronde (20), Rapid River (21), South Fork Salmon (22), Panther Creek (23), Big Creek (24), North Fork Salmon (25), Carmen Creek (26), Lemhi (27), Upper Salmon (28), Bear Valley (29) Not Seen (27)
 
   # set probability to any main bin that saw NO fish to 0
+  p_pop_main ~ ddirch(main_dirch_vec) # Dirichlet for probs for going to n.pops bins
 
-  # prior on log odds ratio for initial week
-  for(j in 1:(n.pops.main - 1)) {
-      # somewhat informative, but fairly vague prior
-    phi[1,j] ~ dnorm(-2, 1/16)
-    exp_phi[1,j] <- exp(phi[1,j]) * main_dirch_vec[j]
-  }
-
-  # set black box as baseline
-  for(t in 1:(n.weeks)) {
-    phi[t,n.pops.main] <- 0
-    exp_phi[t, n.pops.main] <- exp(phi[t, n.pops.main]) * main_dirch_vec[n.pops.main]
-    # get sum of all phi's
-    sum_exp_phi[t] <- sum(exp_phi[t,]);
-  }
-
-  # extract initial movement probabilities for week 1
-  for(j in 1:n.pops.main) {
-    p_pop_main[1,j] <- ifelse(main_dirch_vec[j] == 0, 0, exp_phi[1,j] / sum_exp_phi[1])
-  }
-
-  # variation in time-varying random walk movement probabilities
-  sigma_rw ~ dunif(0,10)
-  tau_rw <- pow(sigma_rw, -2)
-
-  for(t in 2:(n.weeks)) {
-    for(j in 1:(n.pops.main - 1)) {
-      epsilon[t,j] ~ dnorm(0, tau_rw)
-      # set phi to any main bin that saw NO fish to 0
-      phi[t,j] <- ifelse(main_dirch_vec[j] == 0, 0, phi[t - 1, j] + epsilon[t,j])
-      exp_phi[t,j] <- exp(phi[t,j]) * main_dirch_vec[j]
-    }
-
-    for (j in 1:(n.pops.main)) {
-      p_pop_main[t,j] <- (exp_phi[t,j] / sum_exp_phi[t])
-    }
-  }
-
-  # Which main branch does each fish follow?
   for(i in 1:n.fish) {
-    a[i] ~ dcat( p_pop_main[dam_week[i], 1:n.pops.main] )
+    a[i] ~ dcat( p_pop_main )
   }
-
-
-
-
-
 
   # expand the dcat variable into a matrix of zeros and ones
   for (i in 1:n.fish) {
