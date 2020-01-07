@@ -276,7 +276,7 @@ model{
   # Initial branch
   # 4 bins: mainstem (1), GEORGC (2), past Adult trap, ASOTIC (3), and not seen (4)
 
-  phi_acb ~ dbeta(1,1) # prob of migrating past ACB
+  phi_acb <- 1 # Either ASOTIC or ACB had no detections, but the other did
 
   p_pop_Asotin[1:n.pops.Asotin[1]] ~ ddirch(aso_dirch_vec) # Dirichlet for probs for going to bins
 
