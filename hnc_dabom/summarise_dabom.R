@@ -21,6 +21,7 @@ stademFolder = '/Users/seek/Documents/GitProjects/MyProjects/SnakeBasinFishStatu
 
 bootstrap_samp = 2000
 
+set.seed(5)
 sthd_hnc_summ = 2017:2019 %>%
   as.list() %>%
   purrr::set_names() %>%
