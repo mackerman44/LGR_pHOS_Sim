@@ -13,6 +13,15 @@ author:
     institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
+  pdf_document:
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
+    fig_height: 6
+    fig_width: 8
+    includes:
+      in_header: ../templates/header_ABS.tex
   word_document: 
     fig_caption: yes
     fig_height: 4
@@ -23,15 +32,6 @@ output:
     - --lua-filter=../templates/author-info-blocks.lua
     - --lua-filter=../templates/pagebreak.lua
     reference_docx: ../templates/ReportTemplate.docx
-  pdf_document:
-    fig_height: 6
-    fig_width: 8
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
-    includes:
-      in_header: ../templates/header_ABS.tex
   html_document:
     theme: simplex
     toc: yes
@@ -140,7 +140,8 @@ pop_est = c('Chinook', 'Steelhead') %>%
   as.list() %>%
   rlang::set_names() %>%
   map_df(.f = function(x) {
-    read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_', x, '.xlsx'))
+    read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_', x, '.xlsx'),
+               sheet = 'Pop Total Esc')
   }) %>%
   filter(!is.na(n_tags)) %>%
   mutate_at(vars(spawn_yr:TRT),
@@ -155,7 +156,7 @@ p_est = c('Chinook', 'Steelhead') %>%
   rlang::set_names() %>%
   map_df(.f = function(x) {
     read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_', x, '.xlsx'),
-               'Site Detect Eff')
+               'Node Detect Eff')
   }) %>%
   # filter(!is.na(n_tags)) %>%
   mutate_at(vars(spawn_yr:Node),
