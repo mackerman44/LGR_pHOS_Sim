@@ -493,10 +493,16 @@ pHOS_1a %>%
 These are initial HNC abundance estimates from DABOM for spawn years 2017. I've added for 1/9/2020 meeting with IDFG. Next, we need to roll these up to TRT populations at the same scales that we estimate W abundance in the SnakeBasinFishStatus Git repo. Then, Kevin will determine the appropriate way to merge W and HNC abundance estimates from DABOM to estimate pHOS with SE and CV. Then summarize and report results. That should be it for this section.
 -->
 
-```{r dabom_hnc}
+```{r dabom_hnc, eval = F}
 dabom_sthd_hnc_abund = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_abund.csv")
 pander(dabom_sthd_hnc_abund)
+```
 
+```{r dabom_hnc_phos}
+hnc_phos_sthd = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_pHOS.csv") %>%
+  mutate_at(vars(Year),
+            list(as.factor))
+pander(hnc_phos_sthd)
 ```
 
 ### Section 2. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
