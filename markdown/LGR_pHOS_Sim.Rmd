@@ -116,7 +116,9 @@ p_{HOS} = \frac{\hat{N_h}}{\hat{N_h} + \hat{N_n}}
 $$
 where $\hat{N_{h}}$ is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate at hatchery abundance estimate in the DABOM model using juvenile tagging; hence, the tag expansion approach. 
 
-**Kevin - I realized here that we didn't account for detection probability. But it's unclear to me how we would easily account for detection probability given that there can be numerous sites within a group. Wouldn't we have to, for each observation, take the expansion value for a fish and divide it by the estimated detection probability of the observation location and year from DABOM?**
+<!--
+Kevin - I realized here that we didn't account for detection probability. But it's unclear to me how we would easily account for detection probability given that there can be numerous sites within a group. Wouldn't we have to, for each observation, take the expansion value for a fish and divide it by the estimated detection probability of the observation location and year from DABOM?
+-->
 
 In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction  for that release groups and then sum across groups, and further, account for the detection probability of IPTDS sites within a location. Note that in this scenario we don't need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.
 
