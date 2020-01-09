@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kevin See1,✉, and Mike Ackerman1,✉" />
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-09" />
 
 <title>Hatchery Tagging to Estimate pHOS Using IPTDS Detections</title>
 
@@ -1519,7 +1519,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Hatchery Tagging to Estimate pHOS Using IPTDS Detections</h1>
 <h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1,✉</sup></h4>
-<h4 class="date">January 08, 2020</h4>
+<h4 class="date">January 09, 2020</h4>
 
 </div>
 
@@ -1530,14 +1530,14 @@ div.tocify {
 <h1>Introduction</h1>
 <p>The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural origin spring/summer Chinook salmon <em>Onchorhynchus tshawytscha</em> and steelhead <em>O. mykiss</em> into watersheds and populations of the Snake River Basin (SRB). Escapement estimates are made based on the tagging of a random sample of adults at Lower Granite Dam (LGR) and the subsequent detection of those adults at instream PIT tag detection systems (IPTDS) throughout the SRB. DABOM could also be used to generate estimates of hatchery escapement to various locations as well, which would be useful for estimating hatchery abundance in natural areas and the proportion of hatchery origin spawners (<em>pHOS</em>). Doing so, with reasonable precision, may require a random sample (or similar) of adult hatchery fish also be PIT tagged at LGR. Here, we wish to determine expected levels of precision for <em>pHOS</em> given current levels of PIT tagging in the SRB, and further, determine the additional tagging, expressed as a tagging rate or number of tags, required in hatchery adults at LGR to achieve unbiased estimates of hatchery escapement and <em>pHOS</em> with reasonable levels of precision (e.g., coefficient of variaion [CV] of <span class="math inline">\(\leq\)</span> 15%).</p>
 <p>Simultaneously estimating escapement of hatchery origin (HOR) and natural origin (NOR) adults to IPTDS locations throughout the SRB based on PIT tagging at LGR is a trivial extension of the DABOM model. Factually, the previous and existing instance of the DABOM model was developed for the upper Columbia River (upstream of Priest Rapids Dam), which capitalized on the same sampling assumptions applied to natural origin escapement past LGR. However, for multiple reasons (ergonomic limitations at LGR, political considerations, supposed ethical concerns), the random sampling and PIT tagging of HOR adults (specifically ad-clipped adults) at LGR has been precluded. Notably, given trap operations at LGR, HOR adults are trapped, anesthetized, weighed, and measured at the same rate as NOR - a function of “trap rate” constituting a fraction of every hour wherein adults in the ladder are bypassed to the trap. Thus, it is arguable that implantation of a PIT tag constitutes a significantly greater offense to captured hatchery adults.</p>
-<p>Importantly, NOR and HOR refer to the origin of a Chinook salmon or steelhead that is born in the natural or hatchery environment, respectively. Related, three phenotypic origins of adult Chinook salmon and steelhead are identified at LGR and include wild (W), hatchery ad-intact (HNC), and hatchery ad-clipped (H). NOR includes only W adults whereas HOR includes both the HNC and H groups despite HNC individuals often being phenotypically W. Currently, all ad-intact fish are systematically PIT tagged at LGR which includes both the W and HNC origins i.e., some HOR adults are currently tagged at LGR, but we need to consider differential tagging rates between HNC and H adults when evaluating the precision of <em>pHOS</em> given current levels of PIT tagging.</p>
+<p>Importantly, NOR and HOR refer to the origin of Chinook salmon or steelhead born in the natural or hatchery environment, respectively. Related, three phenotypic origins of adult Chinook salmon and steelhead are identified at LGR and include wild (W), hatchery ad-intact (HNC), and hatchery ad-clipped (H). NOR includes only W adults whereas HOR includes both the HNC and H groups despite HNC individuals often being phenotypically W. Currently, all ad-intact fish are systematically PIT tagged at LGR which includes both the W and HNC origins i.e., some HOR adults are currently tagged at LGR, but we need to consider differential tagging rates between HNC and H adults when evaluating the precision of <em>pHOS</em> given current levels of PIT tagging.</p>
 <p>Unbeknownst to the proposal for this evaluation, a condition of the Hatchery and Genetics Management Plan (HGMP) required the operation of IDFG HOR steelhead production to conduct a study on HOR contributions to NOR populations. Thusly, IDFG and NOAA Fisheries endeavored to compile and estimate straying of HOR steelhead upstream of LGR.</p>
 <p>This document seeks to begin collaboration between IDFG, NOAA Fisheries, and Biomark, Inc. to:</p>
 <ul>
 <li>Capitalize on existing progress on stray rates, and</li>
 <li>Advance statistical modeling to determine whether <em>pHOS</em> estimates can be reliablly prosecuted by adult HOR PIT tagging at LGR.</li>
 </ul>
-<p>In its developed form, the DABOM model includes escapement for NOR and HOR adult salmonids. Demonstrably, the DABOM is fully functional for multiple populations of spring/summer Chinook salmon and steelhead upstream of LGR. The performance of DABOM in the upper Columbia River (above Priest Rapids Dam) strongly suggests that the model can be reliably extended to HOR. Contents of this document, including findings, will be reported as part of a Final (Annual) Progress Report for Bonneville Power Administration (BPA) project 2019-006-00.</p>
+<p>In its developed form, the DABOM model includes escapement for NOR and HOR adult salmonids. Demonstrably, the DABOM is fully functional for multiple populations of spring/summer Chinook salmon and steelhead upstream of LGR. The performance of DABOM in the upper Columbia River (above Priest Rapids Dam) strongly suggests that the model can be reliably extended to HOR adults in the Snake River. Contents of this document, including findings, will be reported as part of a Final (Annual) Progress Report for Bonneville Power Administration (BPA) project 2019-006-00.</p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <p>This assessment aims to determine the number or tagging rate of HOR adults at LGR necessary to determine <em>pHOS</em> across watersheds or populations of SRB steelhead estimated by the DABOM model (and supported by the operation of IPTDS maintained and operated under BPA project 2018-002-00) and with “reasonable” uncertainty (e.g., CV <span class="math inline">\(\leq\)</span> 15%). As a natural extension, we may also explore additional effort necessary to estimate <em>pHOS</em> in watersheds or populations of interest for Chinook salmon. Our objectives are as follows:</p>
@@ -1564,9 +1564,10 @@ div.tocify {
 \]</span> where <span class="math inline">\(\hat{N_{h}}\)</span> is the HOR abundance, <span class="math inline">\(n_r\)</span> is the number of observations of HOR individuals from release <span class="math inline">\(r\)</span> and <span class="math inline">\(\psi_r\)</span> is the expansion value for release <span class="math inline">\(r\)</span>. HOR escapement to a given location can then be combined with estimates for NOR escapement from DABOM to estimate <em>pHOS</em> with uncertainty.</p>
 <p><span class="math display">\[
 p_{HOS} = \frac{\hat{N_h}}{\hat{N_h} + \hat{N_n}}
-\]</span> where <span class="math inline">\(\hat{N_{h}}\)</span> is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate at hatchery abundance estimate in the DABOM model using juvenile tagging; hence, the tag expansion approach.</p>
-<p><strong>Kevin - I realized here that we didn’t account for detection probability. But it’s unclear to me how we would easily account for detection probability given that there can be numerous sites within a group. Wouldn’t we have to, for each observation, take the expansion value for a fish and divide it by the estimated detection probability of the observation location and year from DABOM?</strong></p>
-<p>In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction for that release groups and then sum across groups, and further, account for the detection probability of IPTDS sites within a location. Note that in this scenario we don’t need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.</p>
+\]</span> where <span class="math inline">\(\hat{N_{n}}\)</span> is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate at hatchery abundance estimate in the DABOM model using juvenile tagging; hence, the tag expansion approach. In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction for that release groups and then sum across groups, and further, account for the detection probability of IPTDS sites within a location. Note that in this scenario we don’t need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.</p>
+<!--
+Kevin - I realized here that we didn't account for detection probability. But it's unclear to me how we would easily account for detection probability given that there can be numerous sites within a group. Wouldn't we have to, for each observation, take the expansion value for a fish and divide it by the estimated detection probability of the observation location and year from DABOM?
+-->
 <div id="approach" class="section level4">
 <h4>Approach</h4>
 <p>The IDFG provided us with tagging fraction (i.e., expansion factor) information by brood year (BY), rearing hatchery, and mark type (H vs. HNC) for steelhead hatchery releases within Idaho from BY2013-2018. In addition, we have interrogation data and abundance estimates for wild steelhead populations available through spawn year (SY) 2019. Hatchery steelhead in Idaho are always released and emigrate to the ocean as 1 year olds. Using SY2019 hatchery adults as an example, those adults would have entered the Columbia River to initiate their spawning run during summer 2018; and thus 1-ocean adults would have emigrated to the ocen in 2017 (hence BY2016) and 2-ocean adults would have emigrated in 2016 (BY2015). Following this logic, we can consider the following BY smolt releases for each adult SY:</p>
@@ -1578,12 +1579,12 @@ p_{HOS} = \frac{\hat{N_h}}{\hat{N_h} + \hat{N_n}}
 <p>And thus, the earliest SY we can consider is 2017 as their 2-ocean adults originate from BY2013.</p>
 <div id="locations" class="section level5">
 <h5>Locations</h5>
-<p>A recent assessment by See et al. (2019) identified TRT steelhead populations or locations containing IPTDS that can be used to estimate wild population abundance. We then performed a PTAGIS query for locations evaluated there, and in addition, queried for hatchery adult observations in the Lochsa, Selway, and North Fork Salmon rivers from smolt releases. Table 1 summarizes TRT populations and iterrogation sites for which we queried observations of hatchery adults during SY2017-2019. The following constraints were placed on our PTAGIS query:</p>
+<p>A recent assessment by See et al. (2019) identified steelhead TRT populations or locations containing IPTDS that can be used to estimate wild population abundance. We then performed a PTAGIS query for locations evaluated there, and in addition, queried for hatchery adult observations in the Lochsa, Selway, and North Fork Salmon rivers (areas with particular management interest where IPTDS have recently been installed) from smolt releases. Table 1 summarizes TRT populations and iterrogation sites for which we queried observations of hatchery adults during SY2017-2019. The following constraints were placed on our PTAGIS query:</p>
 <ul>
 <li>Species: Steelhead</li>
 <li>Rear: Hatchery</li>
 <li>Last Obs Date/Time: 07/01/2017 - 06/30/2019</li>
-<li>Obs Site: in Table 1</li>
+<li>Obs Site: In Table 1</li>
 </ul>
 <center>
 </center>
@@ -1701,7 +1702,7 @@ We have smolt marking information for brood years (BY) 2013-2018. BY2013 smolts 
 <li>Last Obs Time - Mark Year &lt; 1: In many cases, the mark year was less than 1 year prior to the final IPTDS observation. These observations are presumably from hatchery smolt releases and were removed.</li>
 <li>Spawn Year - Brood Year = 3 or 4: Returning adult hatchery steelhead should be 3 (‘A-run’) or 4 (‘B-run’) years old. We excluded any observations where this was not the case.</li>
 </ul>
-<p>And finally, for each observation, IDFG identified whether each tag was from an RAL or RTR release, and for RAL fish, the appropriate expansion value. RTR observations were ignored. Descriptions of RTR vs. RAL are as follows:</p>
+<p>And finally, for each observation, personnel from the IDFG identified whether each tag was from an RAL or RTR release, and for RAL fish, the appropriate expansion value. RTR observations were ignored. Descriptions of RTR vs. RAL are as follows:</p>
 <ul>
 <li>RTR (“Return-to-River”): A sort-by-code designation for smolts that will automatically be returned to the river when detected at a dam, when other fish may be getting transported. They do not represent the release group at-large, therefore represent only themselves with an expansion value of “1”.</li>
 <li>RAL (“Run-at-Large”): A sort-by-code designation for smolts that will be transported or returned to the river in accordance with the protocol at the dam when they are detected. They represent the release group with a tagging rate that excludes any smolts that have an RTR tag in them. The expansion value of RAL tagged fish is the inverse of the tag rate.</li>
@@ -1901,7 +1902,7 @@ Table 2: The number of observations of adult hatchery steelhead by location, spa
 </div>
 <div id="section-1b.-expected-precision-of-phos-given-current-systematic-pit-tagging-of-hnc-adults-at-lgr" class="section level3">
 <h3>Section 1B. Expected precision of <em>pHOS</em> given current systematic PIT tagging of HNC adults at LGR</h3>
-<p>Next, we evaluated the expected precision (CV) of <em>pHOS</em> estimates given current PIT tagging rates of ad-intact adults, both wild (W) and hatchery (HNC) at LGR. This leverages the fact that all ad-intact adults trapped at LGR are already implanted with a PIT tag. Estimates of wild adult abundance across select TRT populations and locations in the SRB are already available from DABOM. Here, we will re-run DABOM for HNC individuals to get HNC abundance estimates for locations and populations where we already report W abundance using DABOM. The HNC and W abundance estimates, at the same spatial scales, can then easily be combined to estimate <em>pHOS</em> with uncertainty.</p>
+<p>Next, we evaluated the expected precision (CV) of <em>pHOS</em> estimates given current PIT tagging rates of ad-intact adults, both wild (W) and hatchery (HNC) at LGR. This leverages the fact that all ad-intact adults trapped at LGR are already implanted with a PIT tag. Estimates of wild adult abundance across select TRT populations and locations in the SRB are already available from DABOM. Here, we will re-run DABOM for HNC individuals for SY 2017 through 2019 to get HNC abundance estimates for locations and populations where we already report W abundance using DABOM. The HNC and W abundance estimates, at the same spatial scales, can then easily be combined to estimate <em>pHOS</em> with uncertainty.</p>
 <p>This evaluation ignores ad-clipped H adults, but is effective for estimating <em>pHOS</em> among ad-intact individuals and may be of particular interest for supplementation locations (e.g., South Fork Clearwater steelhead). Unfortunately, it seems there is no easy way to combine juvenile smolt release tagging (tag expansion approach) and adult tagging information at LGR (DABOM model, transition probability approach) to estimate hatchery abundance and <em>pHOS</em> using IPTDS observations.</p>
 </div>
 <div id="section-2.-expected-precision-of-phos-by-adding-tagging-of-ad-clipped-hatchery-h-adults-at-lgr" class="section level3">
@@ -2003,7 +2004,10 @@ CV(g) &amp;= \frac{SE(g)}{g} \\
 <h1>Results</h1>
 <div id="section-1a.-expected-precision-of-phos-given-current-pit-tagging-of-hatchery-smolt-releases-1" class="section level3">
 <h3>Section 1A. Expected precision of <em>pHOS</em> given current PIT tagging of hatchery smolt releases</h3>
-<p>Table 2 summarizes hatchery, wild, and total abundance estimates and the corresponding <em>pHOS</em> estimates for locations and spawn years in which there were IPTDS observations of hatchery adults from RTR smolt releases. Wild abundance estimates are from the DABOM model whereas hatchery abundance estimates are using the expansion approach outlined above. Table 2 also includes the number of hatchery and wild tags observed and the CV (%) of the wild abundance estimates for context. Unfortunately, we are currently unable to estimate uncertainty in hatchery abundance, and thus, unable to estimate uncertainty in <em>pHOS</em> using the approach. To do so, we would have to identify and estimate sources of uncertainty in the hatchery abundance; uncertainty in the tagging fraction (i.e., expansion value) would be one example.</p>
+<p>Table 2 summarizes hatchery, wild, and total abundance estimates and the corresponding <em>pHOS</em> estimates for locations and spawn years in which there were IPTDS observations of hatchery adults from RTR smolt releases. Wild abundance estimates are from the DABOM model whereas hatchery abundance estimates are using the expansion approach outlined above. Table 2 also includes the number of hatchery and wild tags observed and the CV of the wild abundance estimates for context. Unfortunately, we are currently unable to estimate uncertainty in hatchery abundance, and thus, unable to estimate uncertainty in <em>pHOS</em> using this approach. To do so, we would have to identify and estimate sources of uncertainty in the hatchery abundance estimates; uncertainty in the tagging fraction (i.e., expansion value) would be one such example.</p>
+<!---
+I'm wondering whether we need to or can remove hatchery rack returns from the hatchery abundance for particular TRT populations here? SRUMA-s comes to mind. Are there racks or weirs in CRSFC-s where hatchery steelhead are removed?
+-->
 Table 3: Hatchery, wild, and total abundance estimates and associated pHOS estimates for location x spawn year combinations with hatchery observations from smolt releases in the Snake River Basin.
 <center>
 <table>
@@ -2304,6 +2308,1510 @@ Table 3: Hatchery, wild, and total abundance estimates and associated pHOS estim
 </div>
 <div id="section-1b.-expected-precision-of-phos-given-current-pit-tagging-of-w-and-hnc-adults-at-lgr" class="section level3">
 <h3>Section 1B. Expected precision of <em>pHOS</em> given current PIT tagging of W and HNC adults at LGR</h3>
+<!---
+These are initial HNC abundance estimates from DABOM for spawn years 2017. I've added for 1/9/2020 meeting with IDFG. Next, we need to roll these up to TRT populations at the same scales that we estimate W abundance in the SnakeBasinFishStatus Git repo. Then, Kevin will determine the appropriate way to merge W and HNC abundance estimates from DABOM to estimate pHOS with SE and CV. Then summarize and report results. That should be it for this section.
+-->
+<table style="width:100%;">
+<colgroup>
+<col width="7%"></col>
+<col width="11%"></col>
+<col width="6%"></col>
+<col width="16%"></col>
+<col width="7%"></col>
+<col width="8%"></col>
+<col width="7%"></col>
+<col width="7%"></col>
+<col width="7%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Year</th>
+<th align="center">Species</th>
+<th align="center">Type</th>
+<th align="center">area</th>
+<th align="center">mean</th>
+<th align="center">median</th>
+<th align="center">mode</th>
+<th align="center">sd</th>
+<th align="center">cv</th>
+<th align="center">lowerCI</th>
+<th align="center">upperCI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ACB_bb</td>
+<td align="center">7</td>
+<td align="center">6</td>
+<td align="center">3</td>
+<td align="center">6.2</td>
+<td align="center">0.85</td>
+<td align="center">0.2</td>
+<td align="center">18.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Alpowa</td>
+<td align="center">17</td>
+<td align="center">15</td>
+<td align="center">13</td>
+<td align="center">10.1</td>
+<td align="center">0.583</td>
+<td align="center">1.7</td>
+<td align="center">36.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Asotin</td>
+<td align="center">11</td>
+<td align="center">9</td>
+<td align="center">6</td>
+<td align="center">8</td>
+<td align="center">0.729</td>
+<td align="center">0.4</td>
+<td align="center">26.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Asotin_bb</td>
+<td align="center">4</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">4.1</td>
+<td align="center">1.121</td>
+<td align="center">0</td>
+<td align="center">12.2</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">BCANF</td>
+<td align="center">34</td>
+<td align="center">32</td>
+<td align="center">28</td>
+<td align="center">13.5</td>
+<td align="center">0.4</td>
+<td align="center">10.8</td>
+<td align="center">61.1</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ImnahaRiver</td>
+<td align="center">28</td>
+<td align="center">26</td>
+<td align="center">20</td>
+<td align="center">13.3</td>
+<td align="center">0.472</td>
+<td align="center">5.9</td>
+<td align="center">52.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ImnahaRiver_bb</td>
+<td align="center">19</td>
+<td align="center">16</td>
+<td align="center">13</td>
+<td align="center">10.6</td>
+<td align="center">0.562</td>
+<td align="center">2</td>
+<td align="center">38.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">IR3_bb</td>
+<td align="center">9</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">6.8</td>
+<td align="center">0.723</td>
+<td align="center">0.4</td>
+<td align="center">22.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lapwai</td>
+<td align="center">27</td>
+<td align="center">26</td>
+<td align="center">17</td>
+<td align="center">12.7</td>
+<td align="center">0.466</td>
+<td align="center">7.7</td>
+<td align="center">53.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lapwai_bb</td>
+<td align="center">17</td>
+<td align="center">15</td>
+<td align="center">10</td>
+<td align="center">10.1</td>
+<td align="center">0.607</td>
+<td align="center">0.9</td>
+<td align="center">36.4</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lemhi</td>
+<td align="center">33</td>
+<td align="center">31</td>
+<td align="center">27</td>
+<td align="center">13.9</td>
+<td align="center">0.418</td>
+<td align="center">9.5</td>
+<td align="center">60.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lemhi_bb</td>
+<td align="center">24</td>
+<td align="center">21</td>
+<td align="center">17</td>
+<td align="center">11.4</td>
+<td align="center">0.485</td>
+<td align="center">4.8</td>
+<td align="center">46</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lochsa</td>
+<td align="center">744</td>
+<td align="center">453</td>
+<td align="center">143</td>
+<td align="center">721.3</td>
+<td align="center">0.969</td>
+<td align="center">15.5</td>
+<td align="center">2,164</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lolo</td>
+<td align="center">565</td>
+<td align="center">563</td>
+<td align="center">568</td>
+<td align="center">67.9</td>
+<td align="center">0.12</td>
+<td align="center">420.8</td>
+<td align="center">682.2</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Main_bb</td>
+<td align="center">1,744</td>
+<td align="center">2,012</td>
+<td align="center">2,275</td>
+<td align="center">739.4</td>
+<td align="center">0.424</td>
+<td align="center">56</td>
+<td align="center">2,600</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">PAHH</td>
+<td align="center">134</td>
+<td align="center">133</td>
+<td align="center">121</td>
+<td align="center">26.5</td>
+<td align="center">0.198</td>
+<td align="center">83.8</td>
+<td align="center">187.1</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_ACB</td>
+<td align="center">7</td>
+<td align="center">6</td>
+<td align="center">3</td>
+<td align="center">6.2</td>
+<td align="center">0.85</td>
+<td align="center">0.2</td>
+<td align="center">18.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_ASOTIC</td>
+<td align="center">7</td>
+<td align="center">6</td>
+<td align="center">3</td>
+<td align="center">6.2</td>
+<td align="center">0.85</td>
+<td align="center">0.2</td>
+<td align="center">18.3</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_BHC</td>
+<td align="center">10</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">7.2</td>
+<td align="center">0.744</td>
+<td align="center">0.2</td>
+<td align="center">23.8</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_IR3</td>
+<td align="center">9</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">6.8</td>
+<td align="center">0.723</td>
+<td align="center">0.4</td>
+<td align="center">22.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_KRS</td>
+<td align="center">7</td>
+<td align="center">6</td>
+<td align="center">3</td>
+<td align="center">5.9</td>
+<td align="center">0.793</td>
+<td align="center">0.1</td>
+<td align="center">18.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_MIS</td>
+<td align="center">11</td>
+<td align="center">9</td>
+<td align="center">5</td>
+<td align="center">8.3</td>
+<td align="center">0.781</td>
+<td align="center">0.3</td>
+<td align="center">26.7</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_MTR</td>
+<td align="center">75</td>
+<td align="center">72</td>
+<td align="center">71</td>
+<td align="center">24.9</td>
+<td align="center">0.333</td>
+<td align="center">32.8</td>
+<td align="center">124.7</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_TUCH_TFH</td>
+<td align="center">50</td>
+<td align="center">48</td>
+<td align="center">44</td>
+<td align="center">16.5</td>
+<td align="center">0.33</td>
+<td align="center">22.4</td>
+<td align="center">83.1</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_USI</td>
+<td align="center">485</td>
+<td align="center">481</td>
+<td align="center">479</td>
+<td align="center">58.3</td>
+<td align="center">0.12</td>
+<td align="center">374.1</td>
+<td align="center">602.5</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_UTR</td>
+<td align="center">61</td>
+<td align="center">59</td>
+<td align="center">58</td>
+<td align="center">20.8</td>
+<td align="center">0.34</td>
+<td align="center">25.3</td>
+<td align="center">99</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_WR2</td>
+<td align="center">34</td>
+<td align="center">32</td>
+<td align="center">29</td>
+<td align="center">13.3</td>
+<td align="center">0.395</td>
+<td align="center">9.7</td>
+<td align="center">60.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_YFK</td>
+<td align="center">181</td>
+<td align="center">179</td>
+<td align="center">176</td>
+<td align="center">34.6</td>
+<td align="center">0.191</td>
+<td align="center">121.4</td>
+<td align="center">254.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SALEFT</td>
+<td align="center">132</td>
+<td align="center">130</td>
+<td align="center">131</td>
+<td align="center">27.8</td>
+<td align="center">0.211</td>
+<td align="center">82.9</td>
+<td align="center">190.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SFClearwater</td>
+<td align="center">3,824</td>
+<td align="center">3,805</td>
+<td align="center">3,772</td>
+<td align="center">268.6</td>
+<td align="center">0.07</td>
+<td align="center">3,349</td>
+<td align="center">4,317</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SFSalmon</td>
+<td align="center">11</td>
+<td align="center">9</td>
+<td align="center">6</td>
+<td align="center">7.6</td>
+<td align="center">0.685</td>
+<td align="center">0.3</td>
+<td align="center">25.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SFSalmon_bb</td>
+<td align="center">4</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">4.1</td>
+<td align="center">1.125</td>
+<td align="center">0</td>
+<td align="center">11.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Tucannon</td>
+<td align="center">91</td>
+<td align="center">87</td>
+<td align="center">81</td>
+<td align="center">28.5</td>
+<td align="center">0.314</td>
+<td align="center">41.1</td>
+<td align="center">146.4</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">UpperSalmon</td>
+<td align="center">1,145</td>
+<td align="center">1,132</td>
+<td align="center">1,113</td>
+<td align="center">128.4</td>
+<td align="center">0.112</td>
+<td align="center">932.8</td>
+<td align="center">1,408</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">USI_bb</td>
+<td align="center">38</td>
+<td align="center">37</td>
+<td align="center">37</td>
+<td align="center">15.7</td>
+<td align="center">0.409</td>
+<td align="center">11.7</td>
+<td align="center">70.1</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">WALH</td>
+<td align="center">30</td>
+<td align="center">28</td>
+<td align="center">24</td>
+<td align="center">12.1</td>
+<td align="center">0.41</td>
+<td align="center">7.6</td>
+<td align="center">52.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Wallowa</td>
+<td align="center">72</td>
+<td align="center">70</td>
+<td align="center">58</td>
+<td align="center">21.1</td>
+<td align="center">0.293</td>
+<td align="center">37</td>
+<td align="center">115.1</td>
+</tr>
+<tr class="even">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Wallowa_bb</td>
+<td align="center">5</td>
+<td align="center">3</td>
+<td align="center">1</td>
+<td align="center">4.1</td>
+<td align="center">0.912</td>
+<td align="center">0</td>
+<td align="center">13</td>
+</tr>
+<tr class="odd">
+<td align="center">2,017</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">WR2_bb</td>
+<td align="center">1,006</td>
+<td align="center">777</td>
+<td align="center">301</td>
+<td align="center">852.6</td>
+<td align="center">0.848</td>
+<td align="center">1.7</td>
+<td align="center">2,720</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ACB_bb</td>
+<td align="center">6</td>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">5.3</td>
+<td align="center">0.861</td>
+<td align="center">0</td>
+<td align="center">15.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Asotin</td>
+<td align="center">9</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">6.4</td>
+<td align="center">0.719</td>
+<td align="center">0.1</td>
+<td align="center">21.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Asotin_bb</td>
+<td align="center">3</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">3.2</td>
+<td align="center">1.17</td>
+<td align="center">0</td>
+<td align="center">9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">BigCreek</td>
+<td align="center">11</td>
+<td align="center">9</td>
+<td align="center">5</td>
+<td align="center">10.5</td>
+<td align="center">0.914</td>
+<td align="center">0.4</td>
+<td align="center">28.8</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ESS_bb</td>
+<td align="center">6</td>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">4.7</td>
+<td align="center">0.793</td>
+<td align="center">0.2</td>
+<td align="center">14.8</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ImnahaRiver</td>
+<td align="center">17</td>
+<td align="center">15</td>
+<td align="center">14</td>
+<td align="center">8.3</td>
+<td align="center">0.496</td>
+<td align="center">3.6</td>
+<td align="center">32.8</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ImnahaRiver_bb</td>
+<td align="center">5</td>
+<td align="center">4</td>
+<td align="center">2</td>
+<td align="center">4.3</td>
+<td align="center">0.854</td>
+<td align="center">0</td>
+<td align="center">13.8</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">IR3_bb</td>
+<td align="center">6</td>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">4.3</td>
+<td align="center">0.765</td>
+<td align="center">0.1</td>
+<td align="center">14.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">JosephCreek</td>
+<td align="center">14</td>
+<td align="center">13</td>
+<td align="center">9</td>
+<td align="center">8.5</td>
+<td align="center">0.591</td>
+<td align="center">1.9</td>
+<td align="center">32.1</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lapwai</td>
+<td align="center">22</td>
+<td align="center">20</td>
+<td align="center">15</td>
+<td align="center">9.4</td>
+<td align="center">0.436</td>
+<td align="center">6</td>
+<td align="center">39.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lapwai_bb</td>
+<td align="center">10</td>
+<td align="center">9</td>
+<td align="center">7</td>
+<td align="center">6.5</td>
+<td align="center">0.641</td>
+<td align="center">0</td>
+<td align="center">23</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lemhi</td>
+<td align="center">13</td>
+<td align="center">12</td>
+<td align="center">9</td>
+<td align="center">7.7</td>
+<td align="center">0.586</td>
+<td align="center">1.5</td>
+<td align="center">27.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lemhi_bb</td>
+<td align="center">6</td>
+<td align="center">4</td>
+<td align="center">2</td>
+<td align="center">5.1</td>
+<td align="center">0.904</td>
+<td align="center">0</td>
+<td align="center">15.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lochsa</td>
+<td align="center">20</td>
+<td align="center">16</td>
+<td align="center">10</td>
+<td align="center">17.4</td>
+<td align="center">0.86</td>
+<td align="center">1.4</td>
+<td align="center">49.9</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lolo</td>
+<td align="center">129</td>
+<td align="center">128</td>
+<td align="center">131</td>
+<td align="center">24.7</td>
+<td align="center">0.191</td>
+<td align="center">86.8</td>
+<td align="center">181.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Main_bb</td>
+<td align="center">680</td>
+<td align="center">680</td>
+<td align="center">680</td>
+<td align="center">93.7</td>
+<td align="center">0.138</td>
+<td align="center">506.4</td>
+<td align="center">870.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">PAHH</td>
+<td align="center">107</td>
+<td align="center">104</td>
+<td align="center">97</td>
+<td align="center">21.3</td>
+<td align="center">0.2</td>
+<td align="center">69.7</td>
+<td align="center">147.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Panther</td>
+<td align="center">15</td>
+<td align="center">13</td>
+<td align="center">10</td>
+<td align="center">8.8</td>
+<td align="center">0.583</td>
+<td align="center">1.2</td>
+<td align="center">31.4</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_ACB</td>
+<td align="center">6</td>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">5.3</td>
+<td align="center">0.861</td>
+<td align="center">0</td>
+<td align="center">15.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_ASOTIC</td>
+<td align="center">6</td>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">5.3</td>
+<td align="center">0.861</td>
+<td align="center">0</td>
+<td align="center">15.9</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_BHC</td>
+<td align="center">7</td>
+<td align="center">6</td>
+<td align="center">3</td>
+<td align="center">5.9</td>
+<td align="center">0.795</td>
+<td align="center">0.2</td>
+<td align="center">19.7</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_BSC</td>
+<td align="center">6</td>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">4.6</td>
+<td align="center">0.771</td>
+<td align="center">0.1</td>
+<td align="center">14.9</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_ESS</td>
+<td align="center">6</td>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">4.7</td>
+<td align="center">0.793</td>
+<td align="center">0.2</td>
+<td align="center">14.8</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_IR3</td>
+<td align="center">6</td>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">4.3</td>
+<td align="center">0.765</td>
+<td align="center">0.1</td>
+<td align="center">14.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_MIS</td>
+<td align="center">11</td>
+<td align="center">10</td>
+<td align="center">7</td>
+<td align="center">6.8</td>
+<td align="center">0.593</td>
+<td align="center">1.4</td>
+<td align="center">24</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_MTR</td>
+<td align="center">102</td>
+<td align="center">99</td>
+<td align="center">91</td>
+<td align="center">22.9</td>
+<td align="center">0.225</td>
+<td align="center">59.1</td>
+<td align="center">146.4</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_STL</td>
+<td align="center">16</td>
+<td align="center">15</td>
+<td align="center">10</td>
+<td align="center">7.9</td>
+<td align="center">0.487</td>
+<td align="center">3.2</td>
+<td align="center">31.5</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_TUCH_TFH</td>
+<td align="center">50</td>
+<td align="center">49</td>
+<td align="center">40</td>
+<td align="center">14.8</td>
+<td align="center">0.297</td>
+<td align="center">21.8</td>
+<td align="center">79</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_USI</td>
+<td align="center">230</td>
+<td align="center">228</td>
+<td align="center">225</td>
+<td align="center">32.9</td>
+<td align="center">0.143</td>
+<td align="center">168.4</td>
+<td align="center">297.5</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_UTR</td>
+<td align="center">58</td>
+<td align="center">56</td>
+<td align="center">49</td>
+<td align="center">16.4</td>
+<td align="center">0.282</td>
+<td align="center">29.2</td>
+<td align="center">91.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_VC2</td>
+<td align="center">13</td>
+<td align="center">12</td>
+<td align="center">9</td>
+<td align="center">7.9</td>
+<td align="center">0.587</td>
+<td align="center">2.4</td>
+<td align="center">30.5</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_WR2</td>
+<td align="center">70</td>
+<td align="center">68</td>
+<td align="center">67</td>
+<td align="center">18.5</td>
+<td align="center">0.265</td>
+<td align="center">37.4</td>
+<td align="center">107.9</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_YFK</td>
+<td align="center">25</td>
+<td align="center">23</td>
+<td align="center">21</td>
+<td align="center">10.4</td>
+<td align="center">0.419</td>
+<td align="center">8.1</td>
+<td align="center">45.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Penawawa</td>
+<td align="center">9</td>
+<td align="center">7</td>
+<td align="center">6</td>
+<td align="center">6.3</td>
+<td align="center">0.728</td>
+<td align="center">0.2</td>
+<td align="center">20.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SALEFT</td>
+<td align="center">51</td>
+<td align="center">50</td>
+<td align="center">50</td>
+<td align="center">14.9</td>
+<td align="center">0.293</td>
+<td align="center">25.1</td>
+<td align="center">81.2</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Selway</td>
+<td align="center">16</td>
+<td align="center">13</td>
+<td align="center">8</td>
+<td align="center">10.2</td>
+<td align="center">0.661</td>
+<td align="center">1.3</td>
+<td align="center">34.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SFClearwater</td>
+<td align="center">976</td>
+<td align="center">973</td>
+<td align="center">967</td>
+<td align="center">77</td>
+<td align="center">0.079</td>
+<td align="center">830.6</td>
+<td align="center">1,133</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SFSalmon</td>
+<td align="center">9</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">5.7</td>
+<td align="center">0.655</td>
+<td align="center">0.3</td>
+<td align="center">19.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SFSalmon_bb</td>
+<td align="center">3</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">3.1</td>
+<td align="center">1.062</td>
+<td align="center">0</td>
+<td align="center">9.2</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">TenMileCreek</td>
+<td align="center">9</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">5.8</td>
+<td align="center">0.654</td>
+<td align="center">0.6</td>
+<td align="center">20.8</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Tucannon</td>
+<td align="center">125</td>
+<td align="center">121</td>
+<td align="center">113</td>
+<td align="center">30.1</td>
+<td align="center">0.241</td>
+<td align="center">71.5</td>
+<td align="center">185.1</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">UpperSalmon</td>
+<td align="center">471</td>
+<td align="center">459</td>
+<td align="center">445</td>
+<td align="center">77</td>
+<td align="center">0.163</td>
+<td align="center">335.8</td>
+<td align="center">631</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">USI_bb</td>
+<td align="center">18</td>
+<td align="center">17</td>
+<td align="center">15</td>
+<td align="center">8.8</td>
+<td align="center">0.49</td>
+<td align="center">2.4</td>
+<td align="center">35.4</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">WALH</td>
+<td align="center">66</td>
+<td align="center">64</td>
+<td align="center">58</td>
+<td align="center">17.9</td>
+<td align="center">0.272</td>
+<td align="center">34.3</td>
+<td align="center">102.4</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Wallowa</td>
+<td align="center">74</td>
+<td align="center">72</td>
+<td align="center">70</td>
+<td align="center">19.3</td>
+<td align="center">0.26</td>
+<td align="center">41.4</td>
+<td align="center">114.8</td>
+</tr>
+<tr class="odd">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Wallowa_bb</td>
+<td align="center">4</td>
+<td align="center">3</td>
+<td align="center">1</td>
+<td align="center">4.3</td>
+<td align="center">1.001</td>
+<td align="center">0</td>
+<td align="center">12.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,018</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">WR2_bb</td>
+<td align="center">144</td>
+<td align="center">104</td>
+<td align="center">34</td>
+<td align="center">136.4</td>
+<td align="center">0.945</td>
+<td align="center">0</td>
+<td align="center">420.5</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Asotin</td>
+<td align="center">10</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">7.5</td>
+<td align="center">0.78</td>
+<td align="center">0</td>
+<td align="center">23.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Asotin_bb</td>
+<td align="center">10</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">7.5</td>
+<td align="center">0.78</td>
+<td align="center">0</td>
+<td align="center">23.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ImnahaRiver</td>
+<td align="center">18</td>
+<td align="center">17</td>
+<td align="center">16</td>
+<td align="center">9.3</td>
+<td align="center">0.515</td>
+<td align="center">3</td>
+<td align="center">36</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">ImnahaRiver_bb</td>
+<td align="center">10</td>
+<td align="center">9</td>
+<td align="center">6</td>
+<td align="center">6.9</td>
+<td align="center">0.696</td>
+<td align="center">0</td>
+<td align="center">22.5</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">JosephCreek</td>
+<td align="center">20</td>
+<td align="center">16</td>
+<td align="center">10</td>
+<td align="center">17.3</td>
+<td align="center">0.852</td>
+<td align="center">1.2</td>
+<td align="center">51.2</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lochsa</td>
+<td align="center">87</td>
+<td align="center">42</td>
+<td align="center">19</td>
+<td align="center">111.8</td>
+<td align="center">1.278</td>
+<td align="center">0.6</td>
+<td align="center">329.7</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Lolo</td>
+<td align="center">141</td>
+<td align="center">119</td>
+<td align="center">103</td>
+<td align="center">79.7</td>
+<td align="center">0.566</td>
+<td align="center">40.3</td>
+<td align="center">284.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Main_bb</td>
+<td align="center">627</td>
+<td align="center">667</td>
+<td align="center">739</td>
+<td align="center">213.4</td>
+<td align="center">0.34</td>
+<td align="center">127.1</td>
+<td align="center">957.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">PAHH</td>
+<td align="center">235</td>
+<td align="center">231</td>
+<td align="center">223</td>
+<td align="center">38.2</td>
+<td align="center">0.163</td>
+<td align="center">168.2</td>
+<td align="center">302.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_BSC</td>
+<td align="center">8</td>
+<td align="center">7</td>
+<td align="center">4</td>
+<td align="center">6</td>
+<td align="center">0.742</td>
+<td align="center">0.3</td>
+<td align="center">19.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_MTR</td>
+<td align="center">57</td>
+<td align="center">56</td>
+<td align="center">56</td>
+<td align="center">17</td>
+<td align="center">0.297</td>
+<td align="center">29.4</td>
+<td align="center">90.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_TUCH_TFH</td>
+<td align="center">36</td>
+<td align="center">34</td>
+<td align="center">31</td>
+<td align="center">12.8</td>
+<td align="center">0.353</td>
+<td align="center">13.8</td>
+<td align="center">62.1</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_USI</td>
+<td align="center">317</td>
+<td align="center">314</td>
+<td align="center">307</td>
+<td align="center">46.1</td>
+<td align="center">0.146</td>
+<td align="center">234.2</td>
+<td align="center">395.6</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_UTR</td>
+<td align="center">42</td>
+<td align="center">40</td>
+<td align="center">38</td>
+<td align="center">14.4</td>
+<td align="center">0.342</td>
+<td align="center">18.4</td>
+<td align="center">72.5</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_VC2</td>
+<td align="center">9</td>
+<td align="center">7</td>
+<td align="center">5</td>
+<td align="center">6.9</td>
+<td align="center">0.767</td>
+<td align="center">0.2</td>
+<td align="center">23</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_WR2</td>
+<td align="center">21</td>
+<td align="center">19</td>
+<td align="center">17</td>
+<td align="center">10.6</td>
+<td align="center">0.498</td>
+<td align="center">3.9</td>
+<td align="center">41.3</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">past_YFK</td>
+<td align="center">17</td>
+<td align="center">16</td>
+<td align="center">13</td>
+<td align="center">9</td>
+<td align="center">0.513</td>
+<td align="center">3.9</td>
+<td align="center">34.7</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SALEFT</td>
+<td align="center">51</td>
+<td align="center">49</td>
+<td align="center">46</td>
+<td align="center">15.7</td>
+<td align="center">0.306</td>
+<td align="center">23.3</td>
+<td align="center">81.9</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Selway</td>
+<td align="center">123</td>
+<td align="center">62</td>
+<td align="center">22</td>
+<td align="center">156.3</td>
+<td align="center">1.27</td>
+<td align="center">1.3</td>
+<td align="center">475.5</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">SFClearwater</td>
+<td align="center">1,567</td>
+<td align="center">1,551</td>
+<td align="center">1,549</td>
+<td align="center">164.7</td>
+<td align="center">0.105</td>
+<td align="center">1,309</td>
+<td align="center">1,827</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Tucannon</td>
+<td align="center">67</td>
+<td align="center">65</td>
+<td align="center">64</td>
+<td align="center">19.1</td>
+<td align="center">0.283</td>
+<td align="center">33.5</td>
+<td align="center">104.1</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">UpperSalmon</td>
+<td align="center">533</td>
+<td align="center">524</td>
+<td align="center">513</td>
+<td align="center">83.2</td>
+<td align="center">0.156</td>
+<td align="center">380.4</td>
+<td align="center">668.8</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">USI_bb</td>
+<td align="center">4</td>
+<td align="center">3</td>
+<td align="center">1</td>
+<td align="center">4.3</td>
+<td align="center">0.992</td>
+<td align="center">0</td>
+<td align="center">13.3</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">WALH</td>
+<td align="center">18</td>
+<td align="center">16</td>
+<td align="center">13</td>
+<td align="center">9.3</td>
+<td align="center">0.528</td>
+<td align="center">2.6</td>
+<td align="center">34.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Wallowa</td>
+<td align="center">38</td>
+<td align="center">36</td>
+<td align="center">31</td>
+<td align="center">14.4</td>
+<td align="center">0.374</td>
+<td align="center">14.4</td>
+<td align="center">67.7</td>
+</tr>
+<tr class="even">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">Wallowa_bb</td>
+<td align="center">17</td>
+<td align="center">15</td>
+<td align="center">14</td>
+<td align="center">9.2</td>
+<td align="center">0.534</td>
+<td align="center">3.9</td>
+<td align="center">36.6</td>
+</tr>
+<tr class="odd">
+<td align="center">2,019</td>
+<td align="center">Steelhead</td>
+<td align="center">HNC</td>
+<td align="center">WR2_bb</td>
+<td align="center">536</td>
+<td align="center">401</td>
+<td align="center">158</td>
+<td align="center">467</td>
+<td align="center">0.872</td>
+<td align="center">0.3</td>
+<td align="center">1,466</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="section-2.-expected-precision-of-phos-by-adding-tagging-of-ad-clipped-hatchery-h-adults-at-lgr-1" class="section level3">
 <h3>Section 2. Expected precision of <em>pHOS</em> by adding tagging of ad-clipped hatchery (H) adults at LGR</h3>

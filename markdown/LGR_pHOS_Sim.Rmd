@@ -61,7 +61,7 @@ The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult
 
 Simultaneously estimating escapement of hatchery origin (HOR) and natural origin (NOR) adults to IPTDS locations throughout the SRB based on PIT tagging at LGR is a trivial extension of the DABOM model. Factually, the previous and existing instance of the DABOM model was developed for the upper Columbia River (upstream of Priest Rapids Dam), which capitalized on the same sampling assumptions applied to natural origin escapement past LGR. However, for multiple reasons (ergonomic limitations at LGR, political considerations, supposed ethical concerns), the random sampling and PIT tagging of HOR adults (specifically ad-clipped adults) at LGR has been precluded. Notably, given trap operations at LGR, HOR adults are trapped, anesthetized, weighed, and measured at the same rate as NOR - a function of "trap rate" constituting a fraction of every hour wherein adults in the ladder are bypassed to the trap. Thus, it is arguable that implantation of a PIT tag constitutes a significantly greater offense to captured hatchery adults.
 
-Importantly, NOR and HOR refer to the origin of a Chinook salmon or steelhead that is born in the natural or hatchery environment, respectively. Related, three phenotypic origins of adult Chinook salmon and steelhead are identified at LGR and include wild (W), hatchery ad-intact (HNC), and hatchery ad-clipped (H). NOR includes only W adults whereas HOR includes both the HNC and H groups despite HNC individuals often being phenotypically W. Currently, all ad-intact fish are systematically PIT tagged at LGR which includes both the W and HNC origins i.e., some HOR adults are currently tagged at LGR, but we need to consider differential tagging rates between HNC and H adults when evaluating the precision of *pHOS* given current levels of PIT tagging.
+Importantly, NOR and HOR refer to the origin of Chinook salmon or steelhead born in the natural or hatchery environment, respectively. Related, three phenotypic origins of adult Chinook salmon and steelhead are identified at LGR and include wild (W), hatchery ad-intact (HNC), and hatchery ad-clipped (H). NOR includes only W adults whereas HOR includes both the HNC and H groups despite HNC individuals often being phenotypically W. Currently, all ad-intact fish are systematically PIT tagged at LGR which includes both the W and HNC origins i.e., some HOR adults are currently tagged at LGR, but we need to consider differential tagging rates between HNC and H adults when evaluating the precision of *pHOS* given current levels of PIT tagging.
 
 Unbeknownst to the proposal for this evaluation, a condition of the Hatchery and Genetics Management Plan (HGMP) required the operation of IDFG HOR steelhead production to conduct a study on HOR contributions to NOR populations. Thusly, IDFG and NOAA Fisheries endeavored to compile and estimate straying of HOR steelhead upstream of LGR.
 
@@ -70,7 +70,7 @@ This document seeks to begin collaboration between IDFG, NOAA Fisheries, and Bio
 * Capitalize on existing progress on stray rates, and
 * Advance statistical modeling to determine whether *pHOS* estimates can be reliablly prosecuted by adult HOR PIT tagging at LGR.
 
-In its developed form, the DABOM model includes escapement for NOR and HOR adult salmonids. Demonstrably, the DABOM is fully functional for multiple populations of spring/summer Chinook salmon and steelhead upstream of LGR. The performance of DABOM in the upper Columbia River (above Priest Rapids Dam) strongly suggests that the model can be reliably extended to HOR. Contents of this document, including findings, will be reported as part of a Final (Annual) Progress Report for Bonneville Power Administration (BPA) project 2019-006-00.
+In its developed form, the DABOM model includes escapement for NOR and HOR adult salmonids. Demonstrably, the DABOM is fully functional for multiple populations of spring/summer Chinook salmon and steelhead upstream of LGR. The performance of DABOM in the upper Columbia River (above Priest Rapids Dam) strongly suggests that the model can be reliably extended to HOR adults in the Snake River. Contents of this document, including findings, will be reported as part of a Final (Annual) Progress Report for Bonneville Power Administration (BPA) project 2019-006-00.
 
 ## Objectives
 
@@ -114,13 +114,11 @@ where $\hat{N_{h}}$ is the HOR abundance, $n_r$ is the number of observations of
 $$
 p_{HOS} = \frac{\hat{N_h}}{\hat{N_h} + \hat{N_n}}
 $$
-where $\hat{N_{h}}$ is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate at hatchery abundance estimate in the DABOM model using juvenile tagging; hence, the tag expansion approach. 
+where $\hat{N_{n}}$ is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate at hatchery abundance estimate in the DABOM model using juvenile tagging; hence, the tag expansion approach. In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction  for that release groups and then sum across groups, and further, account for the detection probability of IPTDS sites within a location. Note that in this scenario we don't need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.
 
 <!--
 Kevin - I realized here that we didn't account for detection probability. But it's unclear to me how we would easily account for detection probability given that there can be numerous sites within a group. Wouldn't we have to, for each observation, take the expansion value for a fish and divide it by the estimated detection probability of the observation location and year from DABOM?
 -->
-
-In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction  for that release groups and then sum across groups, and further, account for the detection probability of IPTDS sites within a location. Note that in this scenario we don't need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.
 
 #### Approach
 
@@ -149,12 +147,12 @@ tags_deploy = crossing(Species = 'Steelhead',
 
 ##### Locations
 
-A recent assessment by See et al. (2019) identified TRT steelhead populations or locations containing IPTDS that can be used to estimate wild population abundance. We then performed a PTAGIS query for locations evaluated there, and in addition, queried for hatchery adult observations in the Lochsa, Selway, and North Fork Salmon rivers from smolt releases. `r tab_nums('site_table', display = 'c')` summarizes TRT populations and iterrogation sites for which we queried observations of hatchery adults during SY2017-2019. The following constraints were placed on our PTAGIS query:
+A recent assessment by See et al. (2019) identified steelhead TRT populations or locations containing IPTDS that can be used to estimate wild population abundance. We then performed a PTAGIS query for locations evaluated there, and in addition, queried for hatchery adult observations in the Lochsa, Selway, and North Fork Salmon rivers (areas with particular management interest where IPTDS have recently been installed) from smolt releases. `r tab_nums('site_table', display = 'c')` summarizes TRT populations and iterrogation sites for which we queried observations of hatchery adults during SY2017-2019. The following constraints were placed on our PTAGIS query:
 
 * Species: Steelhead
 * Rear: Hatchery
 * Last Obs Date/Time: 07/01/2017 - 06/30/2019
-* Obs Site: in `r tab_nums('site_table', display = 'c')`
+* Obs Site: In `r tab_nums('site_table', display = 'c')`
 
 <center>
 ```{r sthd_ests}
@@ -296,7 +294,7 @@ Next, we filtered the above results from the PTAGIS query to only include the fo
 * Last Obs Time - Mark Year < 1: In many cases, the mark year was less than 1 year prior to the final IPTDS observation. These observations are presumably from hatchery smolt releases and were removed.
 * Spawn Year - Brood Year = 3 or 4: Returning adult hatchery steelhead should be 3 ('A-run') or 4 ('B-run') years old. We excluded any observations where this was not the case.
 
-And finally, for each observation, IDFG identified whether each tag was from an RAL or RTR release, and for RAL fish, the appropriate expansion value. RTR observations were ignored. Descriptions of RTR vs. RAL are as follows:
+And finally, for each observation, personnel from the IDFG identified whether each tag was from an RAL or RTR release, and for RAL fish, the appropriate expansion value. RTR observations were ignored. Descriptions of RTR vs. RAL are as follows:
 
 * RTR ("Return-to-River"): A sort-by-code designation for smolts that will automatically be returned to the river when detected at a dam, when other fish may be getting transported. They do not represent the release group at-large, therefore represent only themselves with an expansion value of "1".
 * RAL ("Run-at-Large"): A sort-by-code designation for smolts that will be transported or returned to the river in accordance with the protocol at the dam when they are detected. They represent the release group with a tagging rate that excludes any smolts that have an RTR tag in them. The expansion value of RAL tagged fish is the inverse of the tag rate.
@@ -327,7 +325,7 @@ obs_table %>%
 
 ### Section 1B. Expected precision of *pHOS* given current systematic PIT tagging of HNC adults at LGR
 
-Next, we evaluated the expected precision (CV) of *pHOS* estimates given current PIT tagging rates of ad-intact adults, both wild (W) and hatchery (HNC) at LGR. This leverages the fact that all ad-intact adults trapped at LGR are already implanted with a PIT tag. Estimates of wild adult abundance across select TRT populations and locations in the SRB are already available from DABOM. Here, we will re-run DABOM for HNC individuals to get HNC abundance estimates for locations and populations where we already report W abundance using DABOM. The HNC and W abundance estimates, at the same spatial scales, can then easily be combined to estimate *pHOS* with uncertainty.
+Next, we evaluated the expected precision (CV) of *pHOS* estimates given current PIT tagging rates of ad-intact adults, both wild (W) and hatchery (HNC) at LGR. This leverages the fact that all ad-intact adults trapped at LGR are already implanted with a PIT tag. Estimates of wild adult abundance across select TRT populations and locations in the SRB are already available from DABOM. Here, we will re-run DABOM for HNC individuals for SY 2017 through 2019 to get HNC abundance estimates for locations and populations where we already report W abundance using DABOM. The HNC and W abundance estimates, at the same spatial scales, can then easily be combined to estimate *pHOS* with uncertainty.
 
 This evaluation ignores ad-clipped H adults, but is effective for estimating *pHOS* among ad-intact individuals and may be of particular interest for supplementation locations (e.g., South Fork Clearwater steelhead). Unfortunately, it seems there is no easy way to combine juvenile smolt release tagging (tag expansion approach) and adult tagging information at LGR (DABOM model, transition probability approach) to estimate hatchery abundance and *pHOS* using IPTDS observations.
 
@@ -440,7 +438,11 @@ In other words, we can predict the CV of *pHOS* for a variety of situations for 
 
 ### Section 1A. Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
 
-`r tab_nums('obs_summary', display = 'c')` summarizes hatchery, wild, and total abundance estimates and the corresponding *pHOS* estimates for locations and spawn years in which there were IPTDS observations of hatchery adults from RTR smolt releases. Wild abundance estimates are from the DABOM model whereas hatchery abundance estimates are using the expansion approach outlined above. `r tab_nums('obs_summary', display = 'c')` also includes the number of hatchery and wild tags observed and the CV (%) of the wild abundance estimates for context. Unfortunately, we are currently unable to estimate uncertainty in hatchery abundance, and thus, unable to estimate uncertainty in *pHOS* using the approach. To do so, we would have to identify and estimate sources of uncertainty in the hatchery abundance; uncertainty in the tagging fraction (i.e., expansion value) would be one example.
+`r tab_nums('obs_summary', display = 'c')` summarizes hatchery, wild, and total abundance estimates and the corresponding *pHOS* estimates for locations and spawn years in which there were IPTDS observations of hatchery adults from RTR smolt releases. Wild abundance estimates are from the DABOM model whereas hatchery abundance estimates are using the expansion approach outlined above. `r tab_nums('obs_summary', display = 'c')` also includes the number of hatchery and wild tags observed and the CV of the wild abundance estimates for context. Unfortunately, we are currently unable to estimate uncertainty in hatchery abundance, and thus, unable to estimate uncertainty in *pHOS* using this approach. To do so, we would have to identify and estimate sources of uncertainty in the hatchery abundance estimates; uncertainty in the tagging fraction (i.e., expansion value) would be one such example.
+
+<!---
+I'm wondering whether we need to or can remove hatchery rack returns from the hatchery abundance for particular TRT populations here? SRUMA-s comes to mind. Are there racks or weirs in CRSFC-s where hatchery steelhead are removed?
+-->
 
 `r tab_nums('juv_phos')`
 <center>
@@ -486,6 +488,16 @@ pHOS_1a %>%
 </center>
 
 ### Section 1B. Expected precision of *pHOS* given current PIT tagging of W and HNC adults at LGR
+
+<!---
+These are initial HNC abundance estimates from DABOM for spawn years 2017. I've added for 1/9/2020 meeting with IDFG. Next, we need to roll these up to TRT populations at the same scales that we estimate W abundance in the SnakeBasinFishStatus Git repo. Then, Kevin will determine the appropriate way to merge W and HNC abundance estimates from DABOM to estimate pHOS with SE and CV. Then summarize and report results. That should be it for this section.
+-->
+
+```{r dabom_hnc}
+dabom_sthd_hnc_abund = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_abund.csv")
+pander(dabom_sthd_hnc_abund)
+
+```
 
 ### Section 2. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
 
