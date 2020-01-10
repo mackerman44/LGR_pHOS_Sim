@@ -32,6 +32,8 @@ output:
 institute:
 - biomark: Biomark, Inc.
 csl: ../templates/american-fisheries-society.csl
+bibliography:
+- ../references.bib
 ---
 
 ```{r setUp, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
@@ -78,7 +80,7 @@ This assessment aims to determine the number or tagging rate of HOR adults at LG
 
 1. Determined expected CVs for current estimates of *pHOS* that could be generated for locations or populations in the SRB given current levels of PIT tagging. Current tagging includes:
   + 1A. Individuals tagged within hatchery smolt releases, and
-  + 1B. Ad-intact hatchery (HNC) adults that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., Camacho et al. 2017) and at IPTDS (e.g., Orme and Kinzer 2018).
+  + 1B. Ad-intact hatchery (HNC) adults that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., @Camacho2017) and at IPTDS (e.g., @Orme2018).
 2. Determine additional tagging at LGR of adult HOR fish that would allow reasonable estimates of *pHOS*. 
 
 We will define reasonable as an estimate with a CV of 15% or less. Our evaluation may (or may not) attempt to focus on desired or critical populations/locations.
@@ -97,7 +99,7 @@ juv_phos = tab_nums('juv_phos',
                     'Hatchery, wild, and total abundance estimates and associated pHOS estimates for location x spawn year combinations with hatchery observations from smolt releases in the Snake River Basin.')
 
 tradeoff_fig = fig_nums('tradeoff_fig',
-                        "Predictions of the CV of pHOS across ranges of the CV hatchery and wild escapement estimates and the proportion wild (inverse of pHOS). The horizontal dotted line depicts a CV of 15%.")
+                        "Predictions of the CV of pHOS across ranges of the CV hatchery escapement estimates and the proportion wild (inverse of pHOS), faceted by CV of wild escapement. The horizontal dotted line depicts a CV of 15%.")
 ```
 
 # Methods
@@ -434,6 +436,12 @@ which is a combination of the proportion of wild fish, the CV of the estimate of
 
 In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch $i$ by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch $i$. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
 
+### Section 3: Simulations based on Section 2
+
+We will focus on **some subset of important populations defined by IDFG**. From the DABOM estimates of wild escapement over the last ten years, we will calculate the average CV of the wild estimate for each population, so we know where we fall on the x-axis in Figure \@ref(fig:cv-phos-fig). We will then use the average estimate of pHOS from Table \@ref(tab:dabom-hnc-phos) for each population, to determine where on the y-axis we are for each population. We will also assume a 5% pHOS and 10% pHOS, based on recovery goals (***Is this necessary?***). This will tell us what CV is required for an estimate of hatchery fish for each population, and we will translate that into a number of tags we'd like to detect in each population.
+
+Brian Leth has provided a table showing the percent of hatchery adults, tagged as juveniles, that are detected within each population out of all the hatchery tags that are detected at Lower Granite. We will divide the number of detections we require for each population by these percentages to determine how many tags we would expect to need to put out at Lower Granite in order to acheive those precision goals. 
+
 # Results
 
 ### Section 1A. Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
@@ -498,11 +506,11 @@ dabom_sthd_hnc_abund = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_abund.csv")
 pander(dabom_sthd_hnc_abund)
 ```
 
-```{r dabom_hnc_phos}
+```{r dabom-hnc-phos}
 hnc_phos_sthd = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_pHOS.csv") %>%
   mutate_at(vars(Year),
             list(as.factor))
-pander(hnc_phos_sthd)
+kable(hnc_phos_sthd)
 ```
 
 ### Section 2. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
@@ -553,7 +561,7 @@ The general patterns show that as the proportion of wild fish in the stream desc
 
 Another way to look at it would be to examine the maximum CV of hatchery estimates that would provide a reasonable estimate of *pHOS* for a given proportion of wild fish and precision of wild escapement. One way to visualize these results in in the plot below.
 
-```{r}
+```{r cv-phos-fig}
 cvThres = 0.15
 crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
          # CV of the estimate of wild fish
@@ -611,12 +619,6 @@ From this plot, it is clear that as long as the proportion of wild fish in a str
 * Is 15% CV for pHOS an appropriate, or even achievable, goal?
 
 # References
-
-Camacho, C.A., K.K. Wright, J. Powell, W.C. Schrader, T. Copeland, M.W. Ackerman, M. Dobos, M.P. Corsi, and M.R. Campbell. 2017. Wild adult steelehad and Chinook salmon abundance and composition at Lower Granite Dam, spawn years 2009-2016. Cumulative Report 2009 through 2016. Idaho Department of Fish and Game Report 17-06.
-
-Doob, J.L. 1935. The limiting distributions of certain statistics. The Annals of Mathematical Statistics 6:160-169.
-
-Orme, R. and R. Kinzer. 2018. Integrated In-stream PIT Tag Detection System Operations and Maintenance; PIT Tag Based Adult Escapement Estimates for Spawn Years 2016 and 2017. Nez Perce Tribe Department of Fisheries Resource Management. Prepared for: Quantititative Consultants, Inc.
 
 See, K., M. Ackerman, and K. Meier. 2019. Tagging Rate at Lower Granite Dam. Markdown report prepared by Biomark, Inc.
 
