@@ -11,9 +11,10 @@ library(magrittr)
 library(lubridate)
 library(STADEM)
 library(DABOM)
+library(PITcleanr)
 library(jagsUI)
 library(readxl)
-
+library(sf)
 
 # source some needed functions
 source('R/definePopulations.R')
@@ -97,3 +98,103 @@ sthd_hnc_trt %>%
          starts_with("pHOS")) %>%
   write_csv('hnc_dabom/ModelFits/Sthd_HNC_pHOS.csv')
   
+#-------------------------------
+# produce summaries of all HNC tags
+#-------------------------------
+# Ryan Kinzer put this data together in the SnakeBasinFishStatus repo
+load('data/Snake_POP_metadata.rda')
+pop_sf <- SR_st_pop
+
+ignore <- c('USE', 'USI', 'SFG')
+sfclw <-  c('SC1', 'SC2')
+
+
+sthd_hnc_tag_summ = 2017:2019 %>%
+  as.list() %>%
+  purrr::set_names() %>%
+  map_df(.id = 'Year',
+         .f = function(x) {
+           
+           # load some configuration data
+           load(paste0("data/DABOM/DABOM_preppd_LGR_", spp, '_', x, '.rda'))
+           
+           config <- configuration %>%
+             filter(SiteID %in% site_df$SiteID) %>%
+             filter(SiteID != 'GRA') %>%
+             select(SiteID, SiteType, SiteName, RKM, Latitude, Longitude, Node) %>%
+             distinct() %>%
+             sf::st_as_sf(coords = c('Longitude', 'Latitude'),
+                          crs = 4326) %>%
+             st_transform(st_crs(pop_sf))
+           
+           site_pop = config %>%
+             sf::st_join(pop_sf %>%
+                           select(ESU_DPS, MPG, POP_NAME, TRT = TRT_POPID, GSI_Group)) %>%
+             mutate(POP_NAME = ifelse(SiteID %in% ignore, NA, POP_NAME),
+                    TRT = ifelse(SiteID %in% ignore, NA, TRT)) %>%
+             mutate(POP_NAME = ifelse(SiteID %in% sfclw, 'South Fork Clearwater River', POP_NAME),
+                    TRT = ifelse(SiteID %in% sfclw, 'CRSFC-s', TRT))
+           
+           rm(proc_list)
+           
+           # load DABOM JAGS model
+           load(paste0('hnc_dabom/ModelFits/LGR_DABOM_HNC_', spp, '_', x,'.rda'))
+           
+           tag_summ = summariseTagData(capHist_proc = proc_list$ProcCapHist %>%
+                                         mutate(UserProcStatus = AutoProcStatus),
+                                       trap_data = proc_list$ValidTrapData) %>%
+             left_join(site_pop %>%
+                         as_tibble() %>%
+                         select(Node, MPG, POP_NAME, TRT),
+                       by = c('AssignSpawnNode' = 'Node'))
+         })
+
+# some tags appear more than once in the LGR trap database. Try to only keep one record per tag & year
+sthd_hnc_tag_summ %<>%
+  group_by(TagID, Year) %>%
+  filter(CollectionDate == max(CollectionDate)) %>%
+  slice(1) %>%
+  ungroup()
+  
+
+# save to share with IDFG
+sthd_hnc_tag_summ %>%
+  rename(DABOM_branch = Group) %>%
+  select(-BranchNum) %>%
+  write_csv("outgoing/Sthd_HNC_SpawnSites.csv")
+
+
+# for fish detected somewhere, which hatchery did they come from, and what model branch were they detected in?
+sthd_hnc_tag_summ %>%
+  filter(!is.na(Group)) %>%
+  mutate_at(vars(Group, GenParentHatchery, TRT),
+            list(fct_explicit_na)) %>%
+  rename(Branch = Group) %>%
+  janitor::tabyl(Branch, GenParentHatchery,
+                 show_missing_levels = F) %>%
+  janitor::adorn_totals(where = c("row", "col")) %>%
+  janitor::adorn_percentages(denominator = "col") %>%
+  janitor::adorn_pct_formatting() %>%
+  janitor::adorn_ns()
+  
+
+# these are all the fish that fell into the main black box, by hatchery.
+# Maybe they were recovered by the hatchery, so no 
+sthd_hnc_tag_summ %>%
+  mutate(Main_bb = if_else(!is.na(Group), T, F)) %>%
+  mutate_at(vars(Group, GenParentHatchery, TRT),
+            list(fct_explicit_na)) %>%
+  janitor::tabyl(GenParentHatchery, Main_bb) %>%
+  # janitor::adorn_totals(where = c("row", "col")) %>%
+  janitor::adorn_percentages(denominator = "row") %>%
+  janitor::adorn_pct_formatting() %>%
+  janitor::adorn_ns()
+
+
+sthd_hnc_tag_summ %>%
+  filter(!is.na(Group)) %>%
+  # select(AssignSpawnSite, PtagisEventLastSpawnSite) %>%
+  filter(AssignSpawnSite != PtagisEventLastSpawnSite) %>%
+  select(Year,
+         DABOM = AssignSpawnSite, Ptagis = PtagisEventLastSpawnSite, 
+         TagPath, PtagisEventSites)
