@@ -14,10 +14,10 @@ output:
   html_document:
     fig_height: 6
     fig_width: 8
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
+    # pandoc_args:
+    # - --lua-filter=../templates/scholarly-metadata.lua
+    # - --lua-filter=../templates/author-info-blocks.lua
+    # - --lua-filter=../templates/pagebreak.lua
     theme: simplex
     toc: yes
     toc_depth: 3
