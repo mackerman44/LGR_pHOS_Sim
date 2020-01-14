@@ -1,14 +1,18 @@
 ---
 title: "Hatchery Tagging to Estimate pHOS Using IPTDS Detections"
 author:
-- Kevin See:
-    correspondence: yes
-    email: Kevin.See@biomark.com
-    institute: biomark
-- Mike Ackerman:
-    correspondence: yes
-    email: Mike.Ackerman@biomark.com
-    institute: biomark
+  - name: Kevin See
+    affiliation: Biomark, Inc.
+  - name: Mike Ackerman
+    affiliation: Biomark, Inc.
+# - Kevin See:
+#     correspondence: yes
+#     email: Kevin.See@biomark.com
+#     institute: biomark
+# - Mike Ackerman:
+#     correspondence: yes
+#     email: Mike.Ackerman@biomark.com
+#     institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   html_document:
@@ -61,7 +65,7 @@ library(readxl)
 
 The Dam Adult Branch Occupancy Model (DABOM) is currently used to estimate adult escapement of natural origin spring/summer Chinook salmon *Onchorhynchus tshawytscha* and steelhead *O. mykiss* into watersheds and populations of the Snake River Basin (SRB). Escapement estimates are made based on the tagging of a random sample of adults at Lower Granite Dam (LGR) and the subsequent detection of those adults at instream PIT tag detection systems (IPTDS) throughout the SRB. DABOM could also be used to generate estimates of hatchery escapement to various locations as well, which would be useful for estimating hatchery abundance in natural areas and the proportion of hatchery origin spawners (*pHOS*). Doing so, with reasonable precision, may require a random sample (or similar) of adult hatchery fish also be PIT tagged at LGR. Here, we wish to determine expected levels of precision for *pHOS* given current levels of PIT tagging in the SRB, and further, determine the additional tagging, expressed as a tagging rate or number of tags, required in hatchery adults at LGR to achieve unbiased estimates of hatchery escapement and *pHOS* with reasonable levels of precision (e.g., coefficient of variaion [CV] of $\leq$ 15%).
 
-Simultaneously estimating escapement of hatchery origin (HOR) and natural origin (NOR) adults to IPTDS locations throughout the SRB based on PIT tagging at LGR is a trivial extension of the DABOM model. Factually, the previous and existing instance of the DABOM model was developed for the upper Columbia River (upstream of Priest Rapids Dam), which capitalized on the same sampling assumptions applied to natural origin escapement past LGR. However, for multiple reasons (ergonomic limitations at LGR, political considerations, supposed ethical concerns), the random sampling and PIT tagging of HOR adults (specifically ad-clipped adults) at LGR has been precluded. Notably, given trap operations at LGR, HOR adults are trapped, anesthetized, weighed, and measured at the same rate as NOR - a function of "trap rate" constituting a fraction of every hour wherein adults in the ladder are bypassed to the trap. Thus, it is arguable that implantation of a PIT tag constitutes a significantly greater offense to captured hatchery adults.
+Simultaneously estimating escapement of hatchery origin (HOR) and natural origin (NOR) adults to IPTDS locations throughout the SRB based on PIT tagging at LGR is a trivial extension of the DABOM model. Factually, the previous and existing instance of the DABOM model was developed for the upper Columbia River (upstream of Priest Rapids Dam), which capitalized on the same sampling assumptions applied to natural origin escapement past LGR. However, for multiple reasons (ergonomic limitations at LGR, political considerations, ethical concerns), the random sampling and PIT tagging of HOR adults (specifically ad-clipped adults) at LGR has been precluded. Notably, given trap operations at LGR, HOR adults are trapped, anesthetized, weighed, and measured at the same rate as NOR - a function of "trap rate" constituting a fraction of every hour wherein adults in the ladder are bypassed to the trap. Thus, it is arguable that implantation of a PIT tag constitutes a significantly greater offense to captured hatchery adults.
 
 Importantly, NOR and HOR refer to the origin of Chinook salmon or steelhead born in the natural or hatchery environment, respectively. Related, three phenotypic origins of adult Chinook salmon and steelhead are identified at LGR and include wild (W), hatchery ad-intact (HNC), and hatchery ad-clipped (H). NOR includes only W adults whereas HOR includes both the HNC and H groups despite HNC individuals often being phenotypically W. Currently, all ad-intact fish are systematically PIT tagged at LGR which includes both the W and HNC origins i.e., some HOR adults are currently tagged at LGR, but we need to consider differential tagging rates between HNC and H adults when evaluating the precision of *pHOS* given current levels of PIT tagging.
 
@@ -81,9 +85,9 @@ This assessment aims to determine the number or tagging rate of HOR adults at LG
 1. Determined expected CVs for current estimates of *pHOS* that could be generated for locations or populations in the SRB given current levels of PIT tagging. Current tagging includes:
   + 1A. Individuals tagged within hatchery smolt releases, and
   + 1B. Ad-intact hatchery (HNC) adults that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., @Camacho2017) and at IPTDS (e.g., @Orme2018).
-2. Determine additional tagging at LGR of adult HOR fish that would allow reasonable estimates of *pHOS*. 
+2. Determine additional tagging at LGR of ad-clipped adult HOR fish that would allow reasonable estimates of *pHOS*. 
 
-We will define reasonable as an estimate with a CV of 15% or less. Our evaluation may (or may not) attempt to focus on desired or critical populations/locations.
+We will define reasonable as an estimate with a CV of 15% or less. Our simulation will focus on desired or critical populations/locations.
 
 ```{r captions}
 # lgr_tags_needed = tab_nums('lgr_tags_needed',
@@ -98,8 +102,17 @@ obs_summary = tab_nums('obs_summary',
 juv_phos = tab_nums('juv_phos',
                     'Hatchery, wild, and total abundance estimates and associated pHOS estimates for location x spawn year combinations with hatchery observations from smolt releases in the Snake River Basin.')
 
+dabom_hnc_phos = tab_nums('dabom_hnc_phos',
+                          "Estimates of adundance for ad-intact steelhead including wild and hatchery (HNC), spawn years 2017-2019 and estimates of the proportion of hatchery origin spawners (pHOS) with standard error (SE) and coefficient of variation (CV) that takes into account uncertainty in the abundance estimates.")
+
+stray_rates = tab_nums("stray_rates",
+                       "The percentage of hatchery steelhead adults, tagged as juveniles, observed straying into recipient populations from all those tags passing Lower Granite Dam, summarized by release groups. Note all values in table are expressed as a percentage.")
+
 tradeoff_fig = fig_nums('tradeoff_fig',
                         "Predictions of the CV of pHOS across ranges of the CV hatchery escapement estimates and the proportion wild (inverse of pHOS), faceted by CV of wild escapement. The horizontal dotted line depicts a CV of 15%.")
+
+cv_phos_fig = fig_nums("cv_phos_fig",
+                       "The maximum CV of hatchery abundance estimates that would provide an estimate of pHOS with reasonable precision for a given proportion of wild fish (inverse pHOS) and precision of wild escapement.")
 ```
 
 # Methods
@@ -116,7 +129,7 @@ where $\hat{N_{h}}$ is the HOR abundance, $n_r$ is the number of observations of
 $$
 p_{HOS} = \frac{\hat{N_h}}{\hat{N_h} + \hat{N_n}}
 $$
-where $\hat{N_{n}}$ is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate at hatchery abundance estimate in the DABOM model using juvenile tagging; hence, the tag expansion approach. In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction  for that release groups and then sum across groups, and further, account for the detection probability of IPTDS sites within a location. Note that in this scenario we don't need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.
+where $\hat{N_{n}}$ is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate abundance estimates in the DABOM model using juvenile tagging; hence, the tag expansion approach. In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction  for that release groups and then sum across groups, and further, account for the detection probability of IPTDS sites within a location. Note that in this scenario we don't need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.
 
 <!--
 Kevin - I realized here that we didn't account for detection probability. But it's unclear to me how we would easily account for detection probability given that there can be numerous sites within a group. Wouldn't we have to, for each observation, take the expansion value for a fish and divide it by the estimated detection probability of the observation location and year from DABOM?
@@ -333,11 +346,11 @@ This evaluation ignores ad-clipped H adults, but is effective for estimating *pH
 
 ### Section 2. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
 
-Finally, we evaluated the expected precision (CV) of *pHOS* estimates given additional (theoretical) tagging of ad-clipped hatchery (H) adults at LGR using a simulation approach. Here, again, we must ignore PIT tagged hatchery smolt releases and the tag expansion approach as the DABOM model is reliant on systematic tagging of the adult return. Our goal is to evaluate a range of tagging numbers (or rates) at LGR for H adults, estimate abundance of ad-intact (W and HNC) and ad-clipped (H) adults to a given DABOM branch, and then combine H and HNC abundance with W abundance to estimate *pHOS* with uncertainty. Again, we need to account for the fact that adult HOR fish at LGR come in two flavors: ad-intact (HNC) and ad-clipped (H). Currently, all ad-intact fish that are trapped (W and HNC) are PIT-tagged, assuming they weren't previously tagged. So here we will focus on ad-clipped (H) adults only. In other words, we may need to account for differential tagging rates between ad-clipped (H) and ad-intact (HNC) when estimating *pHOS* here.
+Finally, we evaluated the expected precision (CV) of *pHOS* estimates given additional (theoretical) tagging of ad-clipped hatchery (H) adults at LGR using a simulation approach. Here, again, we must ignore PIT tagged hatchery smolt releases and the tag expansion approach as the DABOM model is reliant on systematic tagging of the adult return. First, we demonstrate how an estimate of *pHOS* can be generated under the DABOM framework.
 
 #### Mathematical Reasoning
 
-First, we demonstrate how an estimate of *pHOS* can be generated under the DABOM framework. The estimate of *pHOS* at any branch $i$ in the DABOM model can be written as
+The estimate of *pHOS* at any branch $i$ in the DABOM model can be written as
 
 $$
 \hat{pHOS_i} = \frac{\mu_{h,i}}{\mu_{h,i} + \mu_{w,i}}
@@ -432,21 +445,45 @@ CV(g) &= \frac{SE(g)}{g} \\
 \end{aligned}
 $$
 
-which is a combination of the proportion of wild fish, the CV of the estimate of wild fish and the CV of the estimate of hatchery fish.
+which is a combination of the proportion of wild fish, the CV of the estimate of wild fish and the CV of the estimate of hatchery fish. In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch $i$ by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch $i$. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
 
-In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch $i$ by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch $i$. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
+### Simulation
 
-### Section 3: Simulations based on Section 2
+```{r viable-trts}
+viable_trts = read_xlsx("../data/Snake River Steelhead populationproposed status.xlsx") %>%
+  clean_names() %>%
+  filter(grepl("Viable", proposed_status)) %>%
+  pull(population) %>%
+  toString()
+```
 
-We will focus on **some subset of important populations defined by IDFG**. From the DABOM estimates of wild escapement over the last ten years, we will calculate the average CV of the wild estimate for each population, so we know where we fall on the x-axis in Figure \@ref(fig:cv-phos-fig). We will then use the average estimate of pHOS from Table \@ref(tab:dabom-hnc-phos) for each population, to determine where on the y-axis we are for each population. We will also assume a 5% pHOS and 10% pHOS, based on recovery goals (***Is this necessary?***). This will tell us what CV is required for an estimate of hatchery fish for each population, and we will translate that into a number of tags we'd like to detect in each population.
+From the DABOM estimates of wild escapement for spawn years 2013-2019, we will first calculate the average CV of the wild abundance estimate for each population where IPTDS infrastructure is in place for population monitoring. We chose 2013 as the first year as IPTDS infrastructure in the SRB has been relatively stable since then (See et al. 2019). The average CVs of the wild estimates for each population will then show us where we fall on the x-axis in `r fig_nums('cv_phos_fig', display = 'c')`. We will then use the average estimate of *pHOS* from `r tab_nums("dabom_hnc_phos", display = "c")` for each population to determine where on the y-axis we are for each population. If we know where on `r fig_nums('cv_phos_fig', display = 'c')` most CVs of wild escapement and percentage of wild spawners we observe among Snake River populations, this will tell us what CV is required for an estimate of hatchery abundance for each population. Finally, we can then translate that into a number of tags we'd like to detect in each population. Here, we will focus on steelhead TRT populations with a proposed status of "Viable" or "Highly Viable" which includes the following: `r viable_trts`. 
 
-Brian Leth has provided a table showing the percent of hatchery adults, tagged as juveniles, that are detected within each population out of all the hatchery tags that are detected at Lower Granite. We will divide the number of detections we require for each population by these percentages to determine how many tags we would expect to need to put out at Lower Granite in order to acheive those precision goals. 
+<!--
+We will also assume a 5% pHOS and 10% pHOS, based on recovery goals (***Is this necessary?***). I don't remember saying it was necessary to assume this. We're essentially using our available info on where we are on the x-axis and y-axis using available information right, to give us a ballpark of the max CV of hatchery escapements we can get away with and still estimate pHOS with a CV of 15% or less, correct? And then based on that determine the # of detections we need in a given population to obtain that CV. And then using Brian's information on transition probabilities we can back-calculate the number of tags needed at LGR (something similar to Figures 5 & 6 in See et al. 2019 TrapRateEffects)
+-->
+
+We also have information showing the percentage of hatchery adults, tagged as juveniles, that are detected within 'recipient populations' out of all the hatchery tags that are detected at LGR (and summarized by release groups; Brian Leth, IDFG, personal communication). We will divide the number of detections we require for each population by these percentages (`r tab_nums("stray_rates", display = "c")`) to determine how many tags we would expect to need to put out at Lower Granite in order to achieve determined precision goals.
+
+`r tab_nums('stray_rates')`
+```{r stray-rates-v1}
+leth_df = read_xlsx("../data/Percent of LGD PIT detections that stray 12-24-19.xlsx", range = "S49:AH60") %>%
+  mutate_at(vars(`Upper Salmon`:Total), funs(as.numeric(.))) %>%
+  mutate_at(vars(`Upper Salmon`:Total), ~. * 100) %>%
+  mutate_if(is.numeric, ~round(.,3))
+pander(leth_df,
+       missing = "-")
+```
+
+```{r stray-rates-v2, eval = F, out.width = "800px", fig.align = "center", fig.cap = fig_nums('stray_rates')}
+knitr::include_graphics("../images/stray_rate_table.png")
+```
 
 # Results
 
 ### Section 1A. Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
 
-`r tab_nums('obs_summary', display = 'c')` summarizes hatchery, wild, and total abundance estimates and the corresponding *pHOS* estimates for locations and spawn years in which there were IPTDS observations of hatchery adults from RTR smolt releases. Wild abundance estimates are from the DABOM model whereas hatchery abundance estimates are using the expansion approach outlined above. `r tab_nums('obs_summary', display = 'c')` also includes the number of hatchery and wild tags observed and the CV of the wild abundance estimates for context. Unfortunately, we are currently unable to estimate uncertainty in hatchery abundance, and thus, unable to estimate uncertainty in *pHOS* using this approach. To do so, we would have to identify and estimate sources of uncertainty in the hatchery abundance estimates; uncertainty in the tagging fraction (i.e., expansion value) would be one such example.
+`r tab_nums('juv_phos', display = 'c')` summarizes hatchery, wild, and total abundance estimates and the corresponding *pHOS* estimates for locations and spawn years in which there were IPTDS observations of hatchery adults from RTR smolt releases. Wild abundance estimates are from the DABOM model whereas hatchery abundance estimates are using the expansion approach outlined above. `r tab_nums('juv_phos', display = 'c')` also includes the number of hatchery and wild tags observed and the CV of the wild abundance estimates for context. Unfortunately, we are currently unable to estimate uncertainty in hatchery abundance, and thus, unable to estimate uncertainty in *pHOS* using this approach. To do so, we would have to identify and estimate sources of uncertainty in the hatchery abundance estimates; uncertainty in the tagging fraction (i.e., expansion value) would be one such example.
 
 <!---
 I'm wondering whether we need to or can remove hatchery rack returns from the hatchery abundance for particular TRT populations here? SRUMA-s comes to mind. Are there racks or weirs in CRSFC-s where hatchery steelhead are removed?
@@ -497,20 +534,27 @@ pHOS_1a %>%
 
 ### Section 1B. Expected precision of *pHOS* given current PIT tagging of W and HNC adults at LGR
 
-<!---
-These are initial HNC abundance estimates from DABOM for spawn years 2017. I've added for 1/9/2020 meeting with IDFG. Next, we need to roll these up to TRT populations at the same scales that we estimate W abundance in the SnakeBasinFishStatus Git repo. Then, Kevin will determine the appropriate way to merge W and HNC abundance estimates from DABOM to estimate pHOS with SE and CV. Then summarize and report results. That should be it for this section.
--->
+We estimated the abundance of ad-intact adults using the systematic tagging of those adults at LGR, detection at IPTDS throughout the SRB, and using the DABOM model for steelhead, SY2017-2019 (`r tab_nums('dabom_hnc_phos', display = 'c')`). Abundances were then combined to estimate *pHOS* with SE and CV which accounts for uncertainty in both the wild and HNC abundance estimates.
 
 ```{r dabom_hnc, eval = F}
 dabom_sthd_hnc_abund = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_abund.csv")
 pander(dabom_sthd_hnc_abund)
 ```
 
-```{r dabom-hnc-phos}
-hnc_phos_sthd = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_pHOS.csv") %>%
-  mutate_at(vars(Year),
-            list(as.factor))
-kable(hnc_phos_sthd)
+`r tab_nums('dabom_hnc_phos')`
+```{r dabom_hnc_phos}
+hnc_phos_sthd = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_pHOS.csv")
+trts = unique(hnc_phos_sthd$TRT)
+yrs = unique(hnc_phos_sthd$Year)
+hnc_phos = crossing(trts, yrs) %>%
+  rename(TRT = trts,
+         Year = yrs) %>%
+  left_join(hnc_phos_sthd) %>%
+  select(-Species) %>% 
+  mutate_at(vars(starts_with("pHOS")),
+            funs(round(., 3)))
+
+kable(hnc_phos)
 ```
 
 ### Section 2. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
@@ -561,7 +605,7 @@ The general patterns show that as the proportion of wild fish in the stream desc
 
 Another way to look at it would be to examine the maximum CV of hatchery estimates that would provide a reasonable estimate of *pHOS* for a given proportion of wild fish and precision of wild escapement. One way to visualize these results in in the plot below.
 
-```{r cv-phos-fig}
+```{r cv-phos-fig, fig.cap = fig_nums('cv_phos_fig')}
 cvThres = 0.15
 crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
          # CV of the estimate of wild fish
@@ -596,6 +640,10 @@ crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
 ```
 
 From this plot, it is clear that as long as the proportion of wild fish in a stream is below a certain threshold (around 10%), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained.
+
+### Simulation
+
+Results from simulation here...
 
 # Discussion
 
