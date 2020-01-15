@@ -29,10 +29,10 @@ output:
   pdf_document:
     toc: yes
     toc_depth: 3
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
+    # pandoc_args:
+    # - --lua-filter=../templates/scholarly-metadata.lua
+    # - --lua-filter=../templates/author-info-blocks.lua
+    # - --lua-filter=../templates/pagebreak.lua
 institute:
 - biomark: Biomark, Inc.
 csl: ../templates/american-fisheries-society.csl
@@ -41,6 +41,7 @@ bibliography:
 ---
 
 ```{r setUp, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+# setwd('markdown')
 library(knitr)
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 
@@ -467,7 +468,8 @@ We also have information showing the percentage of hatchery adults, tagged as ju
 
 `r tab_nums('stray_rates')`
 ```{r stray-rates-v1}
-leth_df = read_xlsx("../data/Percent of LGD PIT detections that stray 12-24-19.xlsx", range = "S49:AH60") %>%
+leth_df = read_xlsx("../data/Percent of LGD PIT detections that stray 1-10-20.xlsx", 
+                    range = "S63:AH74") %>%
   mutate_at(vars(`Upper Salmon`:Total), funs(as.numeric(.))) %>%
   mutate_at(vars(`Upper Salmon`:Total), ~. * 100) %>%
   mutate_if(is.numeric, ~round(.,3))
@@ -607,18 +609,20 @@ Another way to look at it would be to examine the maximum CV of hatchery estimat
 
 ```{r cv-phos-fig, fig.cap = fig_nums('cv_phos_fig')}
 cvThres = 0.15
-crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
+sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
          # CV of the estimate of wild fish
          cvW = seq(0, 1, 0.01),
          # CV of the estimate of hatchery fish
-         cvH = seq(0, 1.5, 0.03)) %>%
+         cvH = seq(0, 1.5, 0.01)) %>%
   mutate(pHOS = 1 - propWild,
          CV = propWild * (cvW + cvH)) %>%
   group_by(propWild, cvW) %>%
   summarise(nTot = n(),
             nPrec = sum(CV <= cvThres),
             maxHcv = max(cvH[CV <= cvThres])) %>%
-  ungroup() %>%
+  ungroup() 
+
+sim_df %>%
   ggplot(aes(x = cvW,
              y = propWild)) +
   geom_tile(aes(fill = maxHcv)) +
@@ -642,6 +646,109 @@ crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
 From this plot, it is clear that as long as the proportion of wild fish in a stream is below a certain threshold (around 10%), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained.
 
 ### Simulation
+
+
+```{r get-dabom-wild-estimates}
+pop_nms = read_excel('../data/Snake_River_TRT_Populations.xlsx') %>%
+  filter(Species == 'Steelhead') %>%
+  mutate(TRT = recode(TRT,
+                      "IRMMT-s" = "IRMAI-s"))
+
+wild_est = read_excel('../data/LGR_AllSummaries_Steelhead.xlsx',
+                      sheet = 'Pop Total Esc') %>%
+  filter(spawn_yr >= 2013) %>%
+  mutate_at(vars(cv),
+            list(as.numeric)) %>%
+  select(-species) %>%
+  left_join(pop_nms)
+
+# model for estimating CV of estimate, based on number of tags detected
+n_tags_mod = glm(cv ~ n_tags,
+                 family = gaussian(link = 'log'),
+                 data = wild_est)
+
+n_tags_sim = tibble(n_tags = seq(1, 300)) %>%
+  mutate(cv = predict(n_tags_mod,
+                      newdata = .,
+                      type = 'response'))
+# qplot(n_tags, cv, data = n_tags_sim)
+
+hatch_cv = wild_est %>%
+  filter(mean > 0) %>%
+  group_by(MPG_DPS, Name, TRT) %>%
+  summarise_at(vars(cv),
+               list(mean = mean, 
+                    min = min,
+                    max = max),
+               na.rm = T) %>%
+  ungroup() %>%
+  select(MPG_DPS:TRT,
+         cvW = mean) %>%
+  mutate_at(vars(cvW),
+            list(round),
+            digits = 2) %>%
+  left_join(hnc_phos %>%
+              mutate(propWild = 1 - pHOS) %>%
+              group_by(TRT) %>%
+              summarise_at(vars(propWild),
+                           list(mean),
+                           na.rm = T) %>%
+              mutate_at(vars(propWild),
+                        list(round),
+                        digits = 2)) %>%
+  left_join(sim_df %>%
+              select(cvW, propWild, maxHcv) %>%
+              mutate_at(vars(cvW, propWild),
+                        list(round),
+                        digits = 2)) %>%
+  mutate(n_tags = NA)
+
+for(i in 1:nrow(hatch_cv)) {
+  if(is.na(hatch_cv$maxHcv[i])) next
+  
+  hatch_cv$n_tags[i] = n_tags_sim %>%
+    filter(cv <= hatch_cv$maxHcv[i]) %>%
+    slice(1) %>%
+    pull(n_tags)
+}
+
+hatch_cv %>%
+  filter(!is.na(n_tags)) %>%
+  full_join(leth_df %>%
+              filter(`Release Group` == "Weighted Average") %>%
+              select(-`Release Group`, -Total) %>%
+              gather(Pop, conv_rate) %>%
+              # translate percent into actual number
+              mutate_at(vars(conv_rate),
+                        list(~ . / 100)) %>%
+              # recode so we can join
+              mutate(Pop = recode(Pop,
+                                  'Pahsim.' = 'Pahsimeroi',
+                                  'S.F. Clearwater' = 'South Fork Clearwater')) %>%
+              mutate(Pop = str_remove(Pop, " River$"),
+                     Pop = str_remove(Pop, " R.$"),
+                     Pop = paste(Pop, "River"),
+                     Pop = recode(Pop,
+                                  "Lolo River" = "Lolo Creek",
+                                  "Joseph River" = "Joseph Creek",
+                                  "Asotin River" = "Asotin Creek")) %>%
+              # not sure if these are correct or appropriate
+              mutate(Pop = recode(Pop,
+                                  "Grande Ronde River" = "Wallowa River",
+                                  "Lower Snake River" = 'Tucannon River',
+                                  "Upper Salmon River" = 'Upper Mainstem Salmon River',
+                                  'Middle Fork Salmon River' = 'Lower Middle Fork Salmon River')) %>%
+              rename(Name = Pop)) %>%
+  mutate(LGR_tags = n_tags / conv_rate) %>%
+  mutate_at(vars(LGR_tags),
+            list(as.integer)) %>%
+  # as.data.frame()
+  filter(!is.na(conv_rate),
+         !is.na(TRT)) %>%
+  arrange(desc(LGR_tags))
+
+ ```
+
 
 Results from simulation here...
 
