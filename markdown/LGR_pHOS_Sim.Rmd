@@ -565,7 +565,7 @@ kable(hnc_phos)
 
 We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and proportion wild (i.e., inverse of *pHOS*). The results are shown in `r fig_nums('tradeoff_fig', display = 'c')`.
 
-```{r tradeoff_fig, fig.cap = fig_nums('tradeoff_fig')}
+```{r tradeoff_fig, eval = F, fig.cap = fig_nums('tradeoff_fig')}
 # proportion of wild fish in the stream
 propWild = seq(0.05, 0.95, 0.05)
 # CV of the estimate of wild fish
@@ -648,7 +648,7 @@ From this plot, it is clear that as long as the proportion of wild fish in a str
 ### Simulation
 
 
-```{r get-dabom-wild-estimates}
+```{r lgr-tags-estimate}
 pop_nms = read_excel('../data/Snake_River_TRT_Populations.xlsx') %>%
   filter(Species == 'Steelhead') %>%
   mutate(TRT = recode(TRT,
@@ -712,7 +712,7 @@ for(i in 1:nrow(hatch_cv)) {
     pull(n_tags)
 }
 
-hatch_cv %>%
+lgr_tags_df = hatch_cv %>%
   filter(!is.na(n_tags)) %>%
   full_join(leth_df %>%
               filter(`Release Group` == "Weighted Average") %>%
@@ -741,16 +741,22 @@ hatch_cv %>%
               rename(Name = Pop)) %>%
   mutate(LGR_tags = n_tags / conv_rate) %>%
   mutate_at(vars(LGR_tags),
-            list(as.integer)) %>%
-  # as.data.frame()
-  filter(!is.na(conv_rate),
-         !is.na(TRT)) %>%
-  arrange(desc(LGR_tags))
+            list(as.integer))
 
- ```
-
+```
 
 Results from simulation here...
+
+```{r lgr-tags-table}
+lgr_tags_df %>%
+  filter(!is.na(conv_rate),
+         !is.na(TRT)) %>%
+  filter(!is.na(LGR_tags)) %>%
+  arrange(desc(LGR_tags)) %>%
+  # arrange(MPG_DPS, TRT) %>%
+  kable(format.args = list(big.mark = ','))
+```
+
 
 # Discussion
 
