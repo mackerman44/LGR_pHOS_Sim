@@ -1,38 +1,40 @@
 ---
 title: "Hatchery Tagging to Estimate pHOS Using IPTDS Detections"
 author:
-  - name: Kevin See
-    affiliation: Biomark, Inc.
-  - name: Mike Ackerman
-    affiliation: Biomark, Inc.
-# - Kevin See:
-#     correspondence: yes
-#     email: Kevin.See@biomark.com
-#     institute: biomark
-# - Mike Ackerman:
-#     correspondence: yes
-#     email: Mike.Ackerman@biomark.com
-#     institute: biomark
+  # - name: Kevin See
+  #   affiliation: Biomark, Inc.
+  # - name: Mike Ackerman
+  #   affiliation: Biomark, Inc.
+- Kevin See:
+    correspondence: yes
+    email: Kevin.See@biomark.com
+    institute: biomark
+- Mike Ackerman:
+    correspondence: yes
+    email: Mike.Ackerman@biomark.com
+    institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
+  pdf_document:
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks2.lua
+    - --lua-filter=../templates/pagebreak.lua
+    toc: yes
+    toc_depth: 3
+    includes:
+      in_header: "../templates/header_ABS.tex"
   html_document:
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
     fig_height: 6
     fig_width: 8
-    # pandoc_args:
-    # - --lua-filter=../templates/scholarly-metadata.lua
-    # - --lua-filter=../templates/author-info-blocks.lua
-    # - --lua-filter=../templates/pagebreak.lua
     theme: simplex
     toc: yes
     toc_depth: 3
     toc_float: yes
-  pdf_document:
-    toc: yes
-    toc_depth: 3
-    # pandoc_args:
-    # - --lua-filter=../templates/scholarly-metadata.lua
-    # - --lua-filter=../templates/author-info-blocks.lua
-    # - --lua-filter=../templates/pagebreak.lua
 institute:
 - biomark: Biomark, Inc.
 csl: ../templates/american-fisheries-society.csl
@@ -44,6 +46,8 @@ bibliography:
 # setwd('markdown')
 library(knitr)
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+# options(knitr.kable.NA = '-')
+# options(knitr.table.format = "pandoc")
 
 library(captioner)
 tab_nums = captioner(prefix = 'Table')
@@ -54,12 +58,15 @@ library(pander)
 panderOptions('big.mark', ',')
 panderOptions('keep.trailing.zeros', FALSE)
 panderOptions('table.split.table', Inf)
+panderOptions('missing', '-')
 
 # load necessary packages
 library(tidyverse)
 library(janitor)
 library(lubridate)
 library(readxl)
+
+theme_set(theme_bw())
 ```
 
 # Introduction
@@ -170,11 +177,10 @@ A recent assessment by See et al. (2019) identified steelhead TRT populations or
 * Last Obs Date/Time: 07/01/2017 - 06/30/2019
 * Obs Site: In `r tab_nums('site_table', display = 'c')`
 
-<center>
 ```{r sthd_ests}
-AbundanceFolder = '../../SnakeBasinFishStatus/Abundance_results' # for processed files
 # wild steelhead abundance estimates
-sthd_est = read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_Steelhead.xlsx'), sheet = 2) %>%
+sthd_est = read_excel("../data/LGR_AllSummaries_Steelhead.xlsx",
+                      sheet = 2) %>%
   filter(!is.na(n_tags)) %>%
   mutate_at(vars(spawn_yr:TRT),
             list(as.factor)) %>%
@@ -207,11 +213,10 @@ sthd_est = sthd_est %>%
 #          `Total Tags Needed` = tot_tags_need) %>%
 #   pander(round = 3)
 ```
-</center>
 
 `r tab_nums('site_table')`
-<center>
-```{r site_ids}
+<!-- <center> -->
+```{r site-ids}
 trts = pull(sthd_est, TRT)
 
 sites = sthd_pop %>%
@@ -236,10 +241,11 @@ site_table %>%
               distinct()) %>%
   select(TRT, Name, SiteID) %>%
   pander()
+  # kable(caption = 'Steelhead TRT populations and interrogation sites for which we queried interrogation of hatchery adults during spawn years 2017-2019.',
+  #       align = 'c')
 
-# pander(site_table)
 ```
-</center>
+<!-- </center> -->
 
 <!---
 We have smolt marking information for brood years (BY) 2013-2018. BY2013 smolts would be released in spring 2014, emigrate and rear in the ocean for 1 ('A-run') or 2 ('B-run') years and enter the Columbia again in 2015 or 2016 to spawn in spring 2016 or 2017. As a result, we will limit our PTAGIS query to spawn years 2016 to 2019, the years for which we have PIT tag marking fraction information for smolt releases. 
@@ -335,7 +341,8 @@ obs_table = final_sthd_obs %>%
 obs_table %>%
   mutate_at(vars(`Spawn Year`),
             list(as.factor)) %>%
-  pander(missing = '-')
+  pander()
+
 ```
 </center>
 
@@ -442,11 +449,13 @@ CV(g) &= \frac{SE(g)}{g} \\
 \\
 &= \frac{\sigma_w}{(h + w)} + \frac{w}{(h+w)} * \frac{\sigma_h}{h} \\
 \\
-&= \frac{w}{(h+w)} \left( \frac{\sigma_w}{w} + \frac{\sigma_h}{h} \right),
+&= \frac{w}{(h+w)} \left( \frac{\sigma_w}{w} + \frac{\sigma_h}{h} \right) \\
+\\
+&= \left(1 - pHOS \right) \left( \frac{\sigma_w}{w} + \frac{\sigma_h}{h} \right),
 \end{aligned}
 $$
 
-which is a combination of the proportion of wild fish, the CV of the estimate of wild fish and the CV of the estimate of hatchery fish. In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch $i$ by varying the percent wild fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch $i$. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
+which is a combination of the estimate of *pHOS*, the CV of the estimate of wild fish and the CV of the estimate of hatchery fish. In other words, we can predict the CV of *pHOS* for a variety of situations for a given branch $i$ by varying the percent of hatchery fish in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch $i$. We selected several levels of precision in our estimates of wild fish, with CVs from 0.01 to 0.5, and a range of precision in our hatchery estimates, with CVs from 0 to 1.5, and then calculated the predicted CV of *pHOS* on those values.
 
 ### Simulation
 
@@ -458,7 +467,11 @@ viable_trts = read_xlsx("../data/Snake River Steelhead populationproposed status
   toString()
 ```
 
-From the DABOM estimates of wild escapement for spawn years 2013-2019, we will first calculate the average CV of the wild abundance estimate for each population where IPTDS infrastructure is in place for population monitoring. We chose 2013 as the first year as IPTDS infrastructure in the SRB has been relatively stable since then (See et al. 2019). The average CVs of the wild estimates for each population will then show us where we fall on the x-axis in `r fig_nums('cv_phos_fig', display = 'c')`. We will then use the average estimate of *pHOS* from `r tab_nums("dabom_hnc_phos", display = "c")` for each population to determine where on the y-axis we are for each population. If we know where on `r fig_nums('cv_phos_fig', display = 'c')` most CVs of wild escapement and percentage of wild spawners we observe among Snake River populations, this will tell us what CV is required for an estimate of hatchery abundance for each population. Finally, we can then translate that into a number of tags we'd like to detect in each population. Here, we will focus on steelhead TRT populations with a proposed status of "Viable" or "Highly Viable" which includes the following: `r viable_trts`. 
+From the DABOM estimates of wild escapement for spawn years 2013-2019, we first calculated the average CV of the wild abundance estimate for each population where IPTDS infrastructure is in place for population monitoring. We chose 2013 as the first year as IPTDS infrastructure in the SRB has been relatively stable since then (See et al. 2019). The average CVs of the wild estimates for each population show us where we fall on the x-axis in `r fig_nums('cv_phos_fig', display = 'c')`. We then used the average estimate of *pHOS* from `r tab_nums("dabom_hnc_phos", display = "c")` for each population to determine where on the y-axis we are for each population. This assumes that the only hatchery fish on the spawning grounds within those populations are unclipped (HNC). 
+
+
+
+If we know where on `r fig_nums('cv_phos_fig', display = 'c')` most CVs of wild escapement and percentage of wild spawners we observe among Snake River populations, this will tell us what CV is required for an estimate of hatchery abundance for each population. Finally, we can then translate that into a number of tags we'd like to detect in each population. Here, we will focus on steelhead TRT populations with a proposed status of "Viable" or "Highly Viable" which includes the following: `r viable_trts`. 
 
 <!--
 We will also assume a 5% pHOS and 10% pHOS, based on recovery goals (***Is this necessary?***). I don't remember saying it was necessary to assume this. We're essentially using our available info on where we are on the x-axis and y-axis using available information right, to give us a ballpark of the max CV of hatchery escapements we can get away with and still estimate pHOS with a CV of 15% or less, correct? And then based on that determine the # of detections we need in a given population to obtain that CV. And then using Brian's information on transition probabilities we can back-calculate the number of tags needed at LGR (something similar to Figures 5 & 6 in See et al. 2019 TrapRateEffects)
@@ -473,8 +486,8 @@ leth_df = read_xlsx("../data/Percent of LGD PIT detections that stray 1-10-20.xl
   mutate_at(vars(`Upper Salmon`:Total), funs(as.numeric(.))) %>%
   mutate_at(vars(`Upper Salmon`:Total), ~. * 100) %>%
   mutate_if(is.numeric, ~round(.,3))
-pander(leth_df,
-       missing = "-")
+
+pander(leth_df)
 ```
 
 ```{r stray-rates-v2, eval = F, out.width = "800px", fig.align = "center", fig.cap = fig_nums('stray_rates')}
@@ -504,7 +517,8 @@ pHOS_1a = final_sthd_obs %>%
   mutate(`Hatchery Abundance` = select(., CLWH:NISP) %>% rowSums(na.rm = T)) %>%
   rename(`Spawn Year` = spawn_yr)
     
-wild_abund = read_excel(paste0(AbundanceFolder, '/LGR_AllSummaries_Steelhead.xlsx'), sheet = 2) %>%
+wild_abund = read_excel('../data/LGR_AllSummaries_Steelhead.xlsx',
+                        sheet = 2) %>%
   select(TRT, spawn_yr,
          n_wild_tags = n_tags,
          median, cv) %>%
@@ -528,8 +542,8 @@ pHOS_1a = obs_table %>%
          `n. Tags Wild` = n_wild_tags)
 pHOS_1a %>%
   mutate_at(vars(`Spawn Year`),
-            list(as.factor)) %>% 
-  pander(missing = '-')
+            list(as.factor)) %>%
+  pander()
 
 ```
 </center>
@@ -624,31 +638,35 @@ sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the s
 
 sim_df %>%
   ggplot(aes(x = cvW,
-             y = propWild)) +
+             y = 1 - propWild)) +
   geom_tile(aes(fill = maxHcv)) +
   geom_contour(aes(z = maxHcv),
                color = 'black',
                bins = 10) +
-  theme_minimal() +
+  # geom_line(data = sim_df %>%
+  #             filter(maxHcv == 0.15),
+  #           color = 'red') +
+  theme_classic() +
   geom_text(x = 0.75,
-            y = 0.75,
+            y = 0.25,
             hjust = 'inward',
             vjust = 'inward',
             label = paste0('CV > ', cvThres, '%')) +
   scale_fill_viridis_c(na.value = 'gray90',
                        begin = 0.2) +
   labs(x = 'CV of Wild Escp.',
-       y = '% Wild',
+       # y = '% Wild',
+       y = 'pHOS',  
        fill = 'Max CV\nHatch Est.')
 
 ```
 
-From this plot, it is clear that as long as the proportion of wild fish in a stream is below a certain threshold (around 10%), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained.
+From this plot, it is clear that when *pHOS* is high, then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained. However, when *pHOS* is low, the precision of wild and hatchery escapement must be very good to obtain reasonable precision for *pHOS*. At very low levels of *pHOS*, very precise estimates of hatchery and wild escapement are necessary.
 
 ### Simulation
 
 
-```{r lgr-tags-estimate}
+```{r dabom-wild-estimates}
 pop_nms = read_excel('../data/Snake_River_TRT_Populations.xlsx') %>%
   filter(Species == 'Steelhead') %>%
   mutate(TRT = recode(TRT,
@@ -663,16 +681,66 @@ wild_est = read_excel('../data/LGR_AllSummaries_Steelhead.xlsx',
   left_join(pop_nms)
 
 # model for estimating CV of estimate, based on number of tags detected
-n_tags_mod = glm(cv ~ n_tags,
+n_tags_mod = lm(log(cv) ~ log(n_tags),
+                data = wild_est)
+
+n_tags_mod = glm(cv ~ log(n_tags),
                  family = gaussian(link = 'log'),
                  data = wild_est)
 
-n_tags_sim = tibble(n_tags = seq(1, 300)) %>%
+# n_tags_mod = glm(cv ~ n_tags,
+#                  family = gaussian(link = 'log'),
+#                  data = wild_est)
+
+n_tags_sim = tibble(n_tags = seq(1, max(wild_est$n_tags, na.rm = T))) %>%
   mutate(cv = predict(n_tags_mod,
                       newdata = .,
-                      type = 'response'))
-# qplot(n_tags, cv, data = n_tags_sim)
+                      type = 'response')) %>%
+  mutate_at(vars(cv),
+            list(exp))
 
+```
+
+```{r tags-vs-cv}
+wild_est %>%
+  ggplot(aes(x = n_tags,
+             y = cv)) +
+  geom_point() +
+  geom_hline(yintercept = 0.15,
+             linetype = 2) +
+  scale_color_brewer(palette = "Set1") +
+  geom_smooth(aes(color = 'GLM'),
+              method = glm,
+              method.args = list(family = gaussian(link = "log")),
+              se = F,
+              fullrange = T) +
+  geom_smooth(aes(color = 'Log-log'),
+              method = glm,
+              formula = y ~ log(x),
+              method.args = list(family = gaussian(link = "log")),
+              se = F,
+              fullrange = T) +
+  geom_line(data = n_tags_sim,
+            aes(color = 'Sim'),
+            lwd = 1) +
+  facet_wrap(~ Species) +
+  labs(x = '# PIT Tags Detected',
+       y = 'CV of Pop. Est.',
+       color = 'Model')
+
+# wild_est %>%
+#   ggplot(aes(x = log(n_tags),
+#              y = log(cv))) +
+#   geom_point() +
+#   geom_smooth(method = lm) +
+#   facet_wrap(~ Species) +
+#   labs(x = '# PIT Tags Detected',
+#        y = 'CV of Pop. Est.')
+
+```
+
+
+```{r lgr-tags-estimate}
 hatch_cv = wild_est %>%
   filter(mean > 0) %>%
   group_by(MPG_DPS, Name, TRT) %>%
@@ -706,10 +774,15 @@ hatch_cv = wild_est %>%
 for(i in 1:nrow(hatch_cv)) {
   if(is.na(hatch_cv$maxHcv[i])) next
   
-  hatch_cv$n_tags[i] = n_tags_sim %>%
+  min_tags = n_tags_sim %>%
     filter(cv <= hatch_cv$maxHcv[i]) %>%
     slice(1) %>%
     pull(n_tags)
+  
+  if(length(min_tags) == 0) min_tags = NA
+  
+  hatch_cv$n_tags[i] = min_tags
+  rm(min_tags)
 }
 
 lgr_tags_df = hatch_cv %>%
