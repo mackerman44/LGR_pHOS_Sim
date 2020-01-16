@@ -13,15 +13,6 @@ author:
     institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-  bookdown::pdf_document2:
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks2.lua
-    - --lua-filter=../templates/pagebreak.lua
-    fig_height: 6
-    fig_width: 8
-    includes:
-      in_header: "../templates/header_ABS.tex"
   bookdown::word_document2: 
     fig_caption: yes
     fig_height: 4
@@ -32,6 +23,15 @@ output:
     - --lua-filter=../templates/author-info-blocks.lua
     - --lua-filter=../templates/pagebreak.lua
     reference_docx: "../templates/ReportTemplate.docx"
+  bookdown::pdf_document2:
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks2.lua
+    - --lua-filter=../templates/pagebreak.lua
+    fig_height: 6
+    fig_width: 8
+    includes:
+      in_header: "../templates/header_ABS.tex"
   bookdown::html_document2:
     theme: simplex
     toc: yes
@@ -165,11 +165,24 @@ single_site_det = single_site_pops %>%
 
 # Methods
 
-First, we wanted to leverage results based on empirical data from the inception of the PIT tagging program at LGR (2010) to the present. We started by gathering data on all estimates that have been made for population abundance at the TRT spacial scale, and examining the relationship between the number of tags observed in each population, and the coefficient (CV) of the estimate. We fit a model on the log scale:
+First, we wanted to leverage results based on empirical data from the inception of the PIT tagging program at LGR (2010) to the present. We started by gathering data on all estimates that have been made for population abundance at the TRT spacial scale, and examining the relationship between the number of tags observed in each population, and the coefficient (CV) of the estimate. We fit a model on the semi-log scale:
 
 $$
-\text{CV} \sim \exp(a + b * n_{tags})
+\begin{aligned}
+\text{CV} &\sim e^{a + b * n_{tags}} \\
+\log(\text{CV}) &\sim a + b * n_{tags} \\
+\end{aligned}
 $$
+the log-log scale:
+
+$$
+\begin{aligned}
+\text{CV} &\sim a * n_{tags}^{b} \\
+\log(\text{CV}) &\sim \log(a) + b * \log(n_{tags})
+\end{aligned}
+$$
+
+
 and, in addition, a more flexible version using a loess spline. We were interested in how many tags would need to be detected within each TRT population, and using each model, to predict a CV of $\leq$ 0.15. Similarly, we examined the relationship between the proportion of all tags that were deployed at LGR that were detected within each population, and the CV of the population estimate. 
 
 The previous provides information on the number of tags, or the proportion of all deployed tags, returning to a population necessary to achieve a precise abundance estimate. We then need to determine how many tags would need to be deployed at LGR to achieve that minimum number of tags to each TRT population to achieve that level of precision in our abundance estimates. To do this, we started by looking at the proportion of tags deployed at LGR that were detected in each TRT population by year, and then averaged across years. Finally, given the minimum number of detections required to achieve a precise abundance estimate, we estimated the number of total tags needed to be deployed at LGR that would be expected to result in the minimum number of detections for that TRT population. We can also predict for a given number of tags deployed at LGR whether there will be sufficient detections in each TRT population to achieve a reasonably precise abundance estimate.
@@ -201,8 +214,10 @@ min_yr = 2013
 # min_tags = minumum number of tags that need to be detected for reasonable precision
 min_tags = tibble(Species = c('Chinook',
                               'Steelhead'),
-                  min_tags = c(50))
-                  # min_tags = c(53, 45))
+                  # min_tags = c(50))
+                  min_tags = 45)
+                  # min_tags = c(55, 46))
+                  # min_tags = c(45, 30))
 
 tags_est_df = pop_est %>%
   mutate_at(vars(spawn_yr),
@@ -340,7 +355,7 @@ remove_t %>%
 
 Figure \@ref(fig:tags-vs-cv) shows the number of PIT tags detected within a TRT population and the corresponding CV of the population abundance estimate, by species, using results going back to 2013 and after removing population and year combinations in which low/no observations were due to lack of IPTDS or IPTDS not intended for natural origin population abundance (Table \@ref(tab:remove-tab)).
 
-```{r tags-vs-cv, fig.cap = "Scatterplot of the number of PIT tags detected in each population and the CV of the abundance estimates for that population. The lines of GLM and loess fits to the data. The dashed horizontal line indicates a CV of 15%."}
+```{r tags-vs-cv, fig.cap = "Scatterplot of the number of PIT tags detected in each population and the CV of the abundance estimates for that population. The lines of semi-log, log-log and loess fits to the data. The dashed horizontal line indicates a CV of 15%."}
 
 pop_est = pop_est %>%
   anti_join(rmv) %>%
@@ -358,8 +373,14 @@ pop_est %>%
               span = 0.9,
               se = F,
               fullrange = T) +
-  geom_smooth(aes(color = 'GLM'),
+  geom_smooth(aes(color = 'Semi-log'),
               method = glm,
+              method.args = list(family = gaussian(link = "log")),
+              se = F,
+              fullrange = T) +
+  geom_smooth(aes(color = 'Log-log'),
+              method = glm,
+              formula = y ~ log(x),
               method.args = list(family = gaussian(link = "log")),
               se = F,
               fullrange = T) +
@@ -371,7 +392,7 @@ pop_est %>%
 
 Additionally, using the same data, we examined the proportion of total tags deployed at LGR that were observed within a TRT population and the CV of the abundance estimate (Figure \@ref(fig:perc-tags-vs-cv)).
 
-```{r perc-tags-vs-cv, fig.cap = "Scatterplot of the proportion of PIT tags detected in each population and the CV of the abundance estimate for that population. The lines are GLM and Loess fits to that data. The dashed horizontal line denotes a CV of 15%."}
+```{r perc-tags-vs-cv, fig.cap = "Scatterplot of the proportion of PIT tags detected in each population and the CV of the abundance estimate for that population. The lines are semi-log, log-log and Loess fits to that data. The dashed horizontal line denotes a CV of 15%."}
 
 pop_est %>%
   mutate_at(vars(spawn_yr),
@@ -387,8 +408,14 @@ pop_est %>%
               span = 0.9,
               se = F,
               fullrange = T) +
-  geom_smooth(aes(color = 'GLM'),
+  geom_smooth(aes(color = 'Semi-log'),
               method = glm,
+              method.args = list(family = gaussian(link = "log")),
+              se = F,
+              fullrange = T) +
+  geom_smooth(aes(color = 'Log-log'),
+              method = glm,
+              formula = y ~ log(x),
               method.args = list(family = gaussian(link = "log")),
               se = F,
               fullrange = T) +
@@ -398,13 +425,13 @@ pop_est %>%
        color = 'Model')
 ```
 
-Ultimately, we were interested in the number of PIT tags that need to be observed within a population or the proportion of total PIT tags deployed at LGR detected within a population necessary to achieve a predicted CV of $\leq$ 0.15 for the abundance estimate. To do this, we tried fitting a separate model for each species, and after fitting those models (GLM and Loess), we examined the minimum number and proportion of total tags that would need to be detected to achieve that CV level. Those results are shown in Tables \@ref(tab:n-tags-tab) and \@ref(tab:prop-tags-tab) below.
+Ultimately, we were interested in the number of PIT tags that need to be observed within a population or the proportion of total PIT tags deployed at LGR detected within a population necessary to achieve a predicted CV of $\leq$ 0.15 for the abundance estimate. To do this, we tried fitting a separate model for each species, and after fitting those models (semi-log, log-log and loess), we examined the minimum number and proportion of total tags that would need to be detected to achieve that CV level. Those results are shown in Tables \@ref(tab:n-tags-tab) and \@ref(tab:prop-tags-tab).
 
 ```{r n-tags-tab}
 mod_df = pop_est %>%
   group_by(Species) %>%
   nest() %>%
-  mutate(mod_glm = map(data,
+  mutate(mod_semi_log = map(data,
                       .f = function(x) {
                         glm(cv ~ n_tags,
                             family = gaussian(link = 'log'),
@@ -414,7 +441,12 @@ mod_df = pop_est %>%
                          .f = function(x) {
                            loess(cv ~ n_tags,
                                  data = x)
-                         }))
+                         }),
+         mod_log_log = map(data,
+                           .f = function(x) {
+                           lm(log(cv) ~ log(n_tags),
+                              data = x)
+                           }))
 
 mod_df %>%
   gather(model, mod_fit, starts_with('mod')) %>%
@@ -428,9 +460,13 @@ mod_df %>%
   select(Species, 
          Model = model, pred) %>%
   mutate(Model = recode(Model,
-                        'mod_glm' = 'GLM',
-                        'mod_loess' = 'Loess')) %>%
+                        'mod_semi_log' = 'Semi-log',
+                        'mod_loess' = 'Loess',
+                        'mod_log_log' = 'Log-log')) %>%
   unnest(cols = c(pred)) %>%
+  mutate(pred_cv = if_else(Model == 'Log-log',
+                           exp(pred_cv),
+                           pred_cv)) %>%
   group_by(Species, Model) %>%
   filter(pred_cv <= 0.15) %>%
   slice(1) %>%
@@ -449,7 +485,7 @@ prop_mod_df = pop_est %>%
   mutate(prop_tags = n_tags / tot_tags) %>%
   group_by(Species) %>%
   nest() %>%
-  mutate(mod_glm = map(data,
+  mutate(mod_semi_log = map(data,
                       .f = function(x) {
                         glm(cv ~ prop_tags,
                             family = gaussian(link = 'log'),
@@ -459,7 +495,12 @@ prop_mod_df = pop_est %>%
                          .f = function(x) {
                            loess(cv ~ prop_tags,
                                  data = x)
-                         }))
+                         }),
+         mod_log_log = map(data,
+                           .f = function(x) {
+                           lm(log(cv) ~ log(prop_tags),
+                              data = x)
+                           }))
 
 prop_mod_df %>%
   gather(model, mod_fit, starts_with('mod')) %>%
@@ -473,12 +514,17 @@ prop_mod_df %>%
   select(Species, 
          Model = model, pred) %>%
   mutate(Model = recode(Model,
-                        'mod_glm' = 'GLM',
-                        'mod_loess' = 'Loess')) %>%
+                        'mod_semi_log' = 'Semi-log',
+                        'mod_loess' = 'Loess',
+                        'mod_log_log' = 'Log-log')) %>%
   unnest(cols = c(pred)) %>%
+  mutate(pred_cv = if_else(Model == 'Log-log',
+                           exp(pred_cv),
+                           pred_cv)) %>%
   group_by(Species, Model) %>%
   filter(pred_cv <= 0.15) %>%
   slice(1) %>%
+  mutate(prop_tags = paste(round(prop_tags, 3) * 100, '%')) %>%
   rename(`% Tags Detected` = prop_tags,
          `Pred. CV` = pred_cv) %>%
   kable(caption = "The estimated proportion of total tags deployed at LGR that need to be detected within a TRT population to achieve a CV of 15% or less for abundance estimates.",
@@ -486,16 +532,16 @@ prop_mod_df %>%
 
 ```  
 
-Table \@ref(tab:n-tags-tab) shows that we need to detect about 55 Chinook salmon and 40-46 steelhead to achieve a CV of 15% or less for natural origin abundance estimates. Further, Table \@ref(tab:n-tags-tab) shows that, using past results, we need to detect about 3% of Chinook salmon or slighty greater than 1% of steelhead PIT tags deployed at LGR to achieve reasonably precise estimates of abundance. For the sake of simplicity, let's assume that we need to detect 50 PIT tags within a population, for both species, to achieve a precise abundance estimate (Figure \@ref(fig:tag50)).
+Table \@ref(tab:n-tags-tab) shows that we need to detect about 45-55 Chinook salmon and 30-46 steelhead to achieve a CV of 15% or less for natural origin abundance estimates. Further, Table \@ref(tab:prop-tags-tab) shows that, using past results, we need to detect about 2-3% of Chinook salmon or about 1% of steelhead PIT tags deployed at LGR within a population to achieve reasonably precise estimates of abundance. Looking at model diagnostics (not shown), the log-log model appears to meet the linear model assumptions the best. For the sake of simplicity, let's assume that we need to detect `r unique(min_tags$min_tags)` PIT tags within a population, for both species, to achieve a precise abundance estimate (Figure \@ref(fig:tag50)).
 
-```{r tag50, eval = T, fig.height = 6, fig.cap = "The number of PIT tags detected in a TRT population and the corresponding population abundance estimate, by species, using results back to spawn year 2013. Estimates shown in blue had a CV of 15% or less. The dashed vertical line denotes 50 PIT tags detected."}
+```{r tag50, eval = T, fig.height = 6, fig.cap = "The number of PIT tags detected in a TRT population and the corresponding population abundance estimate, by species, using results back to spawn year 2013. Estimates shown in blue had a CV of 15% or less. The dashed vertical line denotes 45 PIT tags detected."}
 pop_est %>%
   ggplot(aes(x = n_tags,
              y = mean)) +
   geom_point(aes(color = cv <= 0.15)) +
   scale_color_brewer(palette = 'Set1') + 
   facet_wrap(~ Species) +
-  geom_vline(xintercept = c(50),
+  geom_vline(xintercept = unique(min_tags$min_tags),
              linetype = 2) +
   labs(x = '# PIT Tags Detected',
        y = 'Pop. Est.',
@@ -504,13 +550,13 @@ pop_est %>%
 
 ### Sex and Age Estimates
 
-We want to note that reasonably precise estimates of abundance, by sex and total age, are also a desired outcome as they are necessary to construct brood tables and estimate population productivity. However, note that it will not require 50 female tags detected within a population to achieve reasonable precision of female abundance. Rather, we will take the total abundance estimate to a TRT population and multiply it by a binomial (female vs. male) proportion to generate abundance by females and males. The binomial proportions will be estimated from all of the tags detected in that TRT population. If we have about 50 total tags detected in a population for a good abundance estimate, the proportion female or male will be fairly precise because 50 is a good sample size for proportions, especially when the proportion is somewhere near 50%. Therefore, the CV for the number of females in that population will be slightly larger than the CV of the total abundance, but probably not by much. 
+We want to note that reasonably precise estimates of abundance, by sex and total age, are also a desired outcome as they are necessary to construct brood tables and estimate population productivity. However, note that it will not require `r unique(min_tags$min_tags)` female tags detected within a population to achieve reasonable precision of female abundance. Rather, we will take the total abundance estimate to a TRT population and multiply it by a binomial (female vs. male) proportion to generate abundance by females and males. The binomial proportions will be estimated from all of the tags detected in that TRT population. If we have about `r unique(min_tags$min_tags)` total tags detected in a population for a good abundance estimate, the proportion female or male will be fairly precise because `r unique(min_tags$min_tags)` is a good sample size for proportions, especially when the proportion is somewhere near 50%. Therefore, the CV for the number of females in that population will be slightly larger than the CV of the total abundance, but probably not by much. 
 
-Similar arguments hold for abundance by total age (multinomial proportions), although as we attempt to account for more age classses, the precision will suffer. Therefore, for a Chinook salmon population with 3 total age classes, we expect to get reasonable estimates with a sample size close to 50. However, for a steelhead population with up to 6 or so total age classes, the precision will suffer, especially since some of the total age classes may have very few fish. However, sex and age classes with proportions outside the tails (e.g., > 10%) would likely have good precision.
+Similar arguments hold for abundance by total age (multinomial proportions), although as we attempt to account for more age classses, the precision will suffer. Therefore, for a Chinook salmon population with 3 total age classes, we expect to get reasonable estimates with a sample size close to `r unique(min_tags$min_tags)`. However, for a steelhead population with up to 6 or so total age classes, the precision will suffer, especially since some of the total age classes may have very few fish. However, sex and age classes with proportions outside the tails (e.g., > 10%) would likely have good precision.
 
 ## Total Tags at Lower Granite
 
-We now have an estimate of the number of PIT tags that need to be detected within a TRT population (50) to achieve an abundance estimate with reasonable precision. But now we want to know how many PIT tags would need to be deployed at LGR to observe 50 PIT tags within any population. The proportion of all PIT tags deployed at LGR that were detected in any TRT population has changed over time, due to more IPTDS infrastructure being installed across the Snake River Basin (Figure \@ref(fig:prop-black-box)), and thus, we chose to focus on the period from `r min_yr` on, since the infrastructure has been more stable since then. Since `r min_yr`, the average proportion of all tags deployed from LGR that were detected in a TRT population, by species, is shown in Table \@ref(tab:prop-det-tab).
+We now have an estimate of the number of PIT tags that need to be detected within a TRT population (`r unique(min_tags$min_tags)`) to achieve an abundance estimate with reasonable precision. But now we want to know how many PIT tags would need to be deployed at LGR to observe `r unique(min_tags$min_tags)` PIT tags within any population. The proportion of all PIT tags deployed at LGR that were detected in any TRT population has changed over time, due to more IPTDS infrastructure being installed across the Snake River Basin (Figure \@ref(fig:prop-black-box)), and thus, we chose to focus on the period from `r min_yr` on, since the infrastructure has been more stable since then. Since `r min_yr`, the average proportion of all tags deployed from LGR that were detected in a TRT population, by species, is shown in Table \@ref(tab:prop-det-tab).
 
 ```{r prop-black-box, fig.cap = "The proportion of all PIT tags deployed at LGR that were later detected within a TRT population each year, by species."}
 prop_det_df %>%
@@ -533,7 +579,7 @@ prop_det_df %>%
   summarise_at(vars(prop_det),
                list(mean)) %>%
   mutate_at(vars(prop_det),
-            list(~ paste(round(., 3), "%"))) %>%
+            list(~ paste(round(., 3) * 100, "%"))) %>%
   rename(`Avg. % Total Tags Detected` = prop_det) %>%
   # clean_names(case = 'upper_camel') %>%
   kable(caption = "The average proportion of tags deployed at LGR detected in a TRT population since 2013, by species.")
@@ -716,4 +762,4 @@ ggpubr::ggarrange(plotlist = p_mpg_list,
 
 # Conclusions
 
-There are `r sum(sb_pops$Species[sb_pops$Status == 'Extant'] == 'Chinook')` extant Chinook salmon populations in the Snake River; of those, `r nrow(tags_tables[[1]])` contain IPTDS used to monitor natural origin population abundance. For steelhead, there are `r sum(sb_pops$Species[sb_pops$Status == 'Extant'] == 'Steelhead')` of which `r nrow(tags_tables[[2]])` contain IPTDS to monitor spawner abundance. Our results suggest we need to detect a minimum of about 50 tags per TRT population to achieve acceptable precision in our abundance estimates at the TRT spatial scale. Figures \@ref(fig:perc-good-CV) and \@ref(fig:perc-good-CV-zoom) can be interpreted to mean that assuming any given TRT population contains IPTDS intended for population monitoring and 4,000 PIT tags are deployed at LGR, we'd expect that about 75% (Chinook) and 60% (steelhead) of TRT populations monitored with PIT tags would have abundance estimates with "good" precision (i.e. CV $\leq$ 0.15).  
+There are `r sum(sb_pops$Species[sb_pops$Status == 'Extant'] == 'Chinook')` extant Chinook salmon populations in the Snake River; of those, `r nrow(tags_tables[[1]])` contain IPTDS used to monitor natural origin population abundance. For steelhead, there are `r sum(sb_pops$Species[sb_pops$Status == 'Extant'] == 'Steelhead')` of which `r nrow(tags_tables[[2]])` contain IPTDS to monitor spawner abundance. Our results suggest we need to detect a minimum of about `r unique(min_tags$min_tags)` tags per TRT population to achieve acceptable precision in our abundance estimates at the TRT spatial scale. Figures \@ref(fig:perc-good-CV) and \@ref(fig:perc-good-CV-zoom) can be interpreted to mean that assuming any given TRT population contains IPTDS intended for population monitoring and 4,000 PIT tags are deployed at LGR, we'd expect that about 75% (Chinook) and 60% (steelhead) of TRT populations monitored with PIT tags would have abundance estimates with "good" precision (i.e. CV $\leq$ 0.15).  
