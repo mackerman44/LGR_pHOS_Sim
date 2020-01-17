@@ -1,45 +1,46 @@
 ---
 title: "Hatchery Tagging to Estimate pHOS Using IPTDS Detections"
 author:
-  # - name: Kevin See
-  #   affiliation: Biomark, Inc.
-  # - name: Mike Ackerman
-  #   affiliation: Biomark, Inc.
-- Kevin See:
-    correspondence: yes
+  - name: Kevin See
+    affiliation: Biomark, Inc.
     email: Kevin.See@biomark.com
-    institute: biomark
-- Mike Ackerman:
-    correspondence: yes
+  - name: Mike Ackerman
+    affiliation: Biomark, Inc.
     email: Mike.Ackerman@biomark.com
-    institute: biomark
+# - Kevin See:
+#     correspondence: yes
+#     email: Kevin.See@biomark.com
+#     institute: biomark
+# - Mike Ackerman:
+#     correspondence: yes
+#     email: Mike.Ackerman@biomark.com
+#     institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-  pdf_document:
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks2.lua
-    - --lua-filter=../templates/pagebreak.lua
-    toc: yes
-    toc_depth: 3
-    includes:
-      in_header: "../templates/header_ABS.tex"
   html_document:
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
+    # pandoc_args:
+    # - --lua-filter=../templates/scholarly-metadata.lua
+    # - --lua-filter=../templates/author-info-blocks.lua
+    # - --lua-filter=../templates/pagebreak.lua
     fig_height: 6
     fig_width: 8
     theme: simplex
     toc: yes
     toc_depth: 3
     toc_float: yes
-institute:
-- biomark: Biomark, Inc.
+  pdf_document:
+    # pandoc_args:
+    # - --lua-filter=../templates/scholarly-metadata.lua
+    # - --lua-filter=../templates/author-info-blocks2.lua
+    # - --lua-filter=../templates/pagebreak.lua
+    toc: yes
+    toc_depth: 3
+    includes:
+      in_header: "../templates/header_ABS.tex"
+# institute:
+# - biomark: Biomark, Inc.
 csl: ../templates/american-fisheries-society.csl
-bibliography:
-- ../references.bib
+bibliography: ../references.bib
 ---
 
 ```{r setUp, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
@@ -111,13 +112,13 @@ juv_phos = tab_nums('juv_phos',
                     'Hatchery, wild, and total abundance estimates and associated pHOS estimates for location x spawn year combinations with hatchery observations from smolt releases in the Snake River Basin.')
 
 dabom_hnc_phos = tab_nums('dabom_hnc_phos',
-                          "Estimates of adundance for ad-intact steelhead including wild and hatchery (HNC), spawn years 2017-2019 and estimates of the proportion of hatchery origin spawners (pHOS) with standard error (SE) and coefficient of variation (CV) that takes into account uncertainty in the abundance estimates.")
+                          "Estimates of adundance (CV) for ad-intact steelhead including wild and hatchery (HNC), how many tags of each origin were detected,  spawn years 2017-2019 and estimates of the proportion of hatchery origin spawners (pHOS) with standard error (SE) and coefficient of variation (CV) that takes into account uncertainty in the abundance estimates.")
 
 stray_rates = tab_nums("stray_rates",
                        "The percentage of hatchery steelhead adults, tagged as juveniles, observed straying into recipient populations from all those tags passing Lower Granite Dam, summarized by release groups. Note all values in table are expressed as a percentage.")
 
-tradeoff_fig = fig_nums('tradeoff_fig',
-                        "Predictions of the CV of pHOS across ranges of the CV hatchery escapement estimates and the proportion wild (inverse of pHOS), faceted by CV of wild escapement. The horizontal dotted line depicts a CV of 15%.")
+# tradeoff_fig = fig_nums('tradeoff_fig',
+#                         "Predictions of the CV of pHOS across ranges of the CV hatchery escapement estimates and the proportion wild (inverse of pHOS), faceted by CV of wild escapement. The horizontal dotted line depicts a CV of 15%.")
 
 cv_phos_fig = fig_nums("cv_phos_fig",
                        "The maximum CV of hatchery abundance estimates that would provide an estimate of pHOS with reasonable precision for a given proportion of wild fish (inverse pHOS) and precision of wild escapement.")
@@ -560,24 +561,38 @@ pander(dabom_sthd_hnc_abund)
 `r tab_nums('dabom_hnc_phos')`
 ```{r dabom_hnc_phos}
 hnc_phos_sthd = read_csv("../hnc_dabom/ModelFits/Sthd_HNC_pHOS.csv")
+
+phos_tab = hnc_phos_sthd %>%
+  mutate(HNC = paste0(prettyNum(HNC, big.mark = ','), ' (', round(cv_hnc, 3), ')'),
+         Wild = paste0(prettyNum(Wild, big.mark = ','), ' (', round(cv_wild, 3), ')')) %>%
+  select(Year:TRT,
+         HNC, 
+         `HNC tags` = n_tags_hnc,
+         Wild,
+         `Wild tags` = n_tags_wild,
+         starts_with('pHOS'))
+
 trts = unique(hnc_phos_sthd$TRT)
 yrs = unique(hnc_phos_sthd$Year)
 hnc_phos = crossing(trts, yrs) %>%
   rename(TRT = trts,
          Year = yrs) %>%
-  left_join(hnc_phos_sthd) %>%
+  left_join(phos_tab) %>%
   select(-Species) %>% 
   mutate_at(vars(starts_with("pHOS")),
-            funs(round(., 3)))
+            list(round),
+            digits = 3)
 
-kable(hnc_phos)
+pander(hnc_phos)
+
+# kable(hnc_phos)
 ```
 
 ### Section 2. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
 
 #### Mathematical Reasoning
 
-We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and proportion wild (i.e., inverse of *pHOS*). The results are shown in `r fig_nums('tradeoff_fig', display = 'c')`.
+We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and *pHOS*. The results are shown in `r fig_nums('cv_phos_fig', display = 'c')`.
 
 ```{r tradeoff_fig, eval = F, fig.cap = fig_nums('tradeoff_fig')}
 # proportion of wild fish in the stream
@@ -617,9 +632,7 @@ crossing(propWild, cvW, cvH) %>%
        color = '% Wild')
 ```
 
-The general patterns show that as the proportion of wild fish in the stream descreases, the precision of *pHOS* improves for a given precision level of wild and hatchery escapement estimates. Also, as the precision of the wild estimates improves (i.e. smaller CV), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. 
-
-Another way to look at it would be to examine the maximum CV of hatchery estimates that would provide a reasonable estimate of *pHOS* for a given proportion of wild fish and precision of wild escapement. One way to visualize these results in in the plot below.
+The general patterns show that as *pHOS* increases, the precision of *pHOS* improves for a given precision level of wild and hatchery escapement estimates. Also, as the precision of the wild estimates improves (i.e. smaller CV, to the left on `r fig_nums('cv_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. When *pHOS* is high (towards the top of `r fig_nums('cv_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained. However, as *pHOS* decreases and we move towards streams with mostly wild fish, it will require very precise estimates of hatchery and wild escapement to obtain a resonable estimate of *pHOS*.
 
 ```{r cv-phos-fig, fig.cap = fig_nums('cv_phos_fig')}
 cvThres = 0.15
@@ -661,10 +674,7 @@ sim_df %>%
 
 ```
 
-From this plot, it is clear that when *pHOS* is high, then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained. However, when *pHOS* is low, the precision of wild and hatchery escapement must be very good to obtain reasonable precision for *pHOS*. At very low levels of *pHOS*, very precise estimates of hatchery and wild escapement are necessary.
-
 ### Simulation
-
 
 ```{r dabom-wild-estimates}
 pop_nms = read_excel('../data/Snake_River_TRT_Populations.xlsx') %>%
@@ -680,17 +690,96 @@ wild_est = read_excel('../data/LGR_AllSummaries_Steelhead.xlsx',
   select(-species) %>%
   left_join(pop_nms)
 
-# model for estimating CV of estimate, based on number of tags detected
+```
+
+```{r tags-cv-model, eval = F}
+# look at relationship visually, see which looks the most linear
+p1 = wild_est %>%
+  ggplot(aes(x = n_tags,
+             y = cv)) +
+  geom_point() +
+  geom_smooth(aes(color = 'Loess',
+                  fill = 'Loess'),
+              alpha = 0.2) +
+  geom_smooth(method = 'lm',
+              aes(color = 'Linear',
+                  fill = 'Linear'),
+              alpha = 0.2) +
+  scale_color_brewer(palette = 'Set1') +
+  scale_fill_brewer(palette = 'Set1') +
+  labs(color = 'Model',
+       fill = "Model")
+  
+p2 = p1 +
+  scale_x_continuous(trans = 'log')
+
+p3 = p1 +
+  scale_y_continuous(trans = 'log')
+
+p4 = p1 +
+  scale_x_continuous(trans = 'log') +
+  scale_y_continuous(trans = 'log')
+
+ggpubr::ggarrange(plotlist = list(p1, p2, p3, p4),
+                  nrow = 2,
+                  ncol = 2,
+                  common.legend = T,
+                  legend = 'bottom')
+
+
+# models for estimating CV of estimate, based on number of tags detected
+# various combinations of logged dependent and independent variables
+mod1 = lm(cv ~ n_tags,
+          data = wild_est)
+mod2 = lm(cv ~ log(n_tags),
+          data = wild_est)
+mod3 = lm(log(cv) ~ n_tags,
+          data = wild_est)
+mod4 = lm(log(cv) ~ log(n_tags),
+          data = wild_est)
+
+list(mod1 = mod1, 
+     mod2 = mod2, 
+     mod3 = mod3, 
+     mod4 = mod4) %>%
+  map_df(.id = 'Model',
+         .f = function(x) {
+           tibble(r_sq = summary(x)$r.squared,
+                  adj_r_sq = summary(x)$adj.r.squared)
+         })
+
+list(mod1 = mod1, 
+     mod2 = mod2, 
+     mod3 = mod3, 
+     mod4 = mod4) %>%
+  map(.f = function(m) {
+    tibble(resid = resid(m)) %>%
+      ggplot(aes(x = resid)) +
+      geom_histogram() +
+      geom_vline(xintercept = 0,
+                 linetype = 2,
+                 color = 'red')
+  }) %>%
+  ggpubr::ggarrange(plotlist = .,
+                    ncol = 2,
+                    nrow = 2)
+
+diag_plots = list(mod1 = mod1, 
+                  mod2 = mod2, 
+                  mod3 = mod3, 
+                  mod4 = mod4) %>%
+  map(.f = function(m) {
+    autoplot(m, which = 1:6)
+  })
+
+diag_plots[[2]]
+diag_plots[[4]]
+
+```
+
+```{r tags-vs-cv}
 n_tags_mod = lm(log(cv) ~ log(n_tags),
-                data = wild_est)
-
-n_tags_mod = glm(cv ~ log(n_tags),
-                 family = gaussian(link = 'log'),
-                 data = wild_est)
-
-# n_tags_mod = glm(cv ~ n_tags,
-#                  family = gaussian(link = 'log'),
-#                  data = wild_est)
+          data = wild_est)
 
 n_tags_sim = tibble(n_tags = seq(1, max(wild_est$n_tags, na.rm = T))) %>%
   mutate(cv = predict(n_tags_mod,
@@ -699,9 +788,6 @@ n_tags_sim = tibble(n_tags = seq(1, max(wild_est$n_tags, na.rm = T))) %>%
   mutate_at(vars(cv),
             list(exp))
 
-```
-
-```{r tags-vs-cv}
 wild_est %>%
   ggplot(aes(x = n_tags,
              y = cv)) +
@@ -709,33 +795,27 @@ wild_est %>%
   geom_hline(yintercept = 0.15,
              linetype = 2) +
   scale_color_brewer(palette = "Set1") +
-  geom_smooth(aes(color = 'GLM'),
+  geom_smooth(aes(color = 'Semi-Log'),
               method = glm,
               method.args = list(family = gaussian(link = "log")),
               se = F,
               fullrange = T) +
-  geom_smooth(aes(color = 'Log-log'),
-              method = glm,
-              formula = y ~ log(x),
-              method.args = list(family = gaussian(link = "log")),
+  # geom_smooth(aes(color = 'Log'),
+  #             method = lm,
+  #             formula = y ~ log(x),
+  #             se = F,
+  #             fullrange = T) +
+  geom_smooth(aes(color = 'Loess'),
+              method = loess,
               se = F,
               fullrange = T) +
   geom_line(data = n_tags_sim,
-            aes(color = 'Sim'),
+            aes(color = 'Log-log'),
             lwd = 1) +
   facet_wrap(~ Species) +
   labs(x = '# PIT Tags Detected',
        y = 'CV of Pop. Est.',
        color = 'Model')
-
-# wild_est %>%
-#   ggplot(aes(x = log(n_tags),
-#              y = log(cv))) +
-#   geom_point() +
-#   geom_smooth(method = lm) +
-#   facet_wrap(~ Species) +
-#   labs(x = '# PIT Tags Detected',
-#        y = 'CV of Pop. Est.')
 
 ```
 
