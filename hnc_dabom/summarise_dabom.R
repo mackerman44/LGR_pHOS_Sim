@@ -18,6 +18,10 @@ library(sf)
 
 # source some needed functions
 source('R/definePopulations.R')
+source('R/assign_POP_GSI.R')
+
+# load the configuration information
+load('data/DABOM/site_config.rda')
 
 #-------------------------------
 spp = 'Steelhead'
@@ -58,6 +62,43 @@ sthd_hnc_summ %>%
   filter(!is.na(cv)) %>%
   write_csv('hnc_dabom/ModelFits/Sthd_HNC_abund.csv')
 
+# get tag summaries, so we can tell how many tags were detected in each population
+sthd_hnc_tags = 2017:2019 %>%
+  as.list() %>%
+  purrr::set_names() %>%
+  map_df(.id = 'Year',
+         .f = function(x) {
+           
+           # load DABOM JAGS model
+           load(paste0('hnc_dabom/ModelFits/LGR_DABOM_HNC_', spp, '_', x,'.rda'))
+           
+           
+           site_pop = assign_POP_GSI(species = spp, 
+                                     configuration = configuration,
+                                     site_df = site_df)[[1]] %>%
+             as_tibble() %>%
+             select(SiteID:SiteName, Node, ESU_DPS:TRT)
+           
+           tag_summ = summariseTagData(capHist_proc = proc_list$ProcCapHist %>%
+                                         mutate(UserProcStatus = AutoProcStatus),
+                                       trap_data = proc_list$ValidTrapData) %>%
+             left_join(site_pop %>%
+                         select(Node, MPG, POP_NAME, TRT),
+                       by = c('AssignSpawnNode' = 'Node'))
+           
+           
+         }) %>%
+  mutate(Species = spp,
+         Type = 'HNC') %>%
+  group_by(Species,
+           Year,
+           Type, 
+           POP_NAME,
+           TRT) %>%
+  summarise(n_tags = n_distinct(TagID)) %>%
+  ungroup()
+
+
 # group things by population
 pop_df = definePopulations(spp)
 
@@ -66,19 +107,26 @@ sthd_hnc_trt = sthd_hnc_summ %>%
   filter(!is.na(TRT)) %>%
   mutate_at(vars(TRT),
             list(fct_explicit_na)) %>%
-  mutate_at(vars(Year),
-            list(as.numeric)) %>%
   group_by(Year, Species, TRT) %>%
   summarise(est_hnc = sum(mean),
             sd_hnc = sqrt(sum(sd^2)),
             cv_hnc = sd_hnc / est_hnc) %>%
-  filter(est_hnc > 0)
+  ungroup() %>%
+  left_join(sthd_hnc_tags %>%
+              rename(n_tags_hnc = n_tags) %>%
+              select(-Type)) %>%
+  mutate_at(vars(Year),
+            list(as.numeric)) %>%
+  mutate_at(vars(n_tags_hnc),
+            list(~ if_else(is.na(.), as.integer(0), .))) %>%
+  select(Year, Species, TRT, POP_NAME, ends_with('hnc'), everything())
 
 sthd_wild_trt = read_excel("../SnakeBasinFishStatus/Abundance_results/LGR_AllSummaries_Steelhead.xlsx",
                            sheet = "Pop Total Esc") %>%
   select(Year = spawn_yr,
          Species = species,
          TRT,
+         n_tags_wild = n_tags,
          est_wild = mean,
          sd_wild = sd, 
          cv_wild = cv)
@@ -94,7 +142,11 @@ sthd_hnc_trt %>%
   ungroup() %>%
   select(Year:TRT, 
          HNC = est_hnc,
+         n_tags_hnc,
+         cv_hnc,
          Wild = est_wild,
+         n_tags_wild,
+         cv_wild,
          starts_with("pHOS")) %>%
   write_csv('hnc_dabom/ModelFits/Sthd_HNC_pHOS.csv')
   
