@@ -26,7 +26,7 @@ output:
     fig_width: 8
     theme: simplex
     toc: yes
-    toc_depth: 3
+    toc_depth: 4
     toc_float: yes
   pdf_document:
     # pandoc_args:
@@ -34,7 +34,7 @@ output:
     # - --lua-filter=../templates/author-info-blocks2.lua
     # - --lua-filter=../templates/pagebreak.lua
     toc: yes
-    toc_depth: 3
+    toc_depth: 4
     includes:
       in_header: "../templates/header_ABS.tex"
 # institute:
@@ -138,7 +138,7 @@ trt_prop_fig = fig_nums("trt_prop_fig",
 
 # Methods
 
-### Section 1A. Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
+### Section 1 Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
 
 Here, our aim is to evaluate the expected precision (CV) of *pHOS* using observations of individuals tagged within hatchery smolt releases and expansion values (inverse of tagging fraction) for those releases. 
 
@@ -359,13 +359,13 @@ obs_table %>%
 ```
 </center>
 
-### Section 1B. Expected precision of *pHOS* given current systematic PIT tagging of HNC adults at LGR
+### Section 2. Expected precision of *pHOS* given current systematic PIT tagging of HNC adults at LGR
 
 Next, we evaluated the expected precision (CV) of *pHOS* estimates given current PIT tagging rates of ad-intact adults, both wild (W) and hatchery (HNC) at LGR. This leverages the fact that all ad-intact adults trapped at LGR are already implanted with a PIT tag. Estimates of wild adult abundance across select TRT populations and locations in the SRB are already available from DABOM. Here, we will re-run DABOM for HNC individuals for SY 2017 through 2019 to get HNC abundance estimates for locations and populations where we already report W abundance using DABOM. The HNC and W abundance estimates, at the same spatial scales, can then easily be combined to estimate *pHOS* with uncertainty.
 
 This evaluation ignores ad-clipped H adults, but is effective for estimating *pHOS* among ad-intact individuals and may be of particular interest for supplementation locations (e.g., South Fork Clearwater steelhead). Unfortunately, it seems there is no easy way to combine juvenile smolt release tagging (tag expansion approach) and adult tagging information at LGR (DABOM model, transition probability approach) to estimate hatchery abundance and *pHOS* using IPTDS observations.
 
-### Section 2. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
+### Section 3. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
 
 Finally, we evaluated the expected precision (CV) of *pHOS* estimates given additional (theoretical) tagging of ad-clipped hatchery (H) adults at LGR using a simulation approach. Here, again, we must ignore PIT tagged hatchery smolt releases and the tag expansion approach as the DABOM model is reliant on systematic tagging of the adult return. First, we demonstrate how an estimate of *pHOS* can be generated under the DABOM framework.
 
@@ -470,7 +470,7 @@ $$
 
 which is a combination of the estimate of *pHOS*, the CV of the estimate of wild fish and the CV of the estimate of hatchery fish. This CV can easily be translated back to a standard error of *pHOS* as well, but is still based on those three numbers. In other words, we can predict the CV (or SE) of *pHOS* for a variety of situations for a given branch $i$ by varying the levels of *pHOS* in a stream, and the precision (or CV) of our escapement estimates of wild and hatchery fish in branch $i$. We simulated branches with *pHOS* levels ranging from 0 to 1, and precision of wild and hatchery escapement containing CVs of 0 to 1.5. We then calculated the predicted CV and SE of *pHOS* from those values, and compared the standard error to various thresholds. For each combination of *pHOS* and wild escapement precision, we extracted the maximum hatchery escapement CV that would allow us to meet or exceed the various thresholds for the *pHOS* standard error. 
 
-### Simulation
+#### Simulation
 
 ```{r viable-trts}
 viable_trts = read_xlsx("../data/Snake River Steelhead populationproposed status.xlsx") %>%
@@ -520,7 +520,7 @@ knitr::include_graphics("../images/stray_rate_table.png")
 
 # Results
 
-### Section 1A. Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
+### Section 1. Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
 
 `r tab_nums('juv_phos', display = 'c')` summarizes hatchery, wild, and total abundance estimates and the corresponding *pHOS* estimates for locations and spawn years in which there were IPTDS observations of hatchery adults from RTR smolt releases. Wild abundance estimates are from the DABOM model whereas hatchery abundance estimates are using the expansion approach outlined above. `r tab_nums('juv_phos', display = 'c')` also includes the number of hatchery and wild tags observed and the CV of the wild abundance estimates for context. Unfortunately, we are currently unable to estimate uncertainty in hatchery abundance, and thus, unable to estimate uncertainty in *pHOS* using this approach. To do so, we would have to identify and estimate sources of uncertainty in the hatchery abundance estimates; uncertainty in the tagging fraction (i.e., expansion value) would be one such example.
 
@@ -572,7 +572,7 @@ pHOS_1a %>%
 ```
 </center>
 
-### Section 1B. Expected precision of *pHOS* given current PIT tagging of W and HNC adults at LGR
+### Section 2. Expected precision of *pHOS* given current PIT tagging of W and HNC adults at LGR
 
 We estimated the abundance of ad-intact adults using the systematic tagging of those adults at LGR, detection at IPTDS throughout the SRB, and using the DABOM model for steelhead, SY2017-2019 (`r tab_nums('dabom_hnc_phos', display = 'c')`). Abundances were then combined to estimate *pHOS* with SE and CV which accounts for uncertainty in both the wild and HNC abundance estimates.
 
@@ -613,7 +613,7 @@ pander(hnc_phos)
 # kable(hnc_phos)
 ```
 
-### Section 2. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
+### Section 3. Expected precision of *pHOS* by adding tagging of ad-clipped hatchery (H) adults at LGR
 
 #### Mathematical Reasoning
 
@@ -714,7 +714,7 @@ sim_df %>%
 
 ```
 
-### Simulation
+#### Simulation
 
 ```{r dabom-wild-estimates}
 pop_nms = read_excel('../data/Snake_River_TRT_Populations.xlsx') %>%
