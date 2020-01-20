@@ -47,7 +47,7 @@ bibliography: ../references.bib
 # setwd('markdown')
 library(knitr)
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
-# options(knitr.kable.NA = '-')
+options(knitr.kable.NA = '-')
 # options(knitr.table.format = "pandoc")
 
 library(captioner)
@@ -96,7 +96,8 @@ This assessment aims to determine the number or tagging rate of HOR adults at LG
   + 1B. Ad-intact hatchery (HNC) adults that are systematically PIT tagged at LGR to evaluate abundance and composition at LGR (e.g., @Camacho2017) and at IPTDS (e.g., @Orme2018).
 2. Determine additional tagging at LGR of ad-clipped adult HOR fish that would allow reasonable estimates of *pHOS*. 
 
-We will define reasonable as an estimate with a CV of 15% or less. Our simulation will focus on desired or critical populations/locations.
+Because *pHOS* is a proportion, defined between 0 and 1, we feel CV is not the appropriate way to measure the precision. When *pHOS* is near 0 or 1, by definition the standard error of *pHOS* will be small. However, if *pHOS* is also very small, the CV will be large, since we are dividing by a small number, even if the standard error is still quite small (and therefore reasonable). Therefore, we believe a better definition of "precise estimate of pHOS" would be to define a standard error threshold, rather than a CV threshold. We explored several standard error thresholds, and believe further discussion with management agencies is warranted to settle on one.
+
 
 ```{r captions}
 # lgr_tags_needed = tab_nums('lgr_tags_needed',
@@ -117,11 +118,15 @@ dabom_hnc_phos = tab_nums('dabom_hnc_phos',
 stray_rates = tab_nums("stray_rates",
                        "The percentage of hatchery steelhead adults, tagged as juveniles, observed straying into recipient populations from all those tags passing Lower Granite Dam, summarized by release groups. Note all values in table are expressed as a percentage.")
 
-# tradeoff_fig = fig_nums('tradeoff_fig',
-#                         "Predictions of the CV of pHOS across ranges of the CV hatchery escapement estimates and the proportion wild (inverse of pHOS), faceted by CV of wild escapement. The horizontal dotted line depicts a CV of 15%.")
+# cv_phos_fig = fig_nums("cv_phos_fig",
+#                        "The maximum CV of hatchery abundance estimates that would provide an estimate of pHOS with reasonable precision for a given proportion of wild fish (inverse pHOS) and precision of wild escapement.")
 
-cv_phos_fig = fig_nums("cv_phos_fig",
-                       "The maximum CV of hatchery abundance estimates that would provide an estimate of pHOS with reasonable precision for a given proportion of wild fish (inverse pHOS) and precision of wild escapement.")
+se_phos_fig = fig_nums("se_phos_fig",
+                       "The maximum CV of hatchery abundance estimates that would provide an estimate of pHOS with reasonable precision (below a standard error threshold) for a given level of pHOS and precision of wild escapement.")
+
+
+tags_cv_fig = fig_nums("tags_cv_fig",
+                       "Number of PIT tags observed in a population plotted against the CV of the population estimate. The dashed line shows a CV of 15%, while the red line shows the fitted log-log model.")
 ```
 
 # Methods
@@ -468,27 +473,38 @@ viable_trts = read_xlsx("../data/Snake River Steelhead populationproposed status
   toString()
 ```
 
-From the DABOM estimates of wild escapement for spawn years 2013-2019, we first calculated the average CV of the wild abundance estimate for each population where IPTDS infrastructure is in place for population monitoring. We chose 2013 as the first year as IPTDS infrastructure in the SRB has been relatively stable since then (See et al. 2019). The average CVs of the wild estimates for each population show us where we fall on the x-axis in `r fig_nums('cv_phos_fig', display = 'c')`. We then used the average estimate of *pHOS* from `r tab_nums("dabom_hnc_phos", display = "c")` for each population to determine where on the y-axis we are for each population. This assumes that the only hatchery fish on the spawning grounds within those populations are unclipped (HNC). 
+From the DABOM estimates of wild escapement for spawn years 2013-2019, we first calculated the average CV of the wild abundance estimate for each population where IPTDS infrastructure is in place for population monitoring. We chose 2013 as the first year as IPTDS infrastructure in the SRB has been relatively stable since then (See et al. 2019). The average CVs of the wild estimates for each population show us where we fall on the x-axis in `r fig_nums('se_phos_fig', display = 'c')`. We then used the average estimate of *pHOS* from `r tab_nums("dabom_hnc_phos", display = "c")` for each population to determine where on the y-axis we are for each population. This assumes that the only hatchery fish on the spawning grounds within those populations are unclipped (HNC). 
 
-
-
-If we know where on `r fig_nums('cv_phos_fig', display = 'c')` most CVs of wild escapement and percentage of wild spawners we observe among Snake River populations, this will tell us what CV is required for an estimate of hatchery abundance for each population. Finally, we can then translate that into a number of tags we'd like to detect in each population. Here, we will focus on steelhead TRT populations with a proposed status of "Viable" or "Highly Viable" which includes the following: `r viable_trts`. 
+If we know where on `r fig_nums('se_phos_fig', display = 'c')` most CVs of wild escapement among Snake River populations lie, and some estimate of *pHOS* for those populations, this will tell us the maximum CV of hatchery escapement we can obtain to still provide an estimate of *pHOS* with a standard error below a particular threshold. Finally, we can then translate that hatchery escapement CV into a number of tags we'd like to detect in each population. Here, we will focus on steelhead TRT populations with a proposed status of "Viable" or "Highly Viable" which includes the following: `r viable_trts`. 
 
 <!--
 We will also assume a 5% pHOS and 10% pHOS, based on recovery goals (***Is this necessary?***). I don't remember saying it was necessary to assume this. We're essentially using our available info on where we are on the x-axis and y-axis using available information right, to give us a ballpark of the max CV of hatchery escapements we can get away with and still estimate pHOS with a CV of 15% or less, correct? And then based on that determine the # of detections we need in a given population to obtain that CV. And then using Brian's information on transition probabilities we can back-calculate the number of tags needed at LGR (something similar to Figures 5 & 6 in See et al. 2019 TrapRateEffects)
 -->
 
-We also have information showing the percentage of hatchery adults, tagged as juveniles, that are detected within 'recipient populations' out of all the hatchery tags that are detected at LGR (and summarized by release groups; Brian Leth, IDFG, personal communication). We will divide the number of detections we require for each population by these percentages (`r tab_nums("stray_rates", display = "c")`) to determine how many tags we would expect to need to put out at Lower Granite in order to achieve determined precision goals.
-
-`r tab_nums('stray_rates')`
-```{r stray-rates-v1}
+```{r stray-data}
 leth_df = read_xlsx("../data/Percent of LGD PIT detections that stray 1-10-20.xlsx", 
                     range = "S63:AH74") %>%
   mutate_at(vars(`Upper Salmon`:Total), funs(as.numeric(.))) %>%
   mutate_at(vars(`Upper Salmon`:Total), ~. * 100) %>%
   mutate_if(is.numeric, ~round(.,3))
 
-pander(leth_df)
+# which populations have never had a stray detected?
+no_strays = leth_df %>%
+  select(-Total) %>%
+  gather(pop, rate, -`Release Group`) %>%
+  filter(grepl('Weighted', `Release Group`),
+         rate == 0) %>%
+  pull(pop)
+```
+
+
+We also have information showing the percentage of hatchery adults, tagged as juveniles, that are detected within 'recipient populations' out of all the hatchery tags that are detected at LGR (and summarized by release groups; Brian Leth, IDFG, personal communication). We will divide the number of detections we require for each population by these percentages (`r tab_nums("stray_rates", display = "c")`) to determine how many tags we would expect to need to put out at Lower Granite in order to achieve determined precision goals. There are several populations that have never had an observed stray, so we will not be able to include them in the subsequent analysis (`r paste(no_strays, collapse = ', ')`). 
+
+`r tab_nums('stray_rates')`
+```{r stray-rates-v1}
+pander(leth_df,
+       emphasize.strong.rows = nrow(leth_df),
+       emphasize.strong.cols = ncol(leth_df))
 ```
 
 ```{r stray-rates-v2, eval = F, out.width = "800px", fig.align = "center", fig.cap = fig_nums('stray_rates')}
@@ -592,7 +608,7 @@ pander(hnc_phos)
 
 #### Mathematical Reasoning
 
-We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and *pHOS*. The results are shown in `r fig_nums('cv_phos_fig', display = 'c')`.
+We predicted the CV of *pHOS* across a range of values for both hatchery escapement CV (0 - 1.5) and *pHOS*. The results are shown in `r fig_nums('se_phos_fig', display = 'c')`.
 
 ```{r tradeoff_fig, eval = F, fig.cap = fig_nums('tradeoff_fig')}
 # proportion of wild fish in the stream
@@ -632,9 +648,9 @@ crossing(propWild, cvW, cvH) %>%
        color = '% Wild')
 ```
 
-The general patterns show that as *pHOS* increases, the precision of *pHOS* improves for a given precision level of wild and hatchery escapement estimates. Also, as the precision of the wild estimates improves (i.e. smaller CV, to the left on `r fig_nums('cv_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. When *pHOS* is high (towards the top of `r fig_nums('cv_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained. However, as *pHOS* decreases and we move towards streams with mostly wild fish, it will require very precise estimates of hatchery and wild escapement to obtain a resonable estimate of *pHOS*.
+The general patterns show that as *pHOS* increases, the precision of *pHOS* improves for a given precision level of wild and hatchery escapement estimates. Also, as the precision of the wild estimates improves (i.e. smaller CV, to the left on `r fig_nums('se_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. When *pHOS* is quit low or quite high (towards the bottom or top of `r fig_nums('se_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* will be obtained. However, as *pHOS* decreases and we move towards streams with mostly wild fish, it will require very precise estimates of hatchery and wild escapement to obtain a resonable estimate of *pHOS*.
 
-```{r cv-phos-fig, fig.cap = fig_nums('cv_phos_fig')}
+```{r cv-phos-fig, eval = F, fig.cap = fig_nums('cv_phos_fig')}
 cvThres = 0.15
 sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
          # CV of the estimate of wild fish
@@ -674,6 +690,55 @@ sim_df %>%
 
 ```
 
+```{r se-phos-fig, fig.cap = fig_nums('se_phos_fig'), fig.height = 7}
+# if pHOS is 0.50, and we want a CV of 0.15 for the precision, that would mean the SE is: 0.075
+# so let's aim that that level of standard error
+# seThres = 0.075
+# seThres = 0.02
+# seThres = 0.05
+
+# throw out a few thresholds for standard error of pHOS, to see the effect of those different thresholds
+sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
+         # CV of the estimate of wild fish
+         cvW = seq(0, 1.5, 0.01),
+         # CV of the estimate of hatchery fish
+         cvH = seq(0, 1.5, 0.01),
+         seThres = c(0.02, 0.05, 0.1, 0.25)) %>%
+  mutate(pHOS = 1 - propWild,
+         CV = propWild * (cvW + cvH),
+         SE = CV * pHOS) %>%
+  group_by(propWild, cvW, seThres) %>%
+  filter(pHOS < 1,
+         pHOS > 0,
+         SE <= seThres) %>%
+  filter(cvH == max(cvH)) %>%
+  rename(maxHcv = cvH) %>%
+  ungroup()
+
+sim_df %>%
+  mutate(seFct = paste0('SE < ', seThres, '%')) %>%
+  mutate_at(vars(seFct),
+            list(as.factor)) %>%
+  filter(SE > 0) %>%
+  ggplot(aes(x = cvW,
+             y = pHOS)) +
+  geom_tile(aes(fill = maxHcv)) +
+  geom_contour(aes(z = maxHcv),
+               color = 'black',
+               bins = 10) +
+  theme_classic() +
+  scale_fill_viridis_c(na.value = 'gray90',
+                       begin = 0.2) +
+  facet_wrap(~ seFct) +
+  theme(legend.position = 'bottom') +
+  labs(x = 'CV of Wild Escp.',
+       y = 'pHOS',  
+       fill = 'Max CV\nHatch Est.')
+
+```
+
+
+
 ### Simulation
 
 ```{r dabom-wild-estimates}
@@ -711,14 +776,18 @@ p1 = wild_est %>%
        fill = "Model")
   
 p2 = p1 +
-  scale_x_continuous(trans = 'log')
+  scale_x_continuous(trans = 'log',
+                     breaks = scales::pretty_breaks())
 
 p3 = p1 +
-  scale_y_continuous(trans = 'log')
+  scale_y_continuous(trans = 'log',
+                     breaks = scales::pretty_breaks())
 
 p4 = p1 +
-  scale_x_continuous(trans = 'log') +
-  scale_y_continuous(trans = 'log')
+  scale_x_continuous(trans = 'log',
+                     breaks = scales::pretty_breaks()) +
+  scale_y_continuous(trans = 'log',
+                     breaks = scales::pretty_breaks())
 
 ggpubr::ggarrange(plotlist = list(p1, p2, p3, p4),
                   nrow = 2,
@@ -777,18 +846,19 @@ diag_plots[[4]]
 
 ```
 
-```{r tags-vs-cv}
+```{r tags-vs-cv-model}
 n_tags_mod = lm(log(cv) ~ log(n_tags),
           data = wild_est)
 
-n_tags_sim = tibble(n_tags = seq(1, max(wild_est$n_tags, na.rm = T))) %>%
+n_tags_sim = tibble(n_tags = seq(1, 1000)) %>%
+# n_tags_sim = tibble(n_tags = seq(1, max(wild_est$n_tags, na.rm = T))) %>%
   mutate(cv = predict(n_tags_mod,
                       newdata = .,
                       type = 'response')) %>%
   mutate_at(vars(cv),
             list(exp))
 
-wild_est %>%
+tag_cv_p1 = wild_est %>%
   ggplot(aes(x = n_tags,
              y = cv)) +
   geom_point() +
@@ -812,12 +882,34 @@ wild_est %>%
   geom_line(data = n_tags_sim,
             aes(color = 'Log-log'),
             lwd = 1) +
+  coord_cartesian(xlim = c(0, max(wild_est$n_tags, na.rm = T))) +
   facet_wrap(~ Species) +
   labs(x = '# PIT Tags Detected',
-       y = 'CV of Pop. Est.',
+       y = 'CV of Population Estimate',
        color = 'Model')
 
+tag_cv_p2 = wild_est %>%
+  ggplot(aes(x = n_tags,
+             y = cv)) +
+  geom_point() +
+  geom_hline(yintercept = 0.15,
+             linetype = 2) +
+  geom_line(data = n_tags_sim,
+            color = 'red',
+            lwd = 1) +
+  coord_cartesian(xlim = c(0, max(wild_est$n_tags, na.rm = T))) +
+  facet_wrap(~ Species) +
+  labs(x = '# PIT Tags Detected',
+       y = 'CV of Population Estimate')
+
 ```
+
+We modeled the relationship between the number of wild tags detected within a population and the CV of the wild abundance estimate using a log-log model (`r fig_nums("tags_cv_fig", display = 'c')`). We assumed the same relationship holds for hatchery tags detected. 
+
+```{r tags-vs-cv-fig, fig.cap = fig_nums("tags_cv_fig")}
+tag_cv_p2
+```
+
 
 
 ```{r lgr-tags-estimate}
@@ -836,19 +928,25 @@ hatch_cv = wild_est %>%
             list(round),
             digits = 2) %>%
   left_join(hnc_phos %>%
-              mutate(propWild = 1 - pHOS) %>%
+              # mutate(propWild = 1 - pHOS) %>%
               group_by(TRT) %>%
-              summarise_at(vars(propWild),
+              summarise_at(vars(pHOS),
                            list(mean),
                            na.rm = T) %>%
-              mutate_at(vars(propWild),
+              mutate_at(vars(pHOS),
                         list(round),
                         digits = 2)) %>%
+  full_join(wild_est %>%
+              select(MPG_DPS, Name, TRT) %>%
+              distinct() %>%
+              crossing(seThres = unique(sim_df$seThres))) %>%
+  # mutate(pHOS = if_else(pHOS == 0, 0.01, pHOS)) %>%
   left_join(sim_df %>%
-              select(cvW, propWild, maxHcv) %>%
-              mutate_at(vars(cvW, propWild),
+              select(cvW, pHOS, maxHcv, seThres) %>%
+              mutate_at(vars(maxHcv, pHOS),
                         list(round),
                         digits = 2)) %>%
+  arrange(MPG_DPS, TRT, seThres) %>%
   mutate(n_tags = NA)
 
 for(i in 1:nrow(hatch_cv)) {
@@ -866,7 +964,7 @@ for(i in 1:nrow(hatch_cv)) {
 }
 
 lgr_tags_df = hatch_cv %>%
-  filter(!is.na(n_tags)) %>%
+  # filter(!is.na(n_tags)) %>%
   full_join(leth_df %>%
               filter(`Release Group` == "Weighted Average") %>%
               select(-`Release Group`, -Total) %>%
@@ -893,6 +991,7 @@ lgr_tags_df = hatch_cv %>%
                                   'Middle Fork Salmon River' = 'Lower Middle Fork Salmon River')) %>%
               rename(Name = Pop)) %>%
   mutate(LGR_tags = n_tags / conv_rate) %>%
+  select(MPG_DPS:pHOS, conv_rate, seThres, maxHcv, n_tags, LGR_tags) %>%
   mutate_at(vars(LGR_tags),
             list(as.integer))
 
@@ -902,12 +1001,59 @@ Results from simulation here...
 
 ```{r lgr-tags-table}
 lgr_tags_df %>%
-  filter(!is.na(conv_rate),
-         !is.na(TRT)) %>%
-  filter(!is.na(LGR_tags)) %>%
-  arrange(desc(LGR_tags)) %>%
+  arrange(seThres, desc(LGR_tags)) %>%
+  # filter(!is.na(conv_rate),
+  #        !is.na(TRT)) %>%
+  # filter(!is.na(LGR_tags)) %>%
+  # group_by(seThres) %>%
+  # arrange(desc(LGR_tags)) %>%
   # arrange(MPG_DPS, TRT) %>%
   kable(format.args = list(big.mark = ','))
+```
+
+```{r lgr-pops}
+library(ggrepel)
+lgr_tags_df %>%
+  filter(conv_rate > 0) %>%
+  mutate(tot_trt = n_distinct(TRT)) %>%
+  crossing(tot_tags_deploy = c(seq(100, 1000, by = 50), seq(1100, 1e4, by = 100))) %>%
+  mutate(sufficient = if_else(tot_tags_deploy >= LGR_tags,
+                              T, F)) %>%
+  filter(sufficient) %>%
+  group_by(MPG_DPS, seThres, Name, TRT) %>%
+  filter(tot_tags_deploy == min(tot_tags_deploy)) %>%
+  group_by(tot_trt, seThres, tot_tags_deploy) %>%
+  summarise(n_trt = n_distinct(TRT),
+            which_trt = paste(TRT, collapse = ', ')) %>%
+  ungroup() %>%
+  group_by(seThres) %>%
+  mutate(cum_trt = cumsum(n_trt),
+         prop_trt = cum_trt / tot_trt) %>%
+  ungroup() %>%
+  mutate(seFct = paste0('SE < ', seThres, '%')) %>%
+  mutate_at(vars(seFct),
+            list(as.factor)) %>%
+  ggplot(aes(x = tot_tags_deploy,
+             y = prop_trt,
+             color = seFct)) +
+  scale_color_brewer(palette = 'Set1') +
+  # scale_color_viridis_d(end = 0.9) +
+  # scale_x_continuous(trans = "log10",
+  #                    breaks = scales::pretty_breaks()) +
+  geom_point() + 
+  geom_step() +
+  geom_vline(xintercept = 4000,
+             linetype = 2) +
+  geom_label_repel(aes(label = which_trt),
+                   show.legend = F,
+                   force = 2,
+                   size = 3) +
+  facet_wrap(~ seFct) +
+  theme(legend.position = 'bottom') +
+  labs(x = '# Hatchery Tags Deployed at Lower Granite',
+       y = expression(paste("Proportion of Monitored TRT Populations with Precise ", hat(pHOS))),
+       color = 'SE Threshold')
+  
 ```
 
 
