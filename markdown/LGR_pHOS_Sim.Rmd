@@ -28,6 +28,11 @@ output:
     toc: yes
     toc_depth: 4
     toc_float: yes
+  word_document:
+    fig_caption: yes
+    fig_width: 7
+    fig_height: 7
+    toc: yes
   pdf_document:
     # pandoc_args:
     # - --lua-filter=../templates/scholarly-metadata.lua
@@ -130,7 +135,7 @@ tags_cv_fig = fig_nums("tags_cv_fig",
                        "Number of PIT tags observed in a population plotted against the CV of the population estimate. The dashed line shows a CV of 15%, while the red line shows the fitted log-log model.")
 
 lgr_tags_tab = tab_nums("lgr_tags_tab",
-                        "All the pieces of information that lead to an estimate of how many total tags must be deployed at Lower Granite to obtain a standard error of pHOS below the set threshold for each population.")
+                        "All of the pieces of information that lead to an estimate of the number of tags that must be deployed at Lower Granite Dam to obtain a standard error of pHOS below a set threshold (seThres) for each population. Note that there are four rows for each population, each showing how the number of tags (LGR_tags) changes for a given seThres.")
 
 trt_prop_fig = fig_nums("trt_prop_fig",
                         "Expected proportion of TRT populations with a reliable estimate of pHOS for a given number of PIT tags deployed at LGR, faceted by pHOS standard error thresholds. Dashed line shows 4,000 tags. Labels depict which additional TRT populations are expected to have reasonable precision of pHOS as the number of tags deployed increases.")
@@ -894,12 +899,14 @@ lgr_tags_df = hatch_cv %>%
 
 ```
 
-The results from our mathematical exploration are shown in `r fig_nums('se_phos_fig', display = 'c')`. The same general patterns hold for all four standard error thresholds: it is easiest to meet the threshold when *pHOS* is very small or very large in that a wide range of precision in wild and hatchery escapement estimates will work. When *pHOS* is close to 50%, the number of combinations in escapement CVs that will meet each threshold is smaller, with some being impossible to meet unless the CVs of wild and hatchery escapement are both very small. 
+The results from our mathematical exploration are shown in `r fig_nums('se_phos_fig', display = 'c')`. We evaluated the maximum CV for a hatchery abundance estimate that would provide a given level of precision (measured as SE) across varying levels of CV of wild escapement and *pHOS*. Further, we evaluated four different CV thresholds: 2%, 5%, 10%, and 25%. The same general patterns hold for all four standard error thresholds evaluated:
 
-As the precision of the wild estimates improves (i.e. smaller CV, to the left on `r fig_nums('se_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. When *pHOS* is quit low or quite high (towards the bottom or top of `r fig_nums('se_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* can be obtained. 
+* It is easiest to meet SE threshholds when *pHOS* is very small or very large in that a wide range of precision in wild and hatchery estimates will work.
+* When *pHOS* is close to 50%, the number of combinations in escapement CVs that will meet each threshhold is smaller with some being difficult or impossible to meet unless the CVs of wild and hatchery escapement are both very small.
 
-It is clear that the results are sensitive to different standard error thresholds. When the threshold is quite low, such as `r min(sim_df$seThres) * 100`%, it takes more precise estimates of wild and hatchery escapement to meet that threshold, which presumably will require more tags to be put out at Lower Granite. 
+In other words, as the precision of the wild estimates improve (i.e., smaller CV, to the left of each facet in `r fig_nums('se_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. For instance, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi River range from 0.10 to 0.25 for spawn years 2010 - 2018. When *pHOS* is quite low or quite high (i.e., towards the bottom or top of each facet in `r fig_nums('se_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, a reasonable precision of *pHOS* can be obtained. For reference, estimates of *pHOS* and the CVs of the corresponding wild escapement estimates from `r tab_nums('dabom_hnc_phos', display = 'c')` are shown as open red circles in `r fig_nums('se_phos_fig', display = 'c')`.
 
+It is clear that the results are sensitive to different standard error thresholds. When the threshold is quite low, such as `r min(sim_df$seThres) * 100`%, it takes more precise estimates of wild and hatchery escapement to meet that threshold, which presumably will require more tags to be put out at Lower Granite Dam. Recall that the 95% confidence interval of *pHOS* would be our estimate plus or minus 1.96 times its standard error; and we could say that there is only a 5% chance that that interval excludes the true *pHOS* of the population. 
 
 ```{r cv-phos-fig, eval = F, fig.cap = fig_nums('cv_phos_fig')}
 cvThres = 0.15
@@ -972,7 +979,7 @@ sim_df %>%
 
 #### Simulation
 
-We modeled the relationship between the number of wild tags detected within a population and the CV of the wild abundance estimate using a log-log model (`r fig_nums("tags_cv_fig", display = 'c')`). We assumed the same relationship holds for hatchery tags detected. For each population, we used the average CV of the wild abundance estimates over the last several years and the average estimated *pHOS* levels from `r tab_nums('dabom_hnc_phos', display = 'c')` to determine the maximum CV of hatchery escapement such that we would meet the various thresholds for *pHOS* standard error. Based on the model shown in `r fig_nums("tags_cv_fig", display = 'c')`, we could then estimate how many tags would need to be detected to obtain that CV. From there, we divided that tag number by the weighted average of detected stray rates from `r tab_nums('stray_rates', display = 'c')` to estimate how many total tags would need to be deployed at Lower Granite to obtain that number of detections. The results are shown in `r tab_nums("lgr_tags_tab", display = 'c')`.
+We modeled the relationship between the number of wild tags detected within a population and the CV of the wild abundance estimate using a log-log model (See et al. 2019; `r fig_nums("tags_cv_fig", display = 'c')`) based on results from DABOM from spawn years 2013 - 2019. We assumed that the same relationship holds for hatchery tags detected. For each population, we then used the average CV of the wild abundance estimates over the last several years and average estimated *pHOS* levels from `r tab_nums('dabom_hnc_phos', display = 'c')` to determine the maximum CV of hatchery escapement such that we would meet the various thresholds for *pHOS* standard error. Based on the model shown in `r fig_nums("tags_cv_fig", display = 'c')`, we could then estimate how many tags would need to be detected to obtain that CV. From there, we divided that tag number by the weighted average of detected stray rates from `r tab_nums('stray_rates', display = 'c')` to estimate how many total tags would need to be deployed at Lower Granite to obtain that number of detections. The results are shown in `r tab_nums("lgr_tags_tab", display = 'c')`.
 
 ```{r tags-vs-cv-fig, fig.cap = fig_nums("tags_cv_fig")}
 tag_cv_p2
@@ -981,7 +988,7 @@ tag_cv_p2
 `r tab_nums("lgr_tags_tab")`
 ```{r lgr-tags-table}
 lgr_tags_df %>%
-  arrange(seThres, desc(LGR_tags)) %>%
+  arrange(MPG_DPS, TRT, seThres) %>%
   # filter(!is.na(conv_rate),
   #        !is.na(TRT)) %>%
   # filter(!is.na(LGR_tags)) %>%
@@ -991,10 +998,9 @@ lgr_tags_df %>%
   kable(format.args = list(big.mark = ','))
 ```
 
-We then examined the proportion of TRT populations that would have a reliable estimate of *pHOS* under different tagging scenarios at Lower Granite. Assuming a certain number of tags were deployed at Lower Granite, we determined which populations would have a standard error of *pHOS* below various thresholds, according to `r tab_nums("lgr_tags_tab", display = 'c')`. We then transformed that into a percent of all TRT populations where we expect to estimate *pHOS* (not including those with no observed strays: `r paste(no_strays, collapse = ', ')`). This included a total of `r filter(lgr_tags_df, conv_rate > 0) %>% summarise(tot_trt = n_distinct(TRT)) %>% pull(tot_trt)` TRT steelhead populations. Those results are shown in `r fig_nums("trt_prop_fig", display = 'c')`.
+We then examined the proportion of TRT populations that would have a reliable estimate of *pHOS* under different tagging numbers at Lower Granite Dam. Assuming a certain number of tags were deployed at Lower Granite, we determined which populations would have a standard error of *pHOS* below variousl thresholds, according to `r tab_nums("lgr_tags_tab", display = 'c')`. We then transformed that into a percent of all TRT populations where we expect to estimate *pHOS* (EXCLUDING those with no observed strays: `r paste(no_strays, collapse = ', ')`). This included a total of `r filter(lgr_tags_df, conv_rate > 0) %>% summarise(tot_trt = n_distinct(TRT)) %>% pull(tot_trt)` TRT steelhead populations. Those results are shown in `r fig_nums("trt_prop_fig", display = 'c')`. In other words, the y-axis of `r fig_nums("trt_prop_fig", display = 'c')` only pertains to monitored TRT populations where we have previously observed an HNC stray. Of the `r filter(lgr_tags_df, conv_rate > 0) %>% summarise(tot_trt = n_distinct(TRT)) %>% pull(tot_trt)` populations evaluated, those not shown on a given facet are off the right side of the plot (e.g., more tags need to be deployed at LGR to estimate a precise *pHOS*).
 
 ```{r lgr-pops, fig.cap = fig_nums("trt_prop_fig")}
-
 lgr_tags_df %>%
   filter(conv_rate > 0) %>%
   mutate(tot_trt = n_distinct(TRT)) %>%
@@ -1043,7 +1049,6 @@ lgr_tags_df %>%
        color = 'SE Threshold')
   
 ```
-
 
 # Discussion
 
