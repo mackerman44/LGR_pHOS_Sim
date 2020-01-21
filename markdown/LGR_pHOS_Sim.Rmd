@@ -114,7 +114,7 @@ juv_phos = tab_nums('juv_phos',
                     'Hatchery, wild, and total abundance estimates and associated pHOS estimates for location x spawn year combinations with hatchery observations from smolt releases in the Snake River Basin.')
 
 dabom_hnc_phos = tab_nums('dabom_hnc_phos',
-                          "Estimates of abundance (CV) for ad-intact steelhead including wild and hatchery (HNC), how many tags of each origin were detected,  spawn years 2017-2019 and estimates of the proportion of hatchery origin spawners (pHOS) with standard error (SE) and coefficient of variation (CV) that takes into account uncertainty in the abundance estimates. pHOS estimates do not account for ad-clipped hatchery (H) adults.")
+                          "Estimates of abundance (CV) for ad-intact steelhead including wild and hatchery (HNC), how many tags of each origin were detected,  spawn years 2017-2019 and estimates of the proportion of hatchery origin spawners (pHOS) with standard error (SE) and coefficient of variation (CV) that takes into account uncertainty in the abundance estimates.")
 
 stray_rates = tab_nums("stray_rates",
                        "The percentage of hatchery steelhead adults, tagged as juveniles, observed straying into recipient populations from all those tags passing Lower Granite Dam, summarized by release groups. Note all values in table are expressed as a percentage.")
@@ -123,7 +123,7 @@ stray_rates = tab_nums("stray_rates",
 #                        "The maximum CV of hatchery abundance estimates that would provide an estimate of pHOS with reasonable precision for a given proportion of wild fish (inverse pHOS) and precision of wild escapement.")
 
 se_phos_fig = fig_nums("se_phos_fig",
-                       "The maximum CV of hatchery abundance estimates that would provide an estimate of pHOS with reasonable precision (below a standard error threshold) for a given level of pHOS and precision of wild escapement.")
+                       "The maximum CV of hatchery abundance estimates that would provide an estimate of pHOS with reasonable precision (below a standard error threshold) for a given level of pHOS and precision of wild escapement. Red points are average observed CV's of wild escapement and HNC pHOS estimates. Dashed lines show 5% and 10% thresholds for pHOS.")
 
 
 tags_cv_fig = fig_nums("tags_cv_fig",
@@ -150,7 +150,7 @@ where $\hat{N_{h}}$ is the HOR abundance, $n_r$ is the number of observations of
 $$
 p_{HOS} = \frac{\hat{N_h}}{\hat{N_h} + \hat{N_n}}
 $$
-where $\hat{N_{n}}$ is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate abundance estimates in the DABOM model using juvenile tagging; hence, the tag expansion approach. In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction  for that release groups and then sum across groups. Note that in this scenario we don't need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.
+where $\hat{N_{n}}$ is the NOR abundance. Importantly, DABOM requires a random sample of tagged individuals (e.g., at the adult trap), and thus, we cannot generate abundance estimates in the DABOM model using juvenile tagging; hence, the tag expansion approach. In other words, we need to expand the number of hatchery observations from each release group by the tagging fraction  for that release groups and then sum across groups, and further, account for the detection probability of IPTDS sites within a location. Note that in this scenario we don't need to account for differential survival among groups; we are only interested in tagging fractions within groups as long as we are willing to assume equal survival between tagged and untagged smolts.
 
 <!--
 Kevin - I realized here that we didn't account for detection probability. But it's unclear to me how we would easily account for detection probability given that there can be numerous sites within a group. Wouldn't we have to, for each observation, take the expansion value for a fish and divide it by the estimated detection probability of the observation location and year from DABOM?
@@ -641,6 +641,7 @@ sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the s
                              seThres))
 ```
 
+<<<<<<< HEAD
 The results from our mathematical exploration are shown in `r fig_nums('se_phos_fig', display = 'c')`. The same general patterns hold for all four standard error thresholds we evaluated: it is easiest to meet the threshold when *pHOS* is very small or very large in that a wide range of precision in wild and hatchery escapement estimates will work. When *pHOS* is close to 50%, the number of combinations in escapement CVs that will meet each threshold is smaller, with some being impossible to meet unless the CVs of wild and hatchery escapement are both very small. 
 
 As the precision of the wild estimates improves (i.e. smaller CV, to the left on `r fig_nums('se_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. When *pHOS* is quit low or quite high (towards the bottom or top of `r fig_nums('se_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* can be obtained. 
@@ -710,6 +711,8 @@ sim_df %>%
 
 #### Simulation
 
+=======
+>>>>>>> fcf73cab7143fde5848a63fd34a4c4c69cd6502b
 ```{r dabom-wild-estimates}
 pop_nms = read_excel('../data/Snake_River_TRT_Populations.xlsx') %>%
   filter(Species == 'Steelhead') %>%
@@ -873,12 +876,6 @@ tag_cv_p2 = wild_est %>%
 
 ```
 
-We modeled the relationship between the number of wild tags detected within a population and the CV of the wild abundance estimate using a log-log model (`r fig_nums("tags_cv_fig", display = 'c')`). We assumed the same relationship holds for hatchery tags detected. For each population, we used the average CV of the wild abundance estimates over the last several years and the average estimated *pHOS* levels from `r tab_nums('dabom_hnc_phos', display = 'c')` to determine the maximum CV of hatchery escapement such that we would meet the various thresholds for *pHOS* standard error. Based on the model shown in `r fig_nums("tags_cv_fig", display = 'c')`, we could then estimate how many tags would need to be detected to obtain that CV. From there, we divided that tag number by the weighted average of detected stray rates from `r tab_nums('stray_rates', display = 'c')` to estimate how many total tags would need to be deployed at Lower Granite to obtain that number of detections. The results are shown in `r tab_nums("lgr_tags_tab", display = 'c')`.
-
-```{r tags-vs-cv-fig, fig.cap = fig_nums("tags_cv_fig")}
-tag_cv_p2
-```
-
 ```{r lgr-tags-estimate}
 hatch_cv = wild_est %>%
   filter(mean > 0) %>%
@@ -964,6 +961,90 @@ lgr_tags_df = hatch_cv %>%
 
 ```
 
+The results from our mathematical exploration are shown in `r fig_nums('se_phos_fig', display = 'c')`. The same general patterns hold for all four standard error thresholds: it is easiest to meet the threshold when *pHOS* is very small or very large in that a wide range of precision in wild and hatchery escapement estimates will work. When *pHOS* is close to 50%, the number of combinations in escapement CVs that will meet each threshold is smaller, with some being impossible to meet unless the CVs of wild and hatchery escapement are both very small. 
+
+As the precision of the wild estimates improves (i.e. smaller CV, to the left on `r fig_nums('se_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. When *pHOS* is quit low or quite high (towards the bottom or top of `r fig_nums('se_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* can be obtained. 
+
+It is clear that the results are sensitive to different standard error thresholds. When the threshold is quite low, such as `r min(sim_df$seThres) * 100`%, it takes more precise estimates of wild and hatchery escapement to meet that threshold, which presumably will require more tags to be put out at Lower Granite. 
+
+
+```{r cv-phos-fig, eval = F, fig.cap = fig_nums('cv_phos_fig')}
+cvThres = 0.15
+sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
+         # CV of the estimate of wild fish
+         cvW = seq(0, 1, 0.01),
+         # CV of the estimate of hatchery fish
+         cvH = seq(0, 1.5, 0.01)) %>%
+  mutate(pHOS = 1 - propWild,
+         CV = propWild * (cvW + cvH)) %>%
+  group_by(propWild, cvW) %>%
+  summarise(nTot = n(),
+            nPrec = sum(CV <= cvThres),
+            maxHcv = max(cvH[CV <= cvThres])) %>%
+  ungroup() 
+
+sim_df %>%
+  ggplot(aes(x = cvW,
+             y = 1 - propWild)) +
+  geom_tile(aes(fill = maxHcv)) +
+  geom_contour(aes(z = maxHcv),
+               color = 'black',
+               bins = 10) +
+  # geom_line(data = sim_df %>%
+  #             filter(maxHcv == 0.15),
+  #           color = 'red') +
+  theme_classic() +
+  geom_text(x = 0.75,
+            y = 0.25,
+            hjust = 'inward',
+            vjust = 'inward',
+            label = paste0('CV > ', cvThres, '%')) +
+  scale_fill_viridis_c(na.value = 'gray90',
+                       begin = 0.2) +
+  labs(x = 'CV of Wild Escp.',
+       # y = '% Wild',
+       y = 'pHOS',  
+       fill = 'Max CV\nHatch Est.')
+
+```
+
+```{r se-phos-fig, fig.cap = fig_nums('se_phos_fig'), fig.height = 7}
+sim_df %>%
+  filter(SE > 0) %>%
+  ggplot(aes(x = cvW,
+             y = pHOS)) +
+  geom_tile(aes(fill = maxHcv)) +
+  geom_contour(aes(z = maxHcv),
+               color = 'black',
+               bins = 10) +
+  theme_classic() +
+  scale_fill_viridis_c(na.value = 'gray90',
+                       begin = 0.2) +
+  geom_point(data = lgr_tags_df %>%
+               mutate(seFct = paste0('SE < ', seThres * 100, '%')) %>%
+               mutate(seFct = fct_reorder(seFct,
+                                          seThres)),
+             color = 'red',
+             shape = 1) +
+  geom_hline(yintercept = c(0.05, 0.1),
+             linetype = 2,
+             color = 'darkgray') +
+  facet_wrap(~ seFct) +
+  theme(legend.position = 'bottom') +
+  labs(x = 'CV of Wild Escp.',
+       y = 'pHOS',  
+       fill = 'Max CV\nHatch Est.')
+
+```
+
+#### Simulation
+
+We modeled the relationship between the number of wild tags detected within a population and the CV of the wild abundance estimate using a log-log model (`r fig_nums("tags_cv_fig", display = 'c')`). We assumed the same relationship holds for hatchery tags detected. For each population, we used the average CV of the wild abundance estimates over the last several years and the average estimated *pHOS* levels from `r tab_nums('dabom_hnc_phos', display = 'c')` to determine the maximum CV of hatchery escapement such that we would meet the various thresholds for *pHOS* standard error. Based on the model shown in `r fig_nums("tags_cv_fig", display = 'c')`, we could then estimate how many tags would need to be detected to obtain that CV. From there, we divided that tag number by the weighted average of detected stray rates from `r tab_nums('stray_rates', display = 'c')` to estimate how many total tags would need to be deployed at Lower Granite to obtain that number of detections. The results are shown in `r tab_nums("lgr_tags_tab", display = 'c')`.
+
+```{r tags-vs-cv-fig, fig.cap = fig_nums("tags_cv_fig")}
+tag_cv_p2
+```
+
 `r tab_nums("lgr_tags_tab")`
 ```{r lgr-tags-table}
 lgr_tags_df %>%
@@ -1008,6 +1089,12 @@ lgr_tags_df %>%
   # scale_color_viridis_d(end = 0.9) +
   # scale_x_continuous(trans = "log10",
   #                    breaks = scales::pretty_breaks()) +
+  # # use this section if you include ALL TRT pops, not just onces with a conv_rate > 0
+  # geom_hline(yintercept = lgr_tags_df %>%
+  #              summarise(poss_prop = n_distinct(TRT[conv_rate > 0]) / n_distinct(TRT)) %>%
+  #              pull(poss_prop),
+  #            linetype = 2,
+  #            color = 'darkgray') +
   geom_point() + 
   geom_step() +
   geom_vline(xintercept = 4000,
