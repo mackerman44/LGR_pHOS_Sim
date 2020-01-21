@@ -143,7 +143,7 @@ trt_prop_fig = fig_nums("trt_prop_fig",
 
 # Methods
 
-### Section 1 Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
+### Section 1. Expected precision of *pHOS* given current PIT tagging of hatchery smolt releases
 
 Here, our aim is to evaluate the expected precision (CV) of *pHOS* using observations of individuals tagged within hatchery smolt releases and expansion values (inverse of tagging fraction) for those releases. 
 
@@ -339,7 +339,7 @@ And finally, for each observation, personnel from the IDFG identified whether ea
 * RTR ("Return-to-River"): A sort-by-code designation for smolts that will automatically be returned to the river when detected at a dam, when other fish may be getting transported. They do not represent the release group at-large, therefore represent only themselves with an expansion value of "1".
 * RAL ("Run-at-Large"): A sort-by-code designation for smolts that will be transported or returned to the river in accordance with the protocol at the dam when they are detected. They represent the release group with a tagging rate that excludes any smolts that have an RTR tag in them. The expansion value of RAL tagged fish is the inverse of the tag rate.
 
-`r tab_nums('obs_summary', display = 'c')` shows the number of RTR observations from hatchery smolt releases by TRT population, spawn year, and rearing hatchery in our final dataset. Observations were then expanded and compared to wild spawner abundance in those locations.
+`r tab_nums('obs_summary', display = 'c')` shows the number of RTR observations from hatchery smolt releases by TRT population, spawn year, and rearing hatchery in our final dataset. Observations were then expanded and compared to wild spawner abundance in those locations to estimate *pHOS*.
 
 `r tab_nums('obs_summary')`
 <center>
@@ -509,7 +509,6 @@ no_strays = leth_df %>%
   pull(pop)
 ```
 
-
 We also have information showing the percentage of hatchery adults, tagged as juveniles, that are detected within 'recipient populations' out of all the hatchery tags that are detected at LGR (and summarized by release groups; Brian Leth, IDFG, personal communication). We will divide the number of detections we require for each population by these percentages (`r tab_nums("stray_rates", display = "c")`) to determine how many tags we would expect to need to put out at Lower Granite in order to achieve determined precision goals. There are several populations that have never had an observed stray, so we will not be able to include them in the subsequent analysis (`r paste(no_strays, collapse = ', ')`). 
 
 `r tab_nums('stray_rates')`
@@ -517,10 +516,6 @@ We also have information showing the percentage of hatchery adults, tagged as ju
 pander(leth_df,
        emphasize.strong.rows = nrow(leth_df),
        emphasize.strong.cols = ncol(leth_df))
-```
-
-```{r stray-rates-v2, eval = F, out.width = "800px", fig.align = "center", fig.cap = fig_nums('stray_rates')}
-knitr::include_graphics("../images/stray_rate_table.png")
 ```
 
 # Results
@@ -651,6 +646,78 @@ sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the s
                              seThres))
 ```
 
+<<<<<<< HEAD
+The results from our mathematical exploration are shown in `r fig_nums('se_phos_fig', display = 'c')`. The same general patterns hold for all four standard error thresholds we evaluated: it is easiest to meet the threshold when *pHOS* is very small or very large in that a wide range of precision in wild and hatchery escapement estimates will work. When *pHOS* is close to 50%, the number of combinations in escapement CVs that will meet each threshold is smaller, with some being impossible to meet unless the CVs of wild and hatchery escapement are both very small. 
+
+As the precision of the wild estimates improves (i.e. smaller CV, to the left on `r fig_nums('se_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. When *pHOS* is quit low or quite high (towards the bottom or top of `r fig_nums('se_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* can be obtained. 
+
+It is clear that the results are sensitive to different standard error thresholds. When the threshold is quite low, such as `r min(sim_df$seThres) * 100`%, it takes more precise estimates of wild and hatchery escapement to meet that threshold, which presumably will require more tags to be put out at Lower Granite. 
+
+
+```{r cv-phos-fig, eval = F, fig.cap = fig_nums('cv_phos_fig')}
+cvThres = 0.15
+sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
+         # CV of the estimate of wild fish
+         cvW = seq(0, 1, 0.01),
+         # CV of the estimate of hatchery fish
+         cvH = seq(0, 1.5, 0.01)) %>%
+  mutate(pHOS = 1 - propWild,
+         CV = propWild * (cvW + cvH)) %>%
+  group_by(propWild, cvW) %>%
+  summarise(nTot = n(),
+            nPrec = sum(CV <= cvThres),
+            maxHcv = max(cvH[CV <= cvThres])) %>%
+  ungroup() 
+
+sim_df %>%
+  ggplot(aes(x = cvW,
+             y = 1 - propWild)) +
+  geom_tile(aes(fill = maxHcv)) +
+  geom_contour(aes(z = maxHcv),
+               color = 'black',
+               bins = 10) +
+  # geom_line(data = sim_df %>%
+  #             filter(maxHcv == 0.15),
+  #           color = 'red') +
+  theme_classic() +
+  geom_text(x = 0.75,
+            y = 0.25,
+            hjust = 'inward',
+            vjust = 'inward',
+            label = paste0('CV > ', cvThres, '%')) +
+  scale_fill_viridis_c(na.value = 'gray90',
+                       begin = 0.2) +
+  labs(x = 'CV of Wild Escp.',
+       # y = '% Wild',
+       y = 'pHOS',  
+       fill = 'Max CV\nHatch Est.')
+
+```
+
+```{r se-phos-fig, fig.cap = fig_nums('se_phos_fig'), fig.height = 7}
+sim_df %>%
+  filter(SE > 0) %>%
+  ggplot(aes(x = cvW,
+             y = pHOS)) +
+  geom_tile(aes(fill = maxHcv)) +
+  geom_contour(aes(z = maxHcv),
+               color = 'black',
+               bins = 10) +
+  theme_classic() +
+  scale_fill_viridis_c(na.value = 'gray90',
+                       begin = 0.2) +
+  facet_wrap(~ seFct) +
+  theme(legend.position = 'bottom') +
+  labs(x = 'CV of Wild Escp.',
+       y = 'pHOS',  
+       fill = 'Max CV\nHatch Est.')
+
+```
+
+#### Simulation
+
+=======
+>>>>>>> fcf73cab7143fde5848a63fd34a4c4c69cd6502b
 ```{r dabom-wild-estimates}
 pop_nms = read_excel('../data/Snake_River_TRT_Populations.xlsx') %>%
   filter(Species == 'Steelhead') %>%
