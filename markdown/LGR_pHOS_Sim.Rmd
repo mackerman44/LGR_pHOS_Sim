@@ -1022,6 +1022,12 @@ lgr_tags_df %>%
   # scale_color_viridis_d(end = 0.9) +
   # scale_x_continuous(trans = "log10",
   #                    breaks = scales::pretty_breaks()) +
+  # # use this section if you include ALL TRT pops, not just onces with a conv_rate > 0
+  # geom_hline(yintercept = lgr_tags_df %>%
+  #              summarise(poss_prop = n_distinct(TRT[conv_rate > 0]) / n_distinct(TRT)) %>%
+  #              pull(poss_prop),
+  #            linetype = 2,
+  #            color = 'darkgray') +
   geom_point() + 
   geom_step() +
   geom_vline(xintercept = 4000,
