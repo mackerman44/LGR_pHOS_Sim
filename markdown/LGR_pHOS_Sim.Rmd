@@ -233,7 +233,6 @@ sthd_est = sthd_est %>%
 ```
 
 `r tab_nums('site_table')`
-<!-- <center> -->
 ```{r site-ids}
 trts = pull(sthd_est, TRT)
 
@@ -263,7 +262,6 @@ site_table %>%
   #       align = 'c')
 
 ```
-<!-- </center> -->
 
 <!---
 We have smolt marking information for brood years (BY) 2013-2018. BY2013 smolts would be released in spring 2014, emigrate and rear in the ocean for 1 ('A-run') or 2 ('B-run') years and enter the Columbia again in 2015 or 2016 to spawn in spring 2016 or 2017. As a result, we will limit our PTAGIS query to spawn years 2016 to 2019, the years for which we have PIT tag marking fraction information for smolt releases. 
@@ -299,32 +297,6 @@ sthd_obs = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_SY16-19.csv') %>%
   select(-brood_to_spawn)
 
 write_csv(sthd_obs, "../data/PTAGIS/pHOS_IntSumm_Sthd_SY16-19_filtered.csv")
-```
-
-```{r read_in_data, eval = F}
-sc_sthd = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_SC_2016-2019.csv') %>%
-  clean_names(case = 'snake') %>%
-  mutate_at(vars(ends_with('time_value')),
-            list(mdy_hms)) %>%
-  mutate(spawn_yr = year(last_time_value),
-         spawn_yr = if_else(month(last_time_value) >= 7,
-                            spawn_yr + 1,
-                            spawn_yr)) %>%
-  # filter out most recent spawn year, and any detections when last_time_value is < 1 year from mark year
-  filter(spawn_yr < 2020) %>%
-  filter(year(last_time_value) - mark_year_yyyy > 1)
-
-lem_sthd = read_csv('../data/PTAGIS/pHOS_IntSumm_Sthd_Lem_2016-2019.csv') %>%
-  clean_names(case = 'snake') %>%
-  mutate_at(vars(ends_with('time_value')),
-            list(mdy_hms)) %>%
-  mutate(spawn_yr = year(last_time_value),
-         spawn_yr = if_else(month(last_time_value) >= 7,
-                            spawn_yr + 1,
-                            spawn_yr)) %>%
-  # filter out most recent spawn year, and any detections when last_time_value is < 1 year from mark year
-  filter(spawn_yr < 2020) %>%
-  filter(year(last_time_value) - mark_year_yyyy > 1)
 ```
 
 Next, we filtered the above results from the PTAGIS query to only include the following observations:
@@ -646,78 +618,6 @@ sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the s
                              seThres))
 ```
 
-<<<<<<< HEAD
-The results from our mathematical exploration are shown in `r fig_nums('se_phos_fig', display = 'c')`. The same general patterns hold for all four standard error thresholds we evaluated: it is easiest to meet the threshold when *pHOS* is very small or very large in that a wide range of precision in wild and hatchery escapement estimates will work. When *pHOS* is close to 50%, the number of combinations in escapement CVs that will meet each threshold is smaller, with some being impossible to meet unless the CVs of wild and hatchery escapement are both very small. 
-
-As the precision of the wild estimates improves (i.e. smaller CV, to the left on `r fig_nums('se_phos_fig', display = 'c')`), there are more scenarios under which the precision of the *pHOS* estimate is reasonable. As a reference, the CVs of the estimates for spring/summer Chinook escapement to the Lemhi range from 0.1 to 0.25 for years 2010 - 2018. When *pHOS* is quit low or quite high (towards the bottom or top of `r fig_nums('se_phos_fig', display = 'c')`), then regardless of the CV of wild or hatchery escapement, reasonable precision of *pHOS* can be obtained. 
-
-It is clear that the results are sensitive to different standard error thresholds. When the threshold is quite low, such as `r min(sim_df$seThres) * 100`%, it takes more precise estimates of wild and hatchery escapement to meet that threshold, which presumably will require more tags to be put out at Lower Granite. 
-
-
-```{r cv-phos-fig, eval = F, fig.cap = fig_nums('cv_phos_fig')}
-cvThres = 0.15
-sim_df = crossing(propWild = seq(0, 1, 0.01), # proportion of wild fish in the stream
-         # CV of the estimate of wild fish
-         cvW = seq(0, 1, 0.01),
-         # CV of the estimate of hatchery fish
-         cvH = seq(0, 1.5, 0.01)) %>%
-  mutate(pHOS = 1 - propWild,
-         CV = propWild * (cvW + cvH)) %>%
-  group_by(propWild, cvW) %>%
-  summarise(nTot = n(),
-            nPrec = sum(CV <= cvThres),
-            maxHcv = max(cvH[CV <= cvThres])) %>%
-  ungroup() 
-
-sim_df %>%
-  ggplot(aes(x = cvW,
-             y = 1 - propWild)) +
-  geom_tile(aes(fill = maxHcv)) +
-  geom_contour(aes(z = maxHcv),
-               color = 'black',
-               bins = 10) +
-  # geom_line(data = sim_df %>%
-  #             filter(maxHcv == 0.15),
-  #           color = 'red') +
-  theme_classic() +
-  geom_text(x = 0.75,
-            y = 0.25,
-            hjust = 'inward',
-            vjust = 'inward',
-            label = paste0('CV > ', cvThres, '%')) +
-  scale_fill_viridis_c(na.value = 'gray90',
-                       begin = 0.2) +
-  labs(x = 'CV of Wild Escp.',
-       # y = '% Wild',
-       y = 'pHOS',  
-       fill = 'Max CV\nHatch Est.')
-
-```
-
-```{r se-phos-fig, fig.cap = fig_nums('se_phos_fig'), fig.height = 7}
-sim_df %>%
-  filter(SE > 0) %>%
-  ggplot(aes(x = cvW,
-             y = pHOS)) +
-  geom_tile(aes(fill = maxHcv)) +
-  geom_contour(aes(z = maxHcv),
-               color = 'black',
-               bins = 10) +
-  theme_classic() +
-  scale_fill_viridis_c(na.value = 'gray90',
-                       begin = 0.2) +
-  facet_wrap(~ seFct) +
-  theme(legend.position = 'bottom') +
-  labs(x = 'CV of Wild Escp.',
-       y = 'pHOS',  
-       fill = 'Max CV\nHatch Est.')
-
-```
-
-#### Simulation
-
-=======
->>>>>>> fcf73cab7143fde5848a63fd34a4c4c69cd6502b
 ```{r dabom-wild-estimates}
 pop_nms = read_excel('../data/Snake_River_TRT_Populations.xlsx') %>%
   filter(Species == 'Steelhead') %>%
