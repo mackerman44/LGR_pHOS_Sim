@@ -13,25 +13,6 @@ author:
     institute: biomark
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-  bookdown::word_document2: 
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 7
-    toc: yes
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
-    reference_docx: "../templates/ReportTemplate.docx"
-  bookdown::pdf_document2:
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks2.lua
-    - --lua-filter=../templates/pagebreak.lua
-    fig_height: 6
-    fig_width: 8
-    includes:
-      in_header: "../templates/header_ABS.tex"
   bookdown::html_document2:
     theme: simplex
     toc: yes
@@ -43,6 +24,25 @@ output:
     - --lua-filter=../templates/scholarly-metadata.lua
     - --lua-filter=../templates/author-info-blocks.lua
     - --lua-filter=../templates/pagebreak.lua
+  bookdown::pdf_document2:
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks2.lua
+    - --lua-filter=../templates/pagebreak.lua
+    fig_height: 6
+    fig_width: 8
+    includes:
+      in_header: "../templates/header_ABS.tex"
+  bookdown::word_document2: 
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 7
+    toc: yes
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
+    reference_docx: "../templates/ReportTemplate.docx"
 institute:
 - biomark: Biomark, Inc.
 csl: "../templates/american-fisheries-society.csl"
@@ -87,7 +87,8 @@ pop_est = c('Chinook', 'Steelhead') %>%
             list(as.factor)) %>%
   mutate_at(vars(cv),
             list(as.numeric)) %>%
-  rename(Species = species)
+  rename(Species = species) %>%
+  filter(valid_est == 1)
 
 # detection probability estimates
 p_est = c('Chinook', 'Steelhead') %>%
@@ -228,7 +229,8 @@ tags_est_df = pop_est %>%
   mutate(prop_tags_det = n_tags / tot_tags) %>%
   group_by(Species, TRT) %>%
   summarise_at(vars(prop_tags_det),
-               list(mean)) %>%
+               list(mean),
+               na.rm = T) %>%
   left_join(min_tags) %>%
   mutate(tot_tags_need = min_tags / prop_tags_det)
 
@@ -296,8 +298,16 @@ When we initially examined the proportion of all tags deployed at LGR that were 
 In practice, detection probabilities at instream PIT tag detection systems (IPTDS) intended for natural origin population abundance monitoring have high detection probabilities, so we further examined populations with low proportions of detections and whether that was due to reasons #1 or #3 (or a combination thereof) above. In addition, the proportion of detections within a population was averaged across years, and thus, we considered populations where infrastructure was installed in a later year. Table \@ref(tab:remove-tab)  and the following narrative provide a summary of populations and years we chose to remove from the analysis due to non-existent IPTDS or infrastructure not intended for natural population monitoring. We additionally note some populations with low proportions of detections that we believe to be due to low population size.
 
 ```{r remove-tab}
-remove_t = read_excel('../data/TRT_Pop_Considerations.xlsx')
+remove_t = read_excel('../data/TRT_Pop_Considerations.xlsx') #%>%
+  # # remove steelhead in CRLOL for 2019
+  # bind_rows(tibble(Species = 'Steelhead',
+  #                  TRT = "CRLOL-s",
+  #                  SiteIDs = c('LC1, LC2'),
+  #                  `2019` = 'Y',
+  #                  Notes = c('LC1 and LC2 lost during the 2018-2019 season.')))
   
+
+
 remove_t %>%
   select(-Notes) %>%
   rename(Sites = SiteIDs) %>%
@@ -351,83 +361,13 @@ remove_t %>%
 
 # Results
 
-## Number of Tags Required in a TRT Population
-
-Figure \@ref(fig:tags-vs-cv) shows the number of PIT tags detected within a TRT population and the corresponding CV of the population abundance estimate, by species, using results going back to 2013 and after removing population and year combinations in which low/no observations were due to lack of IPTDS or IPTDS not intended for natural origin population abundance (Table \@ref(tab:remove-tab)).
-
-```{r tags-vs-cv, fig.cap = "Scatterplot of the number of PIT tags detected in each population and the CV of the abundance estimates for that population. The lines of semi-log, log-log and loess fits to the data. The dashed horizontal line indicates a CV of 15%."}
-
+```{r n-tags-model}
 pop_est = pop_est %>%
   anti_join(rmv) %>%
   mutate_at(vars(spawn_yr:TRT),
             list(fct_drop))
 
-pop_est %>%
-  ggplot(aes(x = n_tags,
-             y = cv)) +
-  geom_point() +
-  scale_color_brewer(palette = 'Set1') + 
-  geom_hline(yintercept = 0.15,
-             linetype = 2) +
-  geom_smooth(aes(color = 'Loess'),
-              span = 0.9,
-              se = F,
-              fullrange = T) +
-  geom_smooth(aes(color = 'Semi-log'),
-              method = glm,
-              method.args = list(family = gaussian(link = "log")),
-              se = F,
-              fullrange = T) +
-  geom_smooth(aes(color = 'Log-log'),
-              method = glm,
-              formula = y ~ log(x),
-              method.args = list(family = gaussian(link = "log")),
-              se = F,
-              fullrange = T) +
-  facet_wrap(~ Species) +
-  labs(x = '# PIT Tags Detected',
-       y = 'CV of Pop. Est.',
-       color = 'Model')
-```
-
-Additionally, using the same data, we examined the proportion of total tags deployed at LGR that were observed within a TRT population and the CV of the abundance estimate (Figure \@ref(fig:perc-tags-vs-cv)).
-
-```{r perc-tags-vs-cv, fig.cap = "Scatterplot of the proportion of PIT tags detected in each population and the CV of the abundance estimate for that population. The lines are semi-log, log-log and Loess fits to that data. The dashed horizontal line denotes a CV of 15%."}
-
-pop_est %>%
-  mutate_at(vars(spawn_yr),
-            list(~ as.integer(as.character(.)))) %>%
-  left_join(tags_deploy) %>%
-  ggplot(aes(x = n_tags / tot_tags,
-             y = cv)) +
-  geom_point() +
-  scale_color_brewer(palette = 'Set1') + 
-  geom_hline(yintercept = 0.15,
-             linetype = 2) +
-  geom_smooth(aes(color = 'Loess'),
-              span = 0.9,
-              se = F,
-              fullrange = T) +
-  geom_smooth(aes(color = 'Semi-log'),
-              method = glm,
-              method.args = list(family = gaussian(link = "log")),
-              se = F,
-              fullrange = T) +
-  geom_smooth(aes(color = 'Log-log'),
-              method = glm,
-              formula = y ~ log(x),
-              method.args = list(family = gaussian(link = "log")),
-              se = F,
-              fullrange = T) +
-  facet_wrap(~ Species) +
-  labs(x = '% PIT Tags Detected',
-       y = 'CV of Pop. Est.',
-       color = 'Model')
-```
-
-Ultimately, we were interested in the number of PIT tags that need to be observed within a population or the proportion of total PIT tags deployed at LGR detected within a population necessary to achieve a predicted CV of $\leq$ 0.15 for the abundance estimate. To do this, we tried fitting a separate model for each species, and after fitting those models (semi-log, log-log and loess), we examined the minimum number and proportion of total tags that would need to be detected to achieve that CV level. Those results are shown in Tables \@ref(tab:n-tags-tab) and \@ref(tab:prop-tags-tab).
-
-```{r n-tags-tab}
+# modeling number of tags detected
 mod_df = pop_est %>%
   group_by(Species) %>%
   nest() %>%
@@ -448,6 +388,152 @@ mod_df = pop_est %>%
                               data = x)
                            }))
 
+# modeling proportion of tags detected
+prop_mod_df = pop_est %>%
+  mutate_at(vars(spawn_yr),
+            list(~ as.integer(as.character(.)))) %>%
+  left_join(tags_deploy) %>%
+  mutate(prop_tags = n_tags / tot_tags) %>%
+  group_by(Species) %>%
+  nest() %>%
+  mutate(mod_semi_log = map(data,
+                      .f = function(x) {
+                        glm(cv ~ prop_tags,
+                            family = gaussian(link = 'log'),
+                            data = x)
+                      }),
+         mod_loess = map(data,
+                         .f = function(x) {
+                           loess(cv ~ prop_tags,
+                                 data = x)
+                         }),
+         mod_log_log = map(data,
+                           .f = function(x) {
+                           lm(log(cv) ~ log(prop_tags),
+                              data = x)
+                           }))
+```
+
+## Number of Tags Required in a TRT Population
+
+Figure \@ref(fig:tags-vs-cv) shows the number of PIT tags detected within a TRT population and the corresponding CV of the population abundance estimate, by species, using results going back to 2013 and after removing population and year combinations in which low/no observations were due to lack of IPTDS or IPTDS not intended for natural origin population abundance (Table \@ref(tab:remove-tab)).
+
+```{r tags-vs-cv, fig.cap = "Scatterplot of the number of PIT tags detected in each population and the CV of the abundance estimates for that population. The lines of semi-log, log-log and loess fits to the data. The dashed horizontal line indicates a CV of 15%."}
+
+# pop_est %>%
+#   ggplot(aes(x = n_tags,
+#              y = cv)) +
+#   geom_point() +
+#   scale_color_brewer(palette = 'Set1') + 
+#   geom_hline(yintercept = 0.15,
+#              linetype = 2) +
+#   geom_smooth(aes(color = 'Loess'),
+#               span = 0.9,
+#               se = F,
+#               fullrange = T) +
+#   geom_smooth(aes(color = 'Semi-log'),
+#               method = glm,
+#               method.args = list(family = gaussian(link = "log")),
+#               se = F,
+#               fullrange = T) +
+#   geom_smooth(aes(color = 'Log-log'),
+#               method = glm,
+#               formula = y ~ log(x),
+#               method.args = list(family = gaussian(link = "log")),
+#               se = F,
+#               fullrange = T) +
+#   facet_wrap(~ Species) +
+#   scale_y_continuous(limits = c(-0.01, 1.5)) +
+#   labs(x = '# PIT Tags Detected',
+#        y = 'CV of Pop. Est.',
+#        color = 'Model')
+
+pop_est %>%
+  ggplot(aes(x = n_tags,
+             y = cv)) +
+  geom_point() +
+  scale_color_brewer(palette = 'Set1') + 
+  geom_hline(yintercept = 0.15,
+             linetype = 2) +
+  geom_line(data = mod_df %>%
+              gather(model, mod_fit, starts_with('mod')) %>%
+              mutate(pred = map(.x = mod_fit,
+                                .f = function(x) {
+                                  tibble(n_tags = seq(0, 300)) %>%
+                                    mutate(pred_cv = predict(x, 
+                                                             newdata = .,
+                                                             type = 'response'))
+                                })) %>%
+              select(Species, 
+                     Model = model, pred) %>%
+              mutate(Model = recode(Model,
+                                    'mod_semi_log' = 'Semi-log',
+                                    'mod_loess' = 'Loess',
+                                    'mod_log_log' = 'Log-log')) %>%
+              unnest(cols = c(pred)) %>%
+              mutate(pred_cv = if_else(Model == 'Log-log',
+                                       exp(pred_cv),
+                                       pred_cv)) %>%
+              filter(pred_cv != Inf),
+            aes(y = pred_cv,
+                color = Model),
+            lwd = 1) +
+  facet_wrap(~ Species) +
+  # scale_y_continuous(limits = c(-0.01, 1.5)) +
+  labs(x = '# PIT Tags Detected',
+       y = 'CV of Pop. Est.',
+       color = 'Model')
+
+```
+
+Additionally, using the same data, we examined the proportion of total tags deployed at LGR that were observed within a TRT population and the CV of the abundance estimate (Figure \@ref(fig:perc-tags-vs-cv)).
+
+```{r perc-tags-vs-cv, fig.cap = "Scatterplot of the proportion of PIT tags detected in each population and the CV of the abundance estimate for that population. The lines are semi-log, log-log and Loess fits to that data. The dashed horizontal line denotes a CV of 15%."}
+
+pop_est %>%
+  mutate_at(vars(spawn_yr),
+            list(~ as.integer(as.character(.)))) %>%
+  left_join(tags_deploy) %>%
+  ggplot(aes(x = n_tags / tot_tags,
+             y = cv)) +
+  geom_point() +
+  scale_color_brewer(palette = 'Set1') +
+  geom_hline(yintercept = 0.15,
+             linetype = 2) +
+  geom_line(data = prop_mod_df %>%
+              gather(model, mod_fit, starts_with('mod')) %>%
+              mutate(pred = map(.x = mod_fit,
+                                .f = function(x) {
+                                  tibble(prop_tags = seq(0, 0.1, by = 0.001)) %>%
+                                    mutate(pred_cv = predict(x, 
+                                                             newdata = .,
+                                                             type = 'response'))
+                                })) %>%
+              select(Species, 
+                     Model = model, pred) %>%
+              mutate(Model = recode(Model,
+                                    'mod_semi_log' = 'Semi-log',
+                                    'mod_loess' = 'Loess',
+                                    'mod_log_log' = 'Log-log')) %>%
+              unnest(cols = c(pred)) %>%
+              mutate(pred_cv = if_else(Model == 'Log-log',
+                                       exp(pred_cv),
+                                       pred_cv)) %>%
+              filter(pred_cv != Inf),
+            aes(x = prop_tags,
+                y = pred_cv,
+                color = Model),
+            lwd = 1) +
+  facet_wrap(~ Species) +
+  labs(x = '% PIT Tags Detected',
+       y = 'CV of Pop. Est.',
+       color = 'Model')
+
+```
+
+Ultimately, we were interested in the number of PIT tags that need to be observed within a population or the proportion of total PIT tags deployed at LGR detected within a population necessary to achieve a predicted CV of $\leq$ 0.15 for the abundance estimate. To do this, we tried fitting a separate model for each species, and after fitting those models (semi-log, log-log and loess), we examined the minimum number and proportion of total tags that would need to be detected to achieve that CV level. Those results are shown in Tables \@ref(tab:n-tags-tab) and \@ref(tab:prop-tags-tab).
+
+```{r n-tags-tab}
 mod_df %>%
   gather(model, mod_fit, starts_with('mod')) %>%
   mutate(pred = map(.x = mod_fit,
@@ -478,30 +564,6 @@ mod_df %>%
 ```  
 
 ```{r prop-tags-tab}
-prop_mod_df = pop_est %>%
-  mutate_at(vars(spawn_yr),
-            list(~ as.integer(as.character(.)))) %>%
-  left_join(tags_deploy) %>%
-  mutate(prop_tags = n_tags / tot_tags) %>%
-  group_by(Species) %>%
-  nest() %>%
-  mutate(mod_semi_log = map(data,
-                      .f = function(x) {
-                        glm(cv ~ prop_tags,
-                            family = gaussian(link = 'log'),
-                            data = x)
-                      }),
-         mod_loess = map(data,
-                         .f = function(x) {
-                           loess(cv ~ prop_tags,
-                                 data = x)
-                         }),
-         mod_log_log = map(data,
-                           .f = function(x) {
-                           lm(log(cv) ~ log(prop_tags),
-                              data = x)
-                           }))
-
 prop_mod_df %>%
   gather(model, mod_fit, starts_with('mod')) %>%
   mutate(pred = map(.x = mod_fit,
