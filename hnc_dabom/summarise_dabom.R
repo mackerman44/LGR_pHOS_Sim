@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: sumarise DABOM results for hatchery no-clip steelhead from several years at Lower Granite
 # Created: 1/7/2020
-# Last Modified: 1/7/2020
+# Last Modified: 2/18/2020
 # Notes: 
 
 #-------------------------------
@@ -17,7 +17,7 @@ library(readxl)
 library(sf)
 
 # source some needed functions
-source('R/definePopulations.R')
+source('R/definePopulations2.R')
 source('R/assign_POP_GSI.R')
 
 # load the configuration information
@@ -123,6 +123,7 @@ sthd_hnc_trt = sthd_hnc_summ %>%
 
 sthd_wild_trt = read_excel("../SnakeBasinFishStatus/Abundance_results/LGR_AllSummaries_Steelhead.xlsx",
                            sheet = "Pop Total Esc") %>%
+  filter(valid_est == 1) %>%
   select(Year = spawn_yr,
          Species = species,
          TRT,
