@@ -9,6 +9,17 @@ author:
     email: Mike.Ackerman@biomark.com
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
+  html_document:
+    # - --lua-filter=../templates/scholarly-metadata.lua
+    # - --lua-filter=../templates/author-info-blocks.lua
+    # - --lua-filter=../templates/pagebreak.lua
+    # pandoc_args:
+    fig_height: 6
+    fig_width: 8
+    theme: simplex
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
   word_document:
     fig_caption: yes
     fig_width: 7
@@ -23,17 +34,6 @@ output:
     toc_depth: 4
     includes:
       in_header: "../templates/header_ABS.tex"
-  html_document:
-    # - --lua-filter=../templates/scholarly-metadata.lua
-    # - --lua-filter=../templates/author-info-blocks.lua
-    # - --lua-filter=../templates/pagebreak.lua
-    # pandoc_args:
-    fig_height: 6
-    fig_width: 8
-    theme: simplex
-    toc: yes
-    toc_depth: 4
-    toc_float: yes
 # institute:
 # - biomark: Biomark, Inc.
 csl: ../templates/american-fisheries-society.csl
@@ -1016,7 +1016,7 @@ lgr_tags_df %>%
 
 # Discussion
 
-Based on the number of detections of hatchery fish tagged as juveniles, relying on observations at IPTDS may not provide the reliable estimate of *pHOS* we are striving for. First, as presented here, without uncertainty around the proportion of each release group tagged (i.e. tagging fraction), there is no way to provide uncertainty with the *pHOS* estimates (recognizing that estimating uncertainty in the tagging fraction is possible by various means). Second, for many of these populations, *pHOS* estimates are based on a handful of detections, so they are very sensitive to small changes in the number of detections. Although estimates produced in this way may be unbiased in general, for any particular population in a particular year the estimates could be very wring, with no way to capture the uncertainty in that. Finally, as presented here, the straight expansion of observation of hatchery fish tagged as hatchery smolt released does not account for imperfect detection (i.e., detection probability < 1), and although it could be accounted for, is not a trivial task within this framework.
+Based on the number of detections of hatchery fish tagged as juveniles, relying on observations at IPTDS may not provide the reliable estimate of *pHOS* we are striving for. First, as presented here, without uncertainty around the proportion of each release group tagged (i.e. tagging fraction), there is no way to provide uncertainty with the *pHOS* estimates (recognizing that estimating uncertainty in the tagging fraction is possible by various means). Second, for many of these populations, *pHOS* estimates are based on a handful of detections, so they are very sensitive to small changes in the number of detections. Although estimates produced in this way may be unbiased in general, for any particular population in a particular year the estimates could be very wrong, with no way to capture the uncertainty in that. Finally, as presented here, the straight expansion of observation of hatchery fish tagged as hatchery smolt released does not account for imperfect detection (i.e., detection probability < 1), and although it could be accounted for, is not a trivial task within this framework.
 
 Estimates of *pHOS* based on systematic tagging at LGR and escapement of ad-intact adults, including unclipped hatchery fish and wild fish, may be more reliable, but only include the effects of unclipped hatchery fish and ignore clipped hatchery fish. For some populations, particularly supplementation populations, this may be the majority of the hatchery fish found on the spawning grounds, but that may not be the case for all populations, especially populations occurring in more remote locations. `r tab_nums('dabom_hnc_phos', display = 'c')` shows that for many populations, there are very few HNC tags detected, leading to more uncertainty in the HNC abundance estimates and therefore more uncertainty in the *pHOS* estimates as well. This method may be appropriate for some populations, but the desired number of detections in those populations would need to be accounted for (e.g., when setting the tagging or trapping rate at Lower Granite) and it must be acknowledged that clipped hatchery fish are not accounted for in those *pHOS* estimates. 
 
